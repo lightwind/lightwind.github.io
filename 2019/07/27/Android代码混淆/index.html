@@ -21,13 +21,13 @@
     
     
     <meta name="keywords" content="代码混淆">
-    <meta name="description" content="在Android日常开发中，混淆是必不可少的。 1. 混淆简介 代码混淆：Obfuscated code，是将程序中的代码以某种规则转换为难以阅读和理解的代码的一种行为。  1.1 混淆的好处好处就是目的：令APK难以被逆向工程，即很大程度上增加反编译的成本。此外，Android中的“混淆”还能在打包时移除没用的资源，显著减小APK的体积。最后，还能以变通方式避免Anddroid中常见的64k方法">
+    <meta name="description" content="在Android日常开发中，混淆是必不可少的。 1. 混淆简介代码混淆：Obfuscated code，是将程序中的代码以某种规则转换为难以阅读和理解的代码的一种行为。 1.1 混淆的好处好处就是目的：令APK难以被逆向工程，即很大程度上增加反编译的成本。此外，Android中的“混淆”还能在打包时移除没用的资源，显著减小APK的体积。最后，还能以变通方式避免Anddroid中常见的64k方法数引">
 <meta name="keywords" content="代码混淆">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android代码混淆">
 <meta property="og:url" content="http://tylerLiu.top/2019/07/27/Android代码混淆/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="在Android日常开发中，混淆是必不可少的。 1. 混淆简介 代码混淆：Obfuscated code，是将程序中的代码以某种规则转换为难以阅读和理解的代码的一种行为。  1.1 混淆的好处好处就是目的：令APK难以被逆向工程，即很大程度上增加反编译的成本。此外，Android中的“混淆”还能在打包时移除没用的资源，显著减小APK的体积。最后，还能以变通方式避免Anddroid中常见的64k方法">
+<meta property="og:description" content="在Android日常开发中，混淆是必不可少的。 1. 混淆简介代码混淆：Obfuscated code，是将程序中的代码以某种规则转换为难以阅读和理解的代码的一种行为。 1.1 混淆的好处好处就是目的：令APK难以被逆向工程，即很大程度上增加反编译的成本。此外，Android中的“混淆”还能在打包时移除没用的资源，显著减小APK的体积。最后，还能以变通方式避免Anddroid中常见的64k方法数引">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://tylerliu.top/2019/07/27/Android代码混淆/5256969-397ea710d0cd14a5.webp">
 <meta property="og:image" content="http://tylerliu.top/2019/07/27/Android代码混淆/5256969-ba43f52c9a913b4a.webp">
@@ -37,10 +37,10 @@
 <meta property="og:image" content="http://tylerliu.top/2019/07/27/Android代码混淆/11843186-bc3c5030553ad703.png">
 <meta property="og:image" content="http://tylerliu.top/2019/07/27/Android代码混淆/11843186-fc80135d648c0ff6.png">
 <meta property="og:image" content="http://tylerliu.top/2019/07/27/Android代码混淆/11843186-c7d89bb491c6687a.png">
-<meta property="og:updated_time" content="2019-07-31T07:55:55.914Z">
+<meta property="og:updated_time" content="2019-07-31T08:08:16.462Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android代码混淆">
-<meta name="twitter:description" content="在Android日常开发中，混淆是必不可少的。 1. 混淆简介 代码混淆：Obfuscated code，是将程序中的代码以某种规则转换为难以阅读和理解的代码的一种行为。  1.1 混淆的好处好处就是目的：令APK难以被逆向工程，即很大程度上增加反编译的成本。此外，Android中的“混淆”还能在打包时移除没用的资源，显著减小APK的体积。最后，还能以变通方式避免Anddroid中常见的64k方法">
+<meta name="twitter:description" content="在Android日常开发中，混淆是必不可少的。 1. 混淆简介代码混淆：Obfuscated code，是将程序中的代码以某种规则转换为难以阅读和理解的代码的一种行为。 1.1 混淆的好处好处就是目的：令APK难以被逆向工程，即很大程度上增加反编译的成本。此外，Android中的“混淆”还能在打包时移除没用的资源，显著减小APK的体积。最后，还能以变通方式避免Anddroid中常见的64k方法数引">
 <meta name="twitter:image" content="http://tylerliu.top/2019/07/27/Android代码混淆/5256969-397ea710d0cd14a5.webp">
     
         <link rel="alternate" type="application/atom+xml" title="Tyler的博客" href="/atom.xml">
@@ -199,9 +199,7 @@
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
             <p>在Android日常开发中，<strong>混淆</strong>是必不可少的。</p>
-<h1 id="1-混淆简介"><a href="#1-混淆简介" class="headerlink" title="1. 混淆简介"></a>1. 混淆简介</h1><blockquote>
-<p>代码混淆：Obfuscated code，是将程序中的代码以某种规则转换为难以阅读和理解的代码的一种行为。</p>
-</blockquote>
+<h1 id="1-混淆简介"><a href="#1-混淆简介" class="headerlink" title="1. 混淆简介"></a>1. 混淆简介</h1><p>代码混淆：Obfuscated code，是将程序中的代码以某种规则转换为难以阅读和理解的代码的一种行为。</p>
 <h2 id="1-1-混淆的好处"><a href="#1-1-混淆的好处" class="headerlink" title="1.1 混淆的好处"></a>1.1 混淆的好处</h2><p>好处就是目的：令APK难以被逆向工程，即很大程度上增加反编译的成本。此外，Android中的“混淆”还能在打包时移除没用的资源，显著减小APK的体积。最后，还能以变通方式避免Anddroid中常见的64k方法数引用的限制。</p>
 <p>先看看APK混淆前后的结构对比：</p>
 <img src="/2019/07/27/Android代码混淆/5256969-397ea710d0cd14a5.webp">
@@ -290,10 +288,10 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">java.lang.RuntimeException: Unable to start activity </span><br><span class="line">     Caused by: kotlin.KotlinNullPointerException</span><br><span class="line">        at com.moos.media.ui.ImageSelectActivity.k(ImageSelectActivity.kt:71)</span><br><span class="line">        at com.moos.media.ui.ImageSelectActivity.onCreate(ImageSelectActivity.kt:58)</span><br><span class="line">        at android.app.Activity.performCreate(Activity.java:6237)</span><br><span class="line">        at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1107)</span><br></pre></td></tr></table></figure>
 
 <ol>
-<li><strong>通过retrace脚本工具</strong><br>首先进入Android SDK路径的<code>tools/proguard/bin</code>中：<img src="/2019/07/27/Android代码混淆/11843186-07e12471ad07a914.png">
-
-</li>
+<li><strong>通过retrace脚本工具</strong><br> 首先进入Android SDK路径的<code>tools/proguard/bin</code>中：</li>
 </ol>
+<img src="/2019/07/27/Android代码混淆/11843186-07e12471ad07a914.png">
+
 <p>可以看到里面有三个文件，而<code>proguardgui.bat</code>就是需要的retrace脚本。双加该脚本文件，运行，即可看到：</p>
 <img src="/2019/07/27/Android代码混淆/11843186-fd56ca5694c9dc61.png">
 
@@ -325,7 +323,7 @@
     <div class="content">
         
 <span class="post-time">
-    最后更新时间：<time datetime="2019-07-31T07:55:55.914Z" itemprop="dateUpdated">2019-07-31 15:55:55</time>
+    最后更新时间：<time datetime="2019-07-31T08:08:16.462Z" itemprop="dateUpdated">2019-07-31 16:08:16</time>
 </span><br>
 
 
