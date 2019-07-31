@@ -29,19 +29,19 @@
 <meta property="og:site_name" content="Tyler的博客">
 <meta property="og:description" content="在Android日常开发中，混淆是必不可少的。 1. 混淆简介 代码混淆：Obfuscated code，是将程序中的代码以某种规则转换为难以阅读和理解的代码的一种行为。  1.1 混淆的好处好处就是目的：令APK难以被逆向工程，即很大程度上增加反编译的成本。此外，Android中的“混淆”还能在打包时移除没用的资源，显著减小APK的体积。最后，还能以变通方式避免Anddroid中常见的64k方法">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5256969-397ea710d0cd14a5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/5256969-ba43f52c9a913b4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-07e12471ad07a914.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-fd56ca5694c9dc61.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-0d431cd96bcb8e2f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-bc3c5030553ad703.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-fc80135d648c0ff6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-c7d89bb491c6687a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-07-29T02:32:27.680Z">
+<meta property="og:image" content="http://tylerliu.top/2019/07/27/Android代码混淆/5256969-397ea710d0cd14a5.webp">
+<meta property="og:image" content="http://tylerliu.top/2019/07/27/Android代码混淆/5256969-ba43f52c9a913b4a.webp">
+<meta property="og:image" content="http://tylerliu.top/2019/07/27/Android代码混淆/11843186-07e12471ad07a914.png">
+<meta property="og:image" content="http://tylerliu.top/2019/07/27/Android代码混淆/11843186-fd56ca5694c9dc61.png">
+<meta property="og:image" content="http://tylerliu.top/2019/07/27/Android代码混淆/11843186-0d431cd96bcb8e2f.png">
+<meta property="og:image" content="http://tylerliu.top/2019/07/27/Android代码混淆/11843186-bc3c5030553ad703.png">
+<meta property="og:image" content="http://tylerliu.top/2019/07/27/Android代码混淆/11843186-fc80135d648c0ff6.png">
+<meta property="og:image" content="http://tylerliu.top/2019/07/27/Android代码混淆/11843186-c7d89bb491c6687a.png">
+<meta property="og:updated_time" content="2019-07-31T07:55:55.914Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android代码混淆">
 <meta name="twitter:description" content="在Android日常开发中，混淆是必不可少的。 1. 混淆简介 代码混淆：Obfuscated code，是将程序中的代码以某种规则转换为难以阅读和理解的代码的一种行为。  1.1 混淆的好处好处就是目的：令APK难以被逆向工程，即很大程度上增加反编译的成本。此外，Android中的“混淆”还能在打包时移除没用的资源，显著减小APK的体积。最后，还能以变通方式避免Anddroid中常见的64k方法">
-<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/5256969-397ea710d0cd14a5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp">
+<meta name="twitter:image" content="http://tylerliu.top/2019/07/27/Android代码混淆/5256969-397ea710d0cd14a5.webp">
     
         <link rel="alternate" type="application/atom+xml" title="Tyler的博客" href="/atom.xml">
     
@@ -204,21 +204,9 @@
 </blockquote>
 <h2 id="1-1-混淆的好处"><a href="#1-1-混淆的好处" class="headerlink" title="1.1 混淆的好处"></a>1.1 混淆的好处</h2><p>好处就是目的：令APK难以被逆向工程，即很大程度上增加反编译的成本。此外，Android中的“混淆”还能在打包时移除没用的资源，显著减小APK的体积。最后，还能以变通方式避免Anddroid中常见的64k方法数引用的限制。</p>
 <p>先看看APK混淆前后的结构对比：</p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://upload-images.jianshu.io/upload_images/5256969-397ea710d0cd14a5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp" alt title>
-                </div>
-                <div class="image-caption"></div>
-            </figure>
+<img src="/2019/07/27/Android代码混淆/5256969-397ea710d0cd14a5.webp">
 
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://upload-images.jianshu.io/upload_images/5256969-ba43f52c9a913b4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp" alt title>
-                </div>
-                <div class="image-caption"></div>
-            </figure>
+<img src="/2019/07/27/Android代码混淆/5256969-ba43f52c9a913b4a.webp">
 
 <p>从上面两张图可以看出：经过混淆后，APK中的包名、类名、成员名等都被替换为随机、无意义的名称，增加了代码阅读和理解的难度，提高反编译的成本。混淆前后APK的大小也从2.7M下降到1.4M。</p>
 <h1 id="2-Android中的混淆"><a href="#2-Android中的混淆" class="headerlink" title="2. Android中的混淆"></a>2. Android中的混淆</h1><p>在Android中，平时说的“混淆”其实包含两层意思，一是<strong>Java代码的混淆</strong>，二是<strong>资源的压缩</strong>。</p>
@@ -302,24 +290,12 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">java.lang.RuntimeException: Unable to start activity </span><br><span class="line">     Caused by: kotlin.KotlinNullPointerException</span><br><span class="line">        at com.moos.media.ui.ImageSelectActivity.k(ImageSelectActivity.kt:71)</span><br><span class="line">        at com.moos.media.ui.ImageSelectActivity.onCreate(ImageSelectActivity.kt:58)</span><br><span class="line">        at android.app.Activity.performCreate(Activity.java:6237)</span><br><span class="line">        at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1107)</span><br></pre></td></tr></table></figure>
 
 <ol>
-<li><strong>通过retrace脚本工具</strong><br>首先进入Android SDK路径的<code>tools/proguard/bin</code>中：</li>
-</ol>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://upload-images.jianshu.io/upload_images/11843186-07e12471ad07a914.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
-                </div>
-                <div class="image-caption"></div>
-            </figure>
+<li><strong>通过retrace脚本工具</strong><br>首先进入Android SDK路径的<code>tools/proguard/bin</code>中：<img src="/2019/07/27/Android代码混淆/11843186-07e12471ad07a914.png">
 
+</li>
+</ol>
 <p>可以看到里面有三个文件，而<code>proguardgui.bat</code>就是需要的retrace脚本。双加该脚本文件，运行，即可看到：</p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://upload-images.jianshu.io/upload_images/11843186-fd56ca5694c9dc61.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
-                </div>
-                <div class="image-caption"></div>
-            </figure>
+<img src="/2019/07/27/Android代码混淆/11843186-fd56ca5694c9dc61.png">
 
 <p>选择Retrace栏，添加项目中混淆生成的<code>mapping.txt</code>文件所在位置，然后将混淆后的崩溃信息复制到Obfuscated stack trace一栏，点击Retrace，即可还原出崩溃日志信息。</p>
 <ol start="2">
@@ -328,44 +304,20 @@
 </li>
 </ol>
 <p>最终还原结果和之前效果相同：</p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://upload-images.jianshu.io/upload_images/11843186-0d431cd96bcb8e2f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
-                </div>
-                <div class="image-caption"></div>
-            </figure>
+<img src="/2019/07/27/Android代码混淆/11843186-0d431cd96bcb8e2f.png">
 
 <p>在对stackTrace进行恢复时，发现<code>unknown Source</code>问题：</p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://upload-images.jianshu.io/upload_images/11843186-bc3c5030553ad703.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
-                </div>
-                <div class="image-caption"></div>
-            </figure>
+<img src="/2019/07/27/Android代码混淆/11843186-bc3c5030553ad703.png">
 
 <p>在混淆规则上添加如下配置来提升StackSource查找效率，</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 保留源文件名和具体代码行号</span><br><span class="line">-keepattributes SourceFile,LineNumberTable</span><br></pre></td></tr></table></figure>
 
 <p>此外，每次使用ProGuard创建发布构建时都会覆盖之前版本的<code>mapping.txt</code>文件，因此，每次发布一个新版本时，建议保存一个副本。通过为每个发布构建保留一个<code>mapping.txt</code>文件副本，就可以在用户提交的已混淆的StackTrace来对旧版本应用的问题进行调试和修复。</p>
 <h1 id="6-其他操作"><a href="#6-其他操作" class="headerlink" title="6. 其他操作"></a>6. 其他操作</h1><p>前面介绍到，APK在经过代码混淆处理后，包名、类名、成员名被转化为无意义、难以理解的名称，增加反编译的成本。Android ProGuard提供了默认的“混淆字典”，即将元素名称转为英文小写字母的形式。那么，可以定义自己的混淆字典吗？先看一张效果图：</p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://upload-images.jianshu.io/upload_images/11843186-fc80135d648c0ff6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
-                </div>
-                <div class="image-caption"></div>
-            </figure>
+<img src="/2019/07/27/Android代码混淆/11843186-fc80135d648c0ff6.png">
 
 <p>只要生成一套自己的<code>.txt</code>格式的混淆字典，然后在混淆规则<code>Proguard-rules.pro</code>中应用下即可：</p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://upload-images.jianshu.io/upload_images/11843186-c7d89bb491c6687a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
-                </div>
-                <div class="image-caption"></div>
-            </figure>
+<img src="/2019/07/27/Android代码混淆/11843186-c7d89bb491c6687a.png">
         </div>
 
         <blockquote class="post-copyright">
@@ -373,7 +325,7 @@
     <div class="content">
         
 <span class="post-time">
-    最后更新时间：<time datetime="2019-07-29T02:32:27.680Z" itemprop="dateUpdated">2019-07-29 10:32:27</time>
+    最后更新时间：<time datetime="2019-07-31T07:55:55.914Z" itemprop="dateUpdated">2019-07-31 15:55:55</time>
 </span><br>
 
 
