@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>一、Android调用WebService | Tyler的博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="WebService">
+    <meta name="description" content="Android调用WebService类似于一些给我们提供了原始数据API服务的数据平台，比如聚合数据。而WebService则用到了XML和SOAP，通过HTTP协议即可完成与远程机器的交互。  1. WebService简介1.1 WebService的引入手机硬件资源是有限的，对于一些复杂的数据处理和计算，通常都是部署在远程服务器上，然后安卓手机作为对应的客户端。为了让Android AP">
+<meta name="keywords" content="WebService">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一、Android调用WebService">
+<meta property="og:url" content="http://yoursite.com/2019/07/26/一、Android调用WebService/index.html">
+<meta property="og:site_name" content="Tyler的博客">
+<meta property="og:description" content="Android调用WebService类似于一些给我们提供了原始数据API服务的数据平台，比如聚合数据。而WebService则用到了XML和SOAP，通过HTTP协议即可完成与远程机器的交互。  1. WebService简介1.1 WebService的引入手机硬件资源是有限的，对于一些复杂的数据处理和计算，通常都是部署在远程服务器上，然后安卓手机作为对应的客户端。为了让Android AP">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-85a70b9dc88caa11.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-5ba756df7190bd3e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-70ebd2865bece62b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-1e89b8be4f8b6d2d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-18783eb0756adcbd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-97490ce74afa498f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-5a91a680272bb756.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-2ca8fd15f9c2dbeb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-5f37902ccf47d8aa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-c31a93ae4bc7daf3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-07-31T04:59:12.660Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一、Android调用WebService">
+<meta name="twitter:description" content="Android调用WebService类似于一些给我们提供了原始数据API服务的数据平台，比如聚合数据。而WebService则用到了XML和SOAP，通过HTTP协议即可完成与远程机器的交互。  1. WebService简介1.1 WebService的引入手机硬件资源是有限的，对于一些复杂的数据处理和计算，通常都是部署在远程服务器上，然后安卓手机作为对应的客户端。为了让Android AP">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/11843186-85a70b9dc88caa11.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+    
+        <link rel="alternate" type="application/atom+xml" title="Tyler的博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Tyler Liu</h5>
+          <a href="mailto:747962518@qq.com" title="747962518@qq.com" class="mail">747962518@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://gitee.com/QingFengBaiYu" target="_blank" >
+                <i class="icon icon-lg icon-link"></i>
+                码云
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/lightwind" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">一、Android调用WebService</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">一、Android调用WebService</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-07-26T08:12:57.000Z" itemprop="datePublished" class="page-time">
+  2019-07-26
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/网络/">网络</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#1-WebService简介"><span class="post-toc-number">1.</span> <span class="post-toc-text">1. WebService简介</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-1-WebService的引入"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">1.1 WebService的引入</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-2-主要采用的四个技术"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">1.2 主要采用的四个技术</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-2-1-XML"><span class="post-toc-number">1.2.1.</span> <span class="post-toc-text">1.2.1 XML</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-2-2-SOAP"><span class="post-toc-number">1.2.2.</span> <span class="post-toc-text">1.2.2 SOAP</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-2-3-WSDL"><span class="post-toc-number">1.2.3.</span> <span class="post-toc-text">1.2.3 WSDL</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-2-4-UDDI"><span class="post-toc-number">1.2.4.</span> <span class="post-toc-text">1.2.4 UDDI</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-3-WebService模型"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">1.3 WebService模型</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#2-去哪里获取WebService"><span class="post-toc-number">2.</span> <span class="post-toc-text">2. 去哪里获取WebService</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#3-第三方jar包准备"><span class="post-toc-number">3.</span> <span class="post-toc-text">3. 第三方jar包准备</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#4-获取相关参数"><span class="post-toc-number">4.</span> <span class="post-toc-text">4. 获取相关参数</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#5-注册"><span class="post-toc-number">5.</span> <span class="post-toc-text">5. 注册</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#6-Demo"><span class="post-toc-number">6.</span> <span class="post-toc-text">6. Demo</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-一、Android调用WebService"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">一、Android调用WebService</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-07-26 16:12:57" datetime="2019-07-26T08:12:57.000Z"  itemprop="datePublished">2019-07-26</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/网络/">网络</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <blockquote>
+<p>Android调用WebService类似于一些给我们提供了原始数据API服务的数据平台，比如聚合数据。而WebService则用到了XML和SOAP，通过HTTP协议即可完成与远程机器的交互。</p>
+</blockquote>
+<h1 id="1-WebService简介"><a href="#1-WebService简介" class="headerlink" title="1. WebService简介"></a>1. WebService简介</h1><h2 id="1-1-WebService的引入"><a href="#1-1-WebService的引入" class="headerlink" title="1.1 WebService的引入"></a>1.1 WebService的引入</h2><p>手机硬件资源是有限的，对于一些复杂的数据处理和计算，通常都是部署在远程服务器上，然后安卓手机作为对应的客户端。为了让Android APP与远程服务器进行交互，肯定需要一些技术，这里使用WebService就可以了。</p>
+<p>什么是WebService？</p>
+<p>简单来说，就是某些站点开放出来的服务，当然也可以自己开发一个service，也就是一些方法，通过URI，指定某一个方法名，发出请求，站点的这个服务（方法），接收请求后，根据传入的参数进行一些处理，然后将处理的结果以XML的形式返回。客户端收到这些XML并进行解析，然后显示或者进行其他操作。</p>
+<p>例如，很多大的站点提供天气预报的WebSwevice、查询某网站的数据的WebService，只要发送请求，它就返回天气预报、某网站的数据，然后在客户端就能显示出来。</p>
+<h2 id="1-2-主要采用的四个技术"><a href="#1-2-主要采用的四个技术" class="headerlink" title="1.2 主要采用的四个技术"></a>1.2 主要采用的四个技术</h2><h3 id="1-2-1-XML"><a href="#1-2-1-XML" class="headerlink" title="1.2.1 XML"></a>1.2.1 XML</h3><p>可扩展的标记语言。同时采用XML Schema。正式因为WebWervice采用了XML，才使得它可以跨越各种编程语言。</p>
+<h3 id="1-2-2-SOAP"><a href="#1-2-2-SOAP" class="headerlink" title="1.2.2 SOAP"></a>1.2.2 SOAP</h3><p>简单对象访问协议。提供了标准的RPC（Remote Procedure Call，远程调用过程）方法来调用WebService。SOAP规范中定义了SOAP消息格式，以及怎样通过HTTP协议来使用SOAP。SOAP是基于XML语言和XSD标准的，其中XML是SOAP的数据编码方式。</p>
+<h3 id="1-2-3-WSDL"><a href="#1-2-3-WSDL" class="headerlink" title="1.2.3 WSDL"></a>1.2.3 WSDL</h3><p>WSDL是一种基于XML的用于描述WenService及其操作、参数和返回值的语言。因为是基于XML，一些IDE可以根据WenService来生成WSDL文档，又能通过导入WSDL文档 ，生成调用相应WebWervice的代码。</p>
+<h3 id="1-2-4-UDDI"><a href="#1-2-4-UDDI" class="headerlink" title="1.2.4 UDDI"></a>1.2.4 UDDI</h3><p>用于在网上自动查找WebService，一旦WebService注册到UDDI，客户就可以很方便的查找和定位所需要的WebService。   </p>
+<h2 id="1-3-WebService模型"><a href="#1-3-WebService模型" class="headerlink" title="1.3 WebService模型"></a>1.3 WebService模型</h2><ul>
+<li>服务提供者：把自己的服务注册到“服务注册中心”。</li>
+<li>服务请求者：到“服务注册中心”查找相应的服务，然后定位到“服务提供者”。</li>
+<li>服务提供者：开始为“服务请求者”提供相应的服务。</li>
+</ul>
+<h1 id="2-去哪里获取WebService"><a href="#2-去哪里获取WebService" class="headerlink" title="2. 去哪里获取WebService"></a>2. 去哪里获取WebService</h1><p>网上有很多WebService的站点，这里选取了WebXmlu为例。</p>
+<p>WebXml：<a href="http://www.webxml.com.cn/zh_cn/index.aspx" target="_blank" rel="noopener">http://www.webxml.com.cn/zh_cn/index.aspx</a></p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://upload-images.jianshu.io/upload_images/11843186-85a70b9dc88caa11.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://upload-images.jianshu.io/upload_images/11843186-5ba756df7190bd3e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+
+<h1 id="3-第三方jar包准备"><a href="#3-第三方jar包准备" class="headerlink" title="3. 第三方jar包准备"></a>3. 第三方jar包准备</h1><p>首先如果想在Android平台上调用WebService，需要依赖第三方库ksoap2，而在Android平台上使用的是ksoap2-android-releases，一个高效、轻量级的SOAP开发包。</p>
+<ol>
+<li>ksoap2-Android项目网站：<br><a href="https://simpligility.github.io/ksoap2-android/index.html" target="_blank" rel="noopener">https://simpligility.github.io/ksoap2-android/index.html</a></li>
+<li>ksoap2-android-assembly发布版本列表(包含所有可用版本jar包)：<br><a href="https://oss.sonatype.org/content/repositories/ksoap2-android-releases/com/google/code/ksoap2-android/ksoap2-android-assembly/" target="_blank" rel="noopener">https://oss.sonatype.org/content/repositories/ksoap2-android-releases/com/google/code/ksoap2-android/ksoap2-android-assembly/</a></li>
+</ol>
+<h1 id="4-获取相关参数"><a href="#4-获取相关参数" class="headerlink" title="4. 获取相关参数"></a>4. 获取相关参数</h1><p>首先找到需要获取的服务，然后记录相关的参数：<code>NameSpace</code>（命名空间）、<code>SoapAction</code>以及<code>URL</code>。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://upload-images.jianshu.io/upload_images/11843186-70ebd2865bece62b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://upload-images.jianshu.io/upload_images/11843186-1e89b8be4f8b6d2d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+
+<p>比如这里查找天气的查询参数，点击去可以看到一个参数文档：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://upload-images.jianshu.io/upload_images/11843186-18783eb0756adcbd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+
+<p>假设这里需要的是天气查询部分的功能：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://upload-images.jianshu.io/upload_images/11843186-97490ce74afa498f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+
+<p>这里可以拿到<code>SoapAction</code>和<code>NameSpace</code>。</p>
+<p>这是一个测试页，可以不用填id信息，点击查询，可以看到这样一个页面：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://upload-images.jianshu.io/upload_images/11843186-5a91a680272bb756.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+
+<p>这就是返回的XML文件，下面就需要去解析这个文件，这里的.gif表示天气的图标。</p>
+<p>上面的查询号码归属地也是同理操作。</p>
+<h1 id="5-注册"><a href="#5-注册" class="headerlink" title="5. 注册"></a>5. 注册</h1><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://upload-images.jianshu.io/upload_images/11843186-2ca8fd15f9c2dbeb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://upload-images.jianshu.io/upload_images/11843186-5f37902ccf47d8aa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+
+<h1 id="6-Demo"><a href="#6-Demo" class="headerlink" title="6. Demo"></a>6. Demo</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ly.allendemowebservice;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.annotation.SuppressLint;</span><br><span class="line"><span class="keyword">import</span> android.os.Handler;</span><br><span class="line"><span class="keyword">import</span> android.os.Message;</span><br><span class="line"><span class="keyword">import</span> android.support.v7.app.AppCompatActivity;</span><br><span class="line"><span class="keyword">import</span> android.os.Bundle;</span><br><span class="line"><span class="keyword">import</span> android.util.Log;</span><br><span class="line"><span class="keyword">import</span> android.view.View;</span><br><span class="line"><span class="keyword">import</span> android.widget.Button;</span><br><span class="line"><span class="keyword">import</span> android.widget.EditText;</span><br><span class="line"><span class="keyword">import</span> android.widget.TextView;</span><br><span class="line"><span class="keyword">import</span> android.widget.Toast;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.ksoap2.SoapEnvelope;</span><br><span class="line"><span class="keyword">import</span> org.ksoap2.serialization.SoapObject;</span><br><span class="line"><span class="keyword">import</span> org.ksoap2.serialization.SoapPrimitive;</span><br><span class="line"><span class="keyword">import</span> org.ksoap2.serialization.SoapSerializationEnvelope;</span><br><span class="line"><span class="keyword">import</span> org.ksoap2.transport.HttpTransportSE;</span><br><span class="line"><span class="keyword">import</span> org.xmlpull.v1.XmlPullParserException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * WebService demo</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Liuyang</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2019/7/24</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> <span class="keyword">implements</span> <span class="title">View</span>.<span class="title">OnClickListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"MainActivity"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> EditText mEtParam;</span><br><span class="line">    <span class="keyword">private</span> TextView mTvResult;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String mResult;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String USER_ID = <span class="string">"1e3c36a0f18b4da4affa98cdd26ab0b4"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 定义获取手机信息的SoapAction与命名空间,作为常量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String NAME_SPACE = <span class="string">"http://WebXml.com.cn/"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 天气查询相关参数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String WEATHER_URL = <span class="string">"http://ws.webxml.com.cn/WebServices/WeatherWS.asmx"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String WEATHER_METHOD = <span class="string">"getWeather"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String WEATHER_SOAP_ACTION = <span class="string">"http://WebXml.com.cn/getWeather"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 号码归属地查询相关参数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String ADDRESS_URL = <span class="string">"http://ws.webxml.com.cn/WebServices/MobileCodeWS.asmx"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String ADDRESS_METHOD = <span class="string">"getMobileCodeInfo"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String ADDRESS_SOAP_ACTION = <span class="string">"http://WebXml.com.cn/getMobileCodeInfo"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 定义一个Handler用来更新页面</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@SuppressLint</span>(<span class="string">"HandlerLeak"</span>)</span><br><span class="line">    <span class="keyword">private</span> Handler mHandler = <span class="keyword">new</span> Handler() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">switch</span> (msg.what) &#123;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">0x001</span>:</span><br><span class="line">                    mTvResult.setText(mResult);</span><br><span class="line">                    Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"获取天气信息成功"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">0x002</span>:</span><br><span class="line">                    mTvResult.setText(mResult);</span><br><span class="line">                    Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"号码归属地查询成功"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">default</span>:</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        bindViews();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">bindViews</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mEtParam = findViewById(R.id.et_param);</span><br><span class="line">        Button btnAttribution = findViewById(R.id.btn_attribution);</span><br><span class="line">        Button btnWeather = findViewById(R.id.btn_weather);</span><br><span class="line">        mTvResult = findViewById(R.id.tv_result);</span><br><span class="line"></span><br><span class="line">        btnAttribution.setOnClickListener(<span class="keyword">this</span>);</span><br><span class="line">        btnWeather.setOnClickListener(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (v.getId()) &#123;</span><br><span class="line">            <span class="keyword">case</span> R.id.btn_attribution:</span><br><span class="line">                <span class="keyword">new</span> Thread() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        getLand();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;.start();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> R.id.btn_weather:</span><br><span class="line">                <span class="keyword">new</span> Thread() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        getWeather();</span><br><span class="line"><span class="comment">//                        getWeather1();</span></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;.start();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取某个号码的归属地信息</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">getLand</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mResult = <span class="string">""</span>;</span><br><span class="line">        <span class="comment">// 根据命名空间和方法得到SoapObject对象</span></span><br><span class="line">        SoapObject soapObject = <span class="keyword">new</span> SoapObject(NAME_SPACE, ADDRESS_METHOD);</span><br><span class="line">        soapObject.addProperty(<span class="string">"mobileCode"</span>, mEtParam.getText().toString());</span><br><span class="line">        soapObject.addProperty(<span class="string">"userID"</span>, USER_ID);</span><br><span class="line">        <span class="comment">// 通过SOAP1.1协议得到envelop对象</span></span><br><span class="line">        SoapSerializationEnvelope envelope = <span class="keyword">new</span> SoapSerializationEnvelope(SoapEnvelope.VER11);</span><br><span class="line">        <span class="comment">// 将soapObject对象设置为envelop对象，传出消息</span></span><br><span class="line">        envelope.bodyOut = soapObject;</span><br><span class="line">        <span class="comment">// 设置是否调用的是dotNet开发的WebService</span></span><br><span class="line">        <span class="comment">// 指定webservice的类型的（java，PHP，dotNet）</span></span><br><span class="line">        envelope.dotNet = <span class="keyword">true</span>;</span><br><span class="line">        <span class="comment">// 等价于envelop.bodyOut = soapObject;</span></span><br><span class="line">        envelope.setOutputSoapObject(soapObject);</span><br><span class="line">        HttpTransportSE httpTransportSe = <span class="keyword">new</span> HttpTransportSE(ADDRESS_URL);</span><br><span class="line"></span><br><span class="line">        Log.i(TAG, <span class="string">"号码服务设置完毕,准备开启服务"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 开始调用远程方法</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 得到远程方法返回的SOAP对象</span></span><br><span class="line">            httpTransportSe.call(ADDRESS_SOAP_ACTION, envelope);</span><br><span class="line">            Log.i(TAG, <span class="string">"调用号码归属地查询WebService服务成功"</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            Log.i(TAG, <span class="string">"调用号码归属地查询WebService服务失败 = IOException"</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (XmlPullParserException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            Log.i(TAG, <span class="string">"调用号码归属地查询WebService服务失败 = XmlPullParserException"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 获取返回的数据，并开始解析</span></span><br><span class="line">        SoapObject object = (SoapObject) envelope.bodyIn;</span><br><span class="line">        mResult = object.getProperty(<span class="number">0</span>).toString();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> count = object.getPropertyCount();</span><br><span class="line">        Log.i(TAG, <span class="string">"count = "</span> + count);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; count; i++) &#123;</span><br><span class="line">            Log.i(TAG, i + <span class="string">" === "</span> + object.getProperty(i).toString());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        mHandler.sendEmptyMessage(<span class="number">0x002</span>);</span><br><span class="line">        Log.i(TAG, <span class="string">"发送号码归属地数据完毕"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取某个城市的天气信息，使用封装的工具类</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">getWeather1</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="comment">//        SoapNetUtils.getInstance().doSoapRequest();</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取某个城市的天气信息</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">getWeather</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mResult = <span class="string">""</span>;</span><br><span class="line">        <span class="comment">// 根据命名空间和方法得到SoapObject对象</span></span><br><span class="line">        SoapObject soapObject = <span class="keyword">new</span> SoapObject(NAME_SPACE, WEATHER_METHOD);</span><br><span class="line">        soapObject.addProperty(<span class="string">"theCityCode"</span>, mEtParam.getText().toString());</span><br><span class="line">        soapObject.addProperty(<span class="string">"theUserID"</span>, USER_ID);</span><br><span class="line">        <span class="comment">// 通过SOAP1.1协议得到envelop对象</span></span><br><span class="line">        SoapSerializationEnvelope envelope = <span class="keyword">new</span> SoapSerializationEnvelope(SoapEnvelope.VER11);</span><br><span class="line">        <span class="comment">// 将soapObject对象设置为envelop对象，传出消息</span></span><br><span class="line">        envelope.bodyOut = soapObject;</span><br><span class="line">        <span class="comment">// 设置是否调用的是dotNet开发的WebService</span></span><br><span class="line">        <span class="comment">// 指定webservice的类型的（java，PHP，dotNet）</span></span><br><span class="line">        envelope.dotNet = <span class="keyword">true</span>;</span><br><span class="line">        <span class="comment">// 等价于envelop.bodyOut = soapObject;</span></span><br><span class="line">        envelope.setOutputSoapObject(soapObject);</span><br><span class="line">        HttpTransportSE httpTransportSe = <span class="keyword">new</span> HttpTransportSE(WEATHER_URL);</span><br><span class="line"></span><br><span class="line">        Log.i(TAG, <span class="string">"天气服务设置完毕,准备开启服务"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 开始调用远程方法</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 得到远程方法返回的SOAP对象</span></span><br><span class="line">            httpTransportSe.call(WEATHER_SOAP_ACTION, envelope);</span><br><span class="line">            Log.i(TAG, <span class="string">"调用天气查询WebService服务成功"</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            Log.i(TAG, <span class="string">"调用天气查询WebService服务失败 = IOException"</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (XmlPullParserException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            Log.i(TAG, <span class="string">"调用天气查询WebService服务失败 = XmlPullParserException"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 获取返回的数据，并开始解析，以下都通过getClass()直到数据的类型，才去进行强制类型转换的</span></span><br><span class="line">        SoapObject object = (SoapObject) envelope.bodyIn;</span><br><span class="line">        SoapPrimitive primitive;</span><br><span class="line">        <span class="keyword">int</span> count = object.getPropertyCount();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; count; i++) &#123;</span><br><span class="line">            SoapObject object1 = (SoapObject) object.getProperty(i);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; object1.getPropertyCount(); j++) &#123;</span><br><span class="line">                primitive = (SoapPrimitive) object1.getProperty(j);</span><br><span class="line">                Log.i(TAG, <span class="string">"第"</span> + j + <span class="string">"个数据为："</span> + primitive.getName() + <span class="string">" = "</span> + primitive.getValue());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        primitive = (SoapPrimitive) ((SoapObject) object.getProperty(<span class="number">0</span>)).getProperty(<span class="number">37</span>);</span><br><span class="line"></span><br><span class="line">        mResult = (String) primitive.getValue();</span><br><span class="line">        mHandler.sendEmptyMessage(<span class="number">0x001</span>);</span><br><span class="line">        Log.i(TAG, <span class="string">"发送天气数据完毕"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Demo地址：<a href="https://gitee.com/QingFengBaiYu/Allen_Demo_WebService" target="_blank" rel="noopener">Allen_Demo_WebService</a></p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://upload-images.jianshu.io/upload_images/11843186-c31a93ae4bc7daf3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2019-07-31T04:59:12.660Z" itemprop="dateUpdated">2019-07-31 12:59:12</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="http://yoursite.com">
+            <img src="/img/avatar.jpg" alt="Tyler Liu">
+            Tyler Liu
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebService/">WebService</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/2019/07/26/一、Android调用WebService/&title=《一、Android调用WebService》 — Tyler的博客&pic=http://yoursite.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/2019/07/26/一、Android调用WebService/&title=《一、Android调用WebService》 — Tyler的博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2019/07/26/一、Android调用WebService/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《一、Android调用WebService》 — Tyler的博客&url=http://yoursite.com/2019/07/26/一、Android调用WebService/&via=http://yoursite.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/2019/07/26/一、Android调用WebService/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/07/26/二、Android-XML数据解析/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">二、Android XML数据解析</h4>
+      </a>
+    </div>
+  
+
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Tyler Liu &copy; 2018 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/2019/07/26/一、Android调用WebService/&title=《一、Android调用WebService》 — Tyler的博客&pic=http://yoursite.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/2019/07/26/一、Android调用WebService/&title=《一、Android调用WebService》 — Tyler的博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2019/07/26/一、Android调用WebService/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《一、Android调用WebService》 — Tyler的博客&url=http://yoursite.com/2019/07/26/一、Android调用WebService/&via=http://yoursite.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/2019/07/26/一、Android调用WebService/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACMklEQVR42u3a0W7DMAgF0P7/T3evk7okF0gnxT5+qtYu9ukkBpjXK17vX+vz5+ef//zd86cdPfOGhYGB8VjG+3QdbZBslhw03/foMxgYGPswzg+RH+ho+2o4zs+GgYGBkYTXXrhM0k0MDAyMHiMPoBfJXFAqY2BgYFSL2F5BOyl9v1KLY2BgPJCRd93///VX7jcwMDAexXgXV97c77XtegsDA2NtRjVdS9KyXprYSx8xMDB2YPSGGyYBdNLIw8DA2JORpHq9q4LeoNhoRwwMjKUZveGJpJVfDprFYYsLDAYGxkKMfFSrGhzzdPD8adHfAQMDYxtGNYBWS9Z8tKLa5sPAwNiBkQe7aklZTfV6l6MYGBirMiYpYHL0ycVn8g8AAwNjN8b5ZvmgWO+Cs3c5GmWXGBgYD2dUW2M5bzJskaeqGBgYezKqw1vJBpMCtTkzgoGBsRDjrqZ8frUwab0d7oiBgbENoxp855G+9+4frzEwMJZmzB/Ra5YlTygHawwMjA0Y1SZX1AIrpok3lLIYGBgbMHqlZn7o3iVEdDYMDIxtGEnKmLfD8vZcNXC/et8rBgbGAxmTUYneu8nhyqEZAwNjaUY12PVSuvwyYD7YgYGBsSqjV2r2Lg+SVK9aTmNgYOzDuCvwVYckqgXtRSmLgYGBUSxiq0lhnlZiYGBgJBtXj5uMXFRL6IsBVgwMjOUY1TB6fpTqoZPrhIvPYGBgLM3olY7zMYteG66QLGJgYKzA+AH8AEHPZpgAyAAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Android实现RecyclerView自动滚动 | Tyler的博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="View">
+    <meta name="description" content="实现功能：使用RecyclerView实现垂直滚动效果。 1. 自定义RecyclerView实现滚动效果123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778">
+<meta name="keywords" content="View">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android实现RecyclerView自动滚动">
+<meta property="og:url" content="http://yoursite.com/2019/07/27/Android实现RecyclerView自动滚动/index.html">
+<meta property="og:site_name" content="Tyler的博客">
+<meta property="og:description" content="实现功能：使用RecyclerView实现垂直滚动效果。 1. 自定义RecyclerView实现滚动效果123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-e97d2347865f08c0.gif?imageMogr2/auto-orient/strip">
+<meta property="og:updated_time" content="2019-07-29T02:33:06.007Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android实现RecyclerView自动滚动">
+<meta name="twitter:description" content="实现功能：使用RecyclerView实现垂直滚动效果。 1. 自定义RecyclerView实现滚动效果123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/11843186-e97d2347865f08c0.gif?imageMogr2/auto-orient/strip">
+    
+        <link rel="alternate" type="application/atom+xml" title="Tyler的博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Tyler Liu</h5>
+          <a href="mailto:747962518@qq.com" title="747962518@qq.com" class="mail">747962518@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://gitee.com/QingFengBaiYu" target="_blank" >
+                <i class="icon icon-lg icon-link"></i>
+                码云
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/lightwind" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Android实现RecyclerView自动滚动</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Android实现RecyclerView自动滚动</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-07-27T05:03:29.000Z" itemprop="datePublished" class="page-time">
+  2019-07-27
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/View/">View</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#1-自定义RecyclerView实现滚动效果"><span class="post-toc-number">1.</span> <span class="post-toc-text">1. 自定义RecyclerView实现滚动效果</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#2-实现Adapter"><span class="post-toc-number">2.</span> <span class="post-toc-text">2. 实现Adapter</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#3-适配器布局文件"><span class="post-toc-number">3.</span> <span class="post-toc-text">3. 适配器布局文件</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#4-调用"><span class="post-toc-number">4.</span> <span class="post-toc-text">4. 调用</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#5-效果和Demo地址"><span class="post-toc-number">5.</span> <span class="post-toc-text">5. 效果和Demo地址</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Android实现RecyclerView自动滚动"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Android实现RecyclerView自动滚动</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-07-27 13:03:29" datetime="2019-07-27T05:03:29.000Z"  itemprop="datePublished">2019-07-27</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/View/">View</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>实现功能：使用<code>RecyclerView</code>实现垂直滚动效果。</p>
+<h1 id="1-自定义RecyclerView实现滚动效果"><a href="#1-自定义RecyclerView实现滚动效果" class="headerlink" title="1. 自定义RecyclerView实现滚动效果"></a>1. 自定义RecyclerView实现滚动效果</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ly.allendemoautopollrecyclerview;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.annotation.SuppressLint;</span><br><span class="line"><span class="keyword">import</span> android.content.Context;</span><br><span class="line"><span class="keyword">import</span> android.support.annotation.NonNull;</span><br><span class="line"><span class="keyword">import</span> android.support.annotation.Nullable;</span><br><span class="line"><span class="keyword">import</span> android.support.v7.widget.RecyclerView;</span><br><span class="line"><span class="keyword">import</span> android.util.AttributeSet;</span><br><span class="line"><span class="keyword">import</span> android.view.MotionEvent;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.ref.WeakReference;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 自定义垂直滚动RecyclerView</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Liuyang</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2019/7/27</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AutoPollRecyclerView</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> TIME_AUTO_POLL = <span class="number">16</span>;</span><br><span class="line">    <span class="keyword">private</span> AutoPollTask mAutoPollTask;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 标示是否正在自动轮询</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> mRunning;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 标示是否可以自动轮询，可在不需要的是否置false</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> mCanRun;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AutoPollRecyclerView</span><span class="params">(@NonNull Context context, @Nullable AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs);</span><br><span class="line">        mAutoPollTask = <span class="keyword">new</span> AutoPollTask(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">AutoPollTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> WeakReference&lt;AutoPollRecyclerView&gt; mReference;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 使用弱引用持有外部引用，放置内存泄露</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        AutoPollTask(AutoPollRecyclerView reference) &#123;</span><br><span class="line">            mReference = <span class="keyword">new</span> WeakReference&lt;&gt;(reference);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            AutoPollRecyclerView recyclerView = mReference.get();</span><br><span class="line">            <span class="keyword">if</span> (recyclerView != <span class="keyword">null</span> &amp;&amp; recyclerView.mRunning &amp;&amp; recyclerView.mCanRun) &#123;</span><br><span class="line">                recyclerView.scrollBy(<span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line">                recyclerView.postDelayed(recyclerView.mAutoPollTask, TIME_AUTO_POLL);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 开启：如果正在运行，则先停止，再开始</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mRunning) &#123;</span><br><span class="line">            stop();</span><br><span class="line">        &#125;</span><br><span class="line">        mCanRun = <span class="keyword">true</span>;</span><br><span class="line">        mRunning = <span class="keyword">true</span>;</span><br><span class="line">        postDelayed(mAutoPollTask, TIME_AUTO_POLL);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 停止</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mRunning = <span class="keyword">false</span>;</span><br><span class="line">        removeCallbacks(mAutoPollTask);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressLint</span>(<span class="string">"ClickableViewAccessibility"</span>)</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTouchEvent</span><span class="params">(MotionEvent e)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (e.getAction()) &#123;</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_DOWN:</span><br><span class="line">                <span class="keyword">if</span> (mRunning) &#123;</span><br><span class="line">                    stop();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_UP:</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_CANCEL:</span><br><span class="line">            <span class="keyword">case</span> MotionEvent.ACTION_OUTSIDE:</span><br><span class="line">                <span class="keyword">if</span> (mCanRun) &#123;</span><br><span class="line">                    start();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onTouchEvent(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="2-实现Adapter"><a href="#2-实现Adapter" class="headerlink" title="2. 实现Adapter"></a>2. 实现Adapter</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ly.allendemoautopollrecyclerview;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.annotation.SuppressLint;</span><br><span class="line"><span class="keyword">import</span> android.content.Context;</span><br><span class="line"><span class="keyword">import</span> android.support.annotation.NonNull;</span><br><span class="line"><span class="keyword">import</span> android.support.v7.widget.RecyclerView;</span><br><span class="line"><span class="keyword">import</span> android.view.LayoutInflater;</span><br><span class="line"><span class="keyword">import</span> android.view.View;</span><br><span class="line"><span class="keyword">import</span> android.view.ViewGroup;</span><br><span class="line"><span class="keyword">import</span> android.widget.TextView;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AutoPollAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">AutoPollAdapter</span>.<span class="title">BaseViewHolder</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Context mContext;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> List&lt;AutoScrollLuckyListReq.DatasBean&gt; mData;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AutoPollAdapter</span><span class="params">(Context context, List&lt;AutoScrollLuckyListReq.DatasBean&gt; data)</span> </span>&#123;</span><br><span class="line">        mContext = context;</span><br><span class="line">        mData = data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NonNull</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> BaseViewHolder <span class="title">onCreateViewHolder</span><span class="params">(@NonNull ViewGroup viewGroup, <span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">        View view = LayoutInflater.from(mContext).inflate(R.layout.auto_list_item, viewGroup, <span class="keyword">false</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BaseViewHolder(view);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressLint</span>(<span class="string">"SetTextI18n"</span>)</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(@NonNull BaseViewHolder baseViewHolder, <span class="keyword">int</span> position)</span> </span>&#123;</span><br><span class="line">        AutoScrollLuckyListReq.DatasBean datasBean = mData.get(position % mData.size());</span><br><span class="line">        baseViewHolder.content.setText(datasBean.getPhone() + <span class="string">" 获得 "</span> + datasBean.getGiftName());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Integer.MAX_VALUE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">BaseViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</span><br><span class="line">        TextView content;</span><br><span class="line"></span><br><span class="line">        BaseViewHolder(View itemView) &#123;</span><br><span class="line">            <span class="keyword">super</span>(itemView);</span><br><span class="line">            content = itemView.findViewById(R.id.content);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-适配器布局文件"><a href="#3-适配器布局文件" class="headerlink" title="3. 适配器布局文件"></a>3. 适配器布局文件</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:background</span>=<span class="string">"#fffcf5"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">TextView</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_marginTop</span>=<span class="string">"8dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_marginBottom</span>=<span class="string">"8dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:text</span>=<span class="string">"135xxxx8888 获得 8积分"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:textColor</span>=<span class="string">"#797762"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:textSize</span>=<span class="string">"14sp"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">View</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"1dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:background</span>=<span class="string">"#797762"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="4-调用"><a href="#4-调用" class="headerlink" title="4. 调用"></a>4. 调用</h1><p>布局文件：<code>activity_main.xml</code>：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">RelativeLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:tools</span>=<span class="string">"http://schemas.android.com/tools"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">tools:context</span>=<span class="string">".MainActivity"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">LinearLayout</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"150dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_centerInParent</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_marginLeft</span>=<span class="string">"15dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_marginTop</span>=<span class="string">"15dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_marginRight</span>=<span class="string">"15dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:background</span>=<span class="string">"@drawable/luckyer_bg"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">RelativeLayout</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:layout_width</span>=<span class="string">"40dp"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:layout_marginStart</span>=<span class="string">"23dp"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:layout_marginTop</span>=<span class="string">"1dp"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:layout_marginBottom</span>=<span class="string">"1dp"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:background</span>=<span class="string">"#fff6ea"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="tag">&lt;<span class="name">ImageView</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:layout_centerInParent</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:padding</span>=<span class="string">"10dp"</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:src</span>=<span class="string">"@drawable/zhongjiangzhemingdan"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">RelativeLayout</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">com.ly.allendemoautopollrecyclerview.AutoPollRecyclerView</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:id</span>=<span class="string">"@+id/recyclerview"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:layout_margin</span>=<span class="string">"20dp"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">RelativeLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Java文件：<code>MainActivity.java</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ly.allendemoautopollrecyclerview;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.os.Bundle;</span><br><span class="line"><span class="keyword">import</span> android.support.v7.app.AppCompatActivity;</span><br><span class="line"><span class="keyword">import</span> android.support.v7.widget.LinearLayoutManager;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSON;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Liuyang</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2019/7/27</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> AutoPollRecyclerView mRecyclerView;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        initView();</span><br><span class="line">        initData();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mRecyclerView = findViewById(R.id.recyclerview);</span><br><span class="line">        mRecyclerView.setLayoutManager(<span class="keyword">new</span> LinearLayoutManager(<span class="keyword">this</span>, LinearLayoutManager.VERTICAL, <span class="keyword">false</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String response = <span class="string">"&#123;\n"</span> +</span><br><span class="line">                <span class="string">"    \"datas\": [\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"20个积分\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"20个积分\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"满10减1元\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"20个积分\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"20个积分\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"满10减1元\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"20个积分\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"满10减1元\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"满10减1元\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"三花便签（20枚）\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"三花便签（20枚）\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"满10减1元\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"20个积分\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"满10减1元\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"20个积分\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"三花便签（20枚）\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"三花便签（20枚）\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"满10减1元\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"20个积分\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"giftName\": \"20个积分\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"phone\": \"****\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;\n"</span> +</span><br><span class="line">                <span class="string">"    ],\n"</span> +</span><br><span class="line">                <span class="string">"    \"msg\": \"success\",\n"</span> +</span><br><span class="line">                <span class="string">"    \"ret\": 0\n"</span> +</span><br><span class="line">                <span class="string">"&#125;"</span>;</span><br><span class="line"></span><br><span class="line">        AutoScrollLuckyListReq autoScrollLuckyListReq = JSON.parseObject(response, AutoScrollLuckyListReq.class);</span><br><span class="line">        <span class="comment">// 0为请求成功</span></span><br><span class="line">        <span class="keyword">if</span> (autoScrollLuckyListReq.getRet() == <span class="number">0</span>) &#123;</span><br><span class="line">            AutoPollAdapter autoPollAdapter = <span class="keyword">new</span> AutoPollAdapter(getApplicationContext(),</span><br><span class="line">                    autoScrollLuckyListReq.getDatas());</span><br><span class="line">            mRecyclerView.setAdapter(autoPollAdapter);</span><br><span class="line">            <span class="comment">// 启动滚动</span></span><br><span class="line">            mRecyclerView.start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="5-效果和Demo地址"><a href="#5-效果和Demo地址" class="headerlink" title="5. 效果和Demo地址"></a>5. 效果和Demo地址</h1><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://upload-images.jianshu.io/upload_images/11843186-e97d2347865f08c0.gif?imageMogr2/auto-orient/strip" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+
+<p>Demo地址：<a href="https://gitee.com/QingFengBaiYu/Allen_Demo_AutoPollRecyclerView" target="_blank" rel="noopener">Allen_Demo_AutoPollRecyclerView</a></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2019-07-29T02:33:06.007Z" itemprop="dateUpdated">2019-07-29 10:33:06</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="http://yoursite.com">
+            <img src="/img/avatar.jpg" alt="Tyler Liu">
+            Tyler Liu
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/View/">View</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/2019/07/27/Android实现RecyclerView自动滚动/&title=《Android实现RecyclerView自动滚动》 — Tyler的博客&pic=http://yoursite.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/2019/07/27/Android实现RecyclerView自动滚动/&title=《Android实现RecyclerView自动滚动》 — Tyler的博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2019/07/27/Android实现RecyclerView自动滚动/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android实现RecyclerView自动滚动》 — Tyler的博客&url=http://yoursite.com/2019/07/27/Android实现RecyclerView自动滚动/&via=http://yoursite.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/2019/07/27/Android实现RecyclerView自动滚动/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/07/27/Android代码混淆/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Android代码混淆</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/07/27/蘸水牛肉/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">蘸水牛肉</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Tyler Liu &copy; 2018 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://yoursite.com/2019/07/27/Android实现RecyclerView自动滚动/&title=《Android实现RecyclerView自动滚动》 — Tyler的博客&pic=http://yoursite.com/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://yoursite.com/2019/07/27/Android实现RecyclerView自动滚动/&title=《Android实现RecyclerView自动滚动》 — Tyler的博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2019/07/27/Android实现RecyclerView自动滚动/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android实现RecyclerView自动滚动》 — Tyler的博客&url=http://yoursite.com/2019/07/27/Android实现RecyclerView自动滚动/&via=http://yoursite.com" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://yoursite.com/2019/07/27/Android实现RecyclerView自动滚动/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACt0lEQVR42u3a0WrjQAwF0P7/T3dhX7rQZnIljZqwHD8V17HnTMBSJH18xMfn3+P7me/nk2v+PXP+b/6s0YGHh4fXWvqjo/qA82d7d3i0Kec14+Hh4W3zzsEgAVcDQLLQ83YnAQwPDw/vtbzzsqqv+GrgwcPDw/u/eUn6Oyl84OHh4b0DL09hq4XXXjJ9fu5KrQUPDw8v5lUbYO/w92J/Dw8PD2/QVU+S5nnDLN/E8mrx8PDwFnjn9LdapEjGBfK22a2BAzw8PLy7vOTHf3U4IA8SvRZaYcvw8PDw1njzBLd3/bzp9eQpeHh4eGu8vEF1KzxURwfyLXgS9/Dw8PAu8apDVL2NuDVAENVXqtEJDw8PL+blA1U5IN+IyRBD4QvAw8PDu8qbpLa9Flde3p2/5/Hw8PA2eNWRpjwdz+9WHVbIkXh4eHgbvF4xIllQngRXRwdyNh4eHt6rePPibLXsm2/Zky8ADw8Pb4F3XtBk6KoaEnpXFjYIDw8Pb4GXlFnzwaleQyt5YlL2xcPDw3sVr4fvBYkcM0rK8fDw8K7yevtRHdIqd+eCMkeS3OPh4eHd5eXJcfXFPVnWtVQeDw8Pb42X33pSwB01sebVDjw8PLwxr/rC7S23OqBQDVQPz+Ph4eEt8OaPrIaKaliqlkt+WC0eHh7eVd6k4ZQvtxckqmVfPDw8vN/n5b/i81JFD5mPVT0pDePh4eEt8O4Wf89FgaRwkKfX6wceHh5ecRSg1+7K098qOE/Bn1RZ8PDw8Ma86js2L9HmW5OXPHplYjw8PLwNXh4Mqg+et9B6d8PDw8P7Hd52MMgbVwmjEPHw8PDwXsqrDhbkbbBe7h+l7Hh4eHhvw8tf/fmyqu206D54eHh4a7y8GFEdI5gPGeSfLXf58PDw8Fq8eQMsL/Vuj6uu9Pfw8PDwvo4/N66ccVLfVS4AAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
