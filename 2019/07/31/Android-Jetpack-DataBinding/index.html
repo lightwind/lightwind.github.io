@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Android-Jetpack-DataBinding | Tyler的博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Jetpack">
+    <meta name="description" content="Android Jetpack一系类的内容，适合使用MVVM，这里先看看MVVM。 1. 介绍1.1 MVVM介绍MVVM，全称Model-View-ViewModel，和MVC和MVP一样，是逻辑分层解耦的模式。 1.1.1 结构图  MVVM三要素：  View层：xml、Activity、Framgent、Adapter和View等 Model层：数据源（包括本地数据和网络数据等） View">
+<meta name="keywords" content="Jetpack">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-Jetpack-DataBinding">
+<meta property="og:url" content="http://tylerLiu.top/2019/07/31/Android-Jetpack-DataBinding/index.html">
+<meta property="og:site_name" content="Tyler的博客">
+<meta property="og:description" content="Android Jetpack一系类的内容，适合使用MVVM，这里先看看MVVM。 1. 介绍1.1 MVVM介绍MVVM，全称Model-View-ViewModel，和MVC和MVP一样，是逻辑分层解耦的模式。 1.1.1 结构图  MVVM三要素：  View层：xml、Activity、Framgent、Adapter和View等 Model层：数据源（包括本地数据和网络数据等） View">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://tylerliu.top/2019/07/31/Android-Jetpack-DataBinding/9271486-daf7f3dda87c84ab.webp">
+<meta property="og:updated_time" content="2019-07-31T09:00:27.223Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android-Jetpack-DataBinding">
+<meta name="twitter:description" content="Android Jetpack一系类的内容，适合使用MVVM，这里先看看MVVM。 1. 介绍1.1 MVVM介绍MVVM，全称Model-View-ViewModel，和MVC和MVP一样，是逻辑分层解耦的模式。 1.1.1 结构图  MVVM三要素：  View层：xml、Activity、Framgent、Adapter和View等 Model层：数据源（包括本地数据和网络数据等） View">
+<meta name="twitter:image" content="http://tylerliu.top/2019/07/31/Android-Jetpack-DataBinding/9271486-daf7f3dda87c84ab.webp">
+    
+        <link rel="alternate" type="application/atom+xml" title="Tyler的博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Tyler Liu</h5>
+          <a href="mailto:747962518@qq.com" title="747962518@qq.com" class="mail">747962518@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://gitee.com/QingFengBaiYu" target="_blank" >
+                <i class="icon icon-lg icon-link"></i>
+                码云
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/lightwind" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Android-Jetpack-DataBinding</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Android-Jetpack-DataBinding</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-07-31T08:34:26.000Z" itemprop="datePublished" class="page-time">
+  2019-07-31
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/Jetpack/">Jetpack</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#1-介绍"><span class="post-toc-number">1.</span> <span class="post-toc-text">1. 介绍</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-1-MVVM介绍"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">1.1 MVVM介绍</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-1-1-结构图"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">1.1.1 结构图</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-2-Data-Binding介绍"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">1.2 Data Binding介绍</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Android-Jetpack-DataBinding"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Android-Jetpack-DataBinding</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-07-31 16:34:26" datetime="2019-07-31T08:34:26.000Z"  itemprop="datePublished">2019-07-31</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/Jetpack/">Jetpack</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>Android Jetpack一系类的内容，适合使用MVVM，这里先看看MVVM。</p>
+<h1 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h1><h2 id="1-1-MVVM介绍"><a href="#1-1-MVVM介绍" class="headerlink" title="1.1 MVVM介绍"></a>1.1 MVVM介绍</h2><p>MVVM，全称Model-View-ViewModel，和MVC和MVP一样，是逻辑分层解耦的模式。</p>
+<h3 id="1-1-1-结构图"><a href="#1-1-1-结构图" class="headerlink" title="1.1.1 结构图"></a>1.1.1 结构图</h3><img src="/2019/07/31/Android-Jetpack-DataBinding/9271486-daf7f3dda87c84ab.webp">
+
+<p>MVVM三要素：</p>
+<ul>
+<li>View层：xml、Activity、Framgent、Adapter和View等</li>
+<li>Model层：数据源（包括本地数据和网络数据等）</li>
+<li>ViewModel层：View层处理数据以及逻辑处理</li>
+</ul>
+<h2 id="1-2-Data-Binding介绍"><a href="#1-2-Data-Binding介绍" class="headerlink" title="1.2 Data Binding介绍"></a>1.2 Data Binding介绍</h2><p>MVVM是一种架构模式，Data Binding是一种实现数据和UI绑定的框架，是构建MVVM模式的一个工具。</p>
+<ul>
+<li>官方文档：<a href="https://developer.android.google.cn/topic/libraries/data-binding/" target="_blank" rel="noopener">Data Binding</a></li>
+<li>官方Demo地址：<a href="https://github.com/googlecodelabs/android-databinding" target="_blank" rel="noopener">android-databinding</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2019-07-31T09:00:27.223Z" itemprop="dateUpdated">2019-07-31 17:00:27</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="http://tylerLiu.top">
+            <img src="/img/avatar.jpg" alt="Tyler Liu">
+            Tyler Liu
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jetpack/">Jetpack</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://tylerLiu.top/2019/07/31/Android-Jetpack-DataBinding/&title=《Android-Jetpack-DataBinding》 — Tyler的博客&pic=http://tylerLiu.top/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://tylerLiu.top/2019/07/31/Android-Jetpack-DataBinding/&title=《Android-Jetpack-DataBinding》 — Tyler的博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://tylerLiu.top/2019/07/31/Android-Jetpack-DataBinding/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android-Jetpack-DataBinding》 — Tyler的博客&url=http://tylerLiu.top/2019/07/31/Android-Jetpack-DataBinding/&via=http://tylerLiu.top" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://tylerLiu.top/2019/07/31/Android-Jetpack-DataBinding/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/07/29/Android-Jetpack-Navigation/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Android Jetpack-Navigation</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Tyler Liu &copy; 2018 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://tylerLiu.top/2019/07/31/Android-Jetpack-DataBinding/&title=《Android-Jetpack-DataBinding》 — Tyler的博客&pic=http://tylerLiu.top/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://tylerLiu.top/2019/07/31/Android-Jetpack-DataBinding/&title=《Android-Jetpack-DataBinding》 — Tyler的博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://tylerLiu.top/2019/07/31/Android-Jetpack-DataBinding/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android-Jetpack-DataBinding》 — Tyler的博客&url=http://tylerLiu.top/2019/07/31/Android-Jetpack-DataBinding/&via=http://tylerLiu.top" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://tylerLiu.top/2019/07/31/Android-Jetpack-DataBinding/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACMElEQVR42u3aS26EQAwFwLn/pSfbiSLIs00iYYpVxHSgi4XV/rxe8fX+uD7vnP96vj55zsUXBgbGbRnv0+tozfkTfv5afVe+HgMD4zmMowh2tKa33fP/TVYe3sfAwMCI11RD5/y9GBgYGHnaWXhlK/XFwMDA6B3mJslwfoi8OBfHwMC4ISOvuv//33/S38DAwLgV4128quW2a0t1h7vCwMBYzcgDXK9JOQ/c+fAHBgbGVsak9F8dvKiOkSX3L+hgYGBg3IQxGQvLE87qqFnhiImBgbGaUS3Wz0cuejW0cgsTAwNjEaM3HlEtmU2OmJdNi2BgYNyWkSyaD3X18Bc0NTEwMFYz8nJY9UPkYTQvxmFgYOxm9ALivBrfG7b4pYWJgYGxlNELggk7b3BWj4OHoR8DA2MpozcYUU1x5w3R8rAFBgbGIsY8QZ2Tqh+0MGyBgYGxglENgtUD3+QJhQ+HgYHxGEZyykpGxKrtyTw9PnwOBgbGaka1eTkPrJNxjSgQY2BgLGVUw1/zANdKVgvNAwwMjIcx8pmy3rDFPH1tVvswMDBuzui1EpPyfT5klu8zamFiYGCsYLyLV56C5iW5yfHxW9UQAwNjKWNy7sqHIXqBtTwzgoGBsZpRLfr3Cv35cbO5BwwMjAcwqqlpdYvVYF3dLQYGBkbewuylr/npFQMDA2OSTP7FoFhejMPAwHgC46qBieTF+UBYAYyBgbGa0Usde0lp3uC8qs2AgYFxc8YXJnKyUHk1xyoAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

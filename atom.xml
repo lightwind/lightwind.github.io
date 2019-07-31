@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://tylerLiu.top/"/>
-  <updated>2019-07-31T08:20:34.633Z</updated>
+  <updated>2019-07-31T09:00:27.223Z</updated>
   <id>http://tylerLiu.top/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Android-Jetpack-DataBinding</title>
+    <link href="http://tylerLiu.top/2019/07/31/Android-Jetpack-DataBinding/"/>
+    <id>http://tylerLiu.top/2019/07/31/Android-Jetpack-DataBinding/</id>
+    <published>2019-07-31T08:34:26.000Z</published>
+    <updated>2019-07-31T09:00:27.223Z</updated>
+    
+    <content type="html"><![CDATA[<p>Android Jetpack一系类的内容，适合使用MVVM，这里先看看MVVM。</p><h1 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h1><h2 id="1-1-MVVM介绍"><a href="#1-1-MVVM介绍" class="headerlink" title="1.1 MVVM介绍"></a>1.1 MVVM介绍</h2><p>MVVM，全称Model-View-ViewModel，和MVC和MVP一样，是逻辑分层解耦的模式。</p><h3 id="1-1-1-结构图"><a href="#1-1-1-结构图" class="headerlink" title="1.1.1 结构图"></a>1.1.1 结构图</h3><img src="/2019/07/31/Android-Jetpack-DataBinding/9271486-daf7f3dda87c84ab.webp"><p>MVVM三要素：</p><ul><li>View层：xml、Activity、Framgent、Adapter和View等</li><li>Model层：数据源（包括本地数据和网络数据等）</li><li>ViewModel层：View层处理数据以及逻辑处理</li></ul><h2 id="1-2-Data-Binding介绍"><a href="#1-2-Data-Binding介绍" class="headerlink" title="1.2 Data Binding介绍"></a>1.2 Data Binding介绍</h2><p>MVVM是一种架构模式，Data Binding是一种实现数据和UI绑定的框架，是构建MVVM模式的一个工具。</p><ul><li>官方文档：<a href="https://developer.android.google.cn/topic/libraries/data-binding/" target="_blank" rel="noopener">Data Binding</a></li><li>官方Demo地址：<a href="https://github.com/googlecodelabs/android-databinding" target="_blank" rel="noopener">android-databinding</a></li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;Android Jetpack一系类的内容，适合使用MVVM，这里先看看MVVM。&lt;/p&gt;
+&lt;h1 id=&quot;1-介绍&quot;&gt;&lt;a href=&quot;#1-介绍&quot; class=&quot;headerlink&quot; title=&quot;1. 介绍&quot;&gt;&lt;/a&gt;1. 介绍&lt;/h1&gt;&lt;h2 id=&quot;1-1-MV
+      
+    
+    </summary>
+    
+      <category term="Android" scheme="http://tylerLiu.top/categories/Android/"/>
+    
+      <category term="Jetpack" scheme="http://tylerLiu.top/categories/Android/Jetpack/"/>
+    
+    
+      <category term="Jetpack" scheme="http://tylerLiu.top/tags/Jetpack/"/>
+    
+  </entry>
   
   <entry>
     <title>Android Jetpack-Navigation</title>
