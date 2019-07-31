@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://tylerLiu.top/"/>
-  <updated>2019-07-31T07:16:02.397Z</updated>
+  <updated>2019-07-31T07:03:42.279Z</updated>
   <id>http://tylerLiu.top/</id>
   
   <author>
@@ -15,27 +15,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>测试图片</title>
-    <link href="http://tylerLiu.top/2019/07/31/%E6%B5%8B%E8%AF%95%E5%9B%BE%E7%89%87/"/>
-    <id>http://tylerLiu.top/2019/07/31/测试图片/</id>
-    <published>2019-07-31T07:05:05.000Z</published>
-    <updated>2019-07-31T07:16:02.397Z</updated>
-    
-    <content type="html"><![CDATA[<img src="/2019/07/31/测试图片/11843186-834d85cff1b6769d.png" title="This is an example image">]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;img src=&quot;/2019/07/31/测试图片/11843186-834d85cff1b6769d.png&quot; title=&quot;This is an example image&quot;&gt;
-      
-    
-    </summary>
-    
-    
-  </entry>
   
   <entry>
     <title>Android Jetpack-Navigation</title>
@@ -153,9 +132,9 @@
     <link href="http://tylerLiu.top/2019/07/27/%E8%98%B8%E6%B0%B4%E7%89%9B%E8%82%89/"/>
     <id>http://tylerLiu.top/2019/07/27/蘸水牛肉/</id>
     <published>2019-07-27T03:25:47.000Z</published>
-    <updated>2019-07-27T03:27:59.286Z</updated>
+    <updated>2019-07-31T07:28:39.299Z</updated>
     
-    <content type="html"><![CDATA[<p>【食材】：牛腱子两斤，老姜一大块，花椒四五十粒， 食盐适量，大蒜泥适量、调味盐、味精适量，红油辣子一大勺，花椒面适量，藤椒油适量，芝麻油适量，香葱花适量。</p><p>流程：</p><ol><li>牛腱子用洗水浸泡两三个小时，尽量泡出肉的的血水，因为肉中血水多，肉的腥味就比较重，不好吃；</li><li>浸泡好的牛肉入冷水锅，中火煮开后，再煮两分钟；</li><li>经过稍稍煮过的牛肉会紧缩一团，我们从锅中取出肉，再用温水冲洗干净牛肉表面的血污，再控干水分，以上几个步骤的目的都是尽量去除肉中的血污，让肉的味道更鲜美，而没有腥味；</li><li>砂锅中放入前面处理好的牛肉，再加入纯净水或矿泉水，再加入一块用刀拍破的老姜和花椒粒，以及适量的食盐，开 大火烧开后，转小火盖上锅盖煮，大约一个小时左右；</li><li>煮一个小时左右，我们用一根筷子插肉，如果可以轻松插入牛肉肉中就差不多了；</li><li>我们再把牛肉从锅中取出，彻底晾凉后再切成薄片备用；</li><li>取一个碗，碗中加入大蒜泥，红油辣子（最好是近期制作的在，时间长了不香），适量的花面和藤椒油卡 ，还要加上适量的调味盐（虽然前面煮肉时加过盐，但比较淡，这里还是需要加少量的调味盐），最后我们还要加入，适量的味精、芝麻油、香葱花，再搅拌匀就可以蘸牛肉了。</li></ol><figure class="image-bubble">                <div class="img-lightbox">                    <div class="overlay"></div>                    <img src="https://upload-images.jianshu.io/upload_images/13033741-0b5b682c021e4590.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/900/format/webp" alt title>                </div>                <div class="image-caption"></div>            </figure>]]></content>
+    <content type="html"><![CDATA[<p>【食材】：牛腱子两斤，老姜一大块，花椒四五十粒， 食盐适量，大蒜泥适量、调味盐、味精适量，红油辣子一大勺，花椒面适量，藤椒油适量，芝麻油适量，香葱花适量。</p><p>流程：</p><ol><li>牛腱子用洗水浸泡两三个小时，尽量泡出肉的的血水，因为肉中血水多，肉的腥味就比较重，不好吃；</li><li>浸泡好的牛肉入冷水锅，中火煮开后，再煮两分钟；</li><li>经过稍稍煮过的牛肉会紧缩一团，我们从锅中取出肉，再用温水冲洗干净牛肉表面的血污，再控干水分，以上几个步骤的目的都是尽量去除肉中的血污，让肉的味道更鲜美，而没有腥味；</li><li>砂锅中放入前面处理好的牛肉，再加入纯净水或矿泉水，再加入一块用刀拍破的老姜和花椒粒，以及适量的食盐，开 大火烧开后，转小火盖上锅盖煮，大约一个小时左右；</li><li>煮一个小时左右，我们用一根筷子插肉，如果可以轻松插入牛肉肉中就差不多了；</li><li>我们再把牛肉从锅中取出，彻底晾凉后再切成薄片备用；</li><li>取一个碗，碗中加入大蒜泥，红油辣子（最好是近期制作的在，时间长了不香），适量的花面和藤椒油卡 ，还要加上适量的调味盐（虽然前面煮肉时加过盐，但比较淡，这里还是需要加少量的调味盐），最后我们还要加入，适量的味精、芝麻油、香葱花，再搅拌匀就可以蘸牛肉了。</li></ol><img src="/2019/07/27/蘸水牛肉/13033741-0b5b682c021e4590.webp">]]></content>
     
     <summary type="html">
     
