@@ -31,7 +31,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-7e23a8bb78d2af25.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-538332d422151c1b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-07-29T07:52:47.943Z">
+<meta property="og:updated_time" content="2019-07-31T06:46:48.136Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android热修复 Tinker接入与源码浅析（有问题）">
 <meta name="twitter:description" content="1. 概述现在主流热修复：阿里的AndFix、腾讯的QZone的方案、美团的Robust和腾讯的Tinker。                                                                                                             其中AndFix接入是最简单的，不过兼容性还是问题；QZone对性能有一">
@@ -225,7 +225,71 @@
 <h2 id="2-3-步骤3：配置tinkerpatchSupport参数：（可以不配置，使用默认的）"><a href="#2-3-步骤3：配置tinkerpatchSupport参数：（可以不配置，使用默认的）" class="headerlink" title="2.3 步骤3：配置tinkerpatchSupport参数：（可以不配置，使用默认的）"></a>2.3 步骤3：配置tinkerpatchSupport参数：（可以不配置，使用默认的）</h2><p>打开前面的<code>tinkerpatcch.gradle</code>文件可以看到如下参数：</p>
 <figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">tinkerpatchSupport &#123;</span><br><span class="line">    <span class="comment">/** 可以在debug的时候关闭 tinkerPatch **/</span></span><br><span class="line">    tinkerEnable = <span class="keyword">true</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 是否使用一键接入功能  **/</span></span><br><span class="line">    reflectApplication = <span class="keyword">true</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 是否开启加固模式，只有在使用加固时才能开启此开关 **/</span></span><br><span class="line">    protectedApp = <span class="keyword">false</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 补丁是否支持新增 Activity (新增Activity的exported属性必须为false)**/</span></span><br><span class="line">    supportComponent = <span class="keyword">false</span></span><br><span class="line"></span><br><span class="line">    autoBackupApkPath = <span class="string">"$&#123;bakPath&#125;"</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 在tinkerpatch.com得到的appKey **/</span></span><br><span class="line">    appKey = <span class="string">"yourAppKey"</span></span><br><span class="line">    <span class="comment">/** 注意: 若发布新的全量包, appVersion一定要更新 **/</span></span><br><span class="line">    appVersion = <span class="string">"1.0.0"</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> pathPrefix = <span class="string">"$&#123;bakPath&#125;/$&#123;baseInfo&#125;/$&#123;variantName&#125;/"</span></span><br><span class="line">    <span class="keyword">def</span> name = <span class="string">"$&#123;project.name&#125;-$&#123;variantName&#125;"</span></span><br><span class="line"></span><br><span class="line">    baseApkFile = <span class="string">"$&#123;pathPrefix&#125;/$&#123;name&#125;.apk"</span></span><br><span class="line">    baseProguardMappingFile = <span class="string">"$&#123;pathPrefix&#125;/$&#123;name&#125;-mapping.txt"</span></span><br><span class="line">    baseResourceRFile = <span class="string">"$&#123;pathPrefix&#125;/$&#123;name&#125;-R.txt"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>具体含义如下：<br>|参数|默认值|描述|<br>|:-:|:-:|:-:|<br>|tinkerEnable|true|是否开启tinkerpatchSupport插件功能|<br>|appKey|””|在TinkerPatch平台申请的appKey|<br>|appVersion|””|在TinkerPatch平台输入的版本号。<strong>注意：使用appVerison作为TinkerId，需要保证每个发布出去的基础安装包的appVersion都不一样。</strong>|<br>|reflectApplication|false|是否反射Application|实现一键接入：<strong>一般来说，接入Tinker需要改造Application，这里若是true，即无需对应用做任何改造即可接入。</strong>|<br>|autoBackupAppPath|””|将每次编译产生的apk/mapping.txt/R.txt归档存储的位置|<br>|baseApkFile|””|<strong>基准包的文件路径，对应tinker插件中的oldApk参数</strong>；编译补丁包时，必须指定基准版本的apk，默认值为空，表示不进行补丁包的编译|<br>|baseProguardMappingFile|””|<strong>基准包的Proguard mapping.txt文件路径，对应tinker插件appliMapping参数</strong>；在编译新的apk时，希望通过基准apk的proguard混淆方式，从而减小补丁包的大小。编译补丁包时，推荐输入基准apk生成的mapping.txt文件|<br>|baseResourceRFile|””|<strong>基准包的资源R.txt文件路径，对应tinker插件applyResourceMapping参数</strong>；在编译新的apk时，希望通过基准apk的R.txt文件来保存Resource Id的分配，这样不仅可以减少补丁包的大小，同时也能避免由于Resource Id改变导致remote view异常|<br>|protectedApp|false|是否开启加固支持，<strong>注意：只有在使用加固支持时才能开启此开关</strong>|<br>|supportComponent|false|是否开启支持在补丁包中动态增加Activity，<strong>注意：新增Activity的exported属性必须设置为false</strong>|<br>|backupFileNameFormat|’${appName}-${variantName}’|格式化命名备份文件，这里要使用单引号|</p>
+<p>具体含义如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">参数</th>
+<th align="center">默认值</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">tinkerEnable</td>
+<td align="center">true</td>
+<td align="center">是否开启tinkerpatchSupport插件功能</td>
+</tr>
+<tr>
+<td align="center">appKey</td>
+<td align="center">“”</td>
+<td align="center">在TinkerPatch平台申请的appKey</td>
+</tr>
+<tr>
+<td align="center">appVersion</td>
+<td align="center">“”</td>
+<td align="center">在TinkerPatch平台输入的版本号。<strong>注意：使用appVerison作为TinkerId，需要保证每个发布出去的基础安装包的appVersion都不一样。</strong></td>
+</tr>
+<tr>
+<td align="center">reflectApplication</td>
+<td align="center">false</td>
+<td align="center">是否反射Application</td>
+</tr>
+<tr>
+<td align="center">autoBackupAppPath</td>
+<td align="center">“”</td>
+<td align="center">将每次编译产生的apk/mapping.txt/R.txt归档存储的位置</td>
+</tr>
+<tr>
+<td align="center">baseApkFile</td>
+<td align="center">“”</td>
+<td align="center"><strong>基准包的文件路径，对应tinker插件中的oldApk参数</strong>；编译补丁包时，必须指定基准版本的apk，默认值为空，表示不进行补丁包的编译</td>
+</tr>
+<tr>
+<td align="center">baseProguardMappingFile</td>
+<td align="center">“”</td>
+<td align="center"><strong>基准包的Proguard mapping.txt文件路径，对应tinker插件appliMapping参数</strong>；在编译新的apk时，希望通过基准apk的proguard混淆方式，从而减小补丁包的大小。编译补丁包时，推荐输入基准apk生成的mapping.txt文件</td>
+</tr>
+<tr>
+<td align="center">baseResourceRFile</td>
+<td align="center">“”</td>
+<td align="center"><strong>基准包的资源R.txt文件路径，对应tinker插件applyResourceMapping参数</strong>；在编译新的apk时，希望通过基准apk的R.txt文件来保存Resource Id的分配，这样不仅可以减少补丁包的大小，同时也能避免由于Resource Id改变导致remote view异常</td>
+</tr>
+<tr>
+<td align="center">protectedApp</td>
+<td align="center">false</td>
+<td align="center">是否开启加固支持，<strong>注意：只有在使用加固支持时才能开启此开关</strong></td>
+</tr>
+<tr>
+<td align="center">supportComponent</td>
+<td align="center">false</td>
+<td align="center">是否开启支持在补丁包中动态增加Activity，<strong>注意：新增Activity的exported属性必须设置为false</strong></td>
+</tr>
+<tr>
+<td align="center">backupFileNameFormat</td>
+<td align="center">‘${appName}-${variantName}’</td>
+<td align="center">格式化命名备份文件，这里要使用单引号</td>
+</tr>
+</tbody></table>
 <p><strong>一般来说，不需要修改引用Android的编译配置，也不用修改tinker插件原来的配置</strong>。对于需要特殊配置，参考<a href="https://github.com/Tencent/tinker/wiki/Tinker-%E6%8E%A5%E5%85%A5%E6%8C%87%E5%8D%97" target="_blank" rel="noopener">接入指南</a></p>
 <h2 id="2-4-初始化TinkerPatch-SDK"><a href="#2-4-初始化TinkerPatch-SDK" class="headerlink" title="2.4 初始化TinkerPatch SDK"></a>2.4 初始化TinkerPatch SDK</h2><ol>
 <li><code>reflectApplication = true</code>：<br>这时，无需为Tinker而改造Application。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SampleApplication</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate();</span><br><span class="line">        <span class="comment">// 我们可以从这里获得Tinker加载过程的信息</span></span><br><span class="line">        tinkerApplicationLike = TinkerPatchApplicationLike.getTinkerPatchApplicationLike();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 初始化TinkerPatch SDK, 更多配置可参照API章节中的,初始化SDK</span></span><br><span class="line">        TinkerPatch.init(tinkerApplicationLike)</span><br><span class="line">            .reflectPatchLibrary()</span><br><span class="line">            .setPatchRollbackOnScreenOff(<span class="keyword">true</span>)</span><br><span class="line">            .setPatchRestartOnSrceenOff(<span class="keyword">true</span>)</span><br><span class="line">            .setFetchPatchIntervalByHours(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 每隔3个小时(通过setFetchPatchIntervalByHours设置)去访问后台时候有更新,通过handler实现轮训的效果</span></span><br><span class="line">        TinkerPatch.with().fetchPatchUpdateAndPollWithInterval();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
@@ -286,7 +350,7 @@
     <div class="content">
         
 <span class="post-time">
-    最后更新时间：<time datetime="2019-07-29T07:52:47.943Z" itemprop="dateUpdated">2019-07-29 15:52:47</time>
+    最后更新时间：<time datetime="2019-07-31T06:46:48.136Z" itemprop="dateUpdated">2019-07-31 14:46:48</time>
 </span><br>
 
 
