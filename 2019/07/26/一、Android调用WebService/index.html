@@ -29,8 +29,8 @@
 <meta property="og:site_name" content="Tyler的博客">
 <meta property="og:description" content="Android调用WebService类似于一些给我们提供了原始数据API服务的数据平台，比如聚合数据。而WebService则用到了XML和SOAP，通过HTTP协议即可完成与远程机器的交互。  1. WebService简介1.1 WebService的引入手机硬件资源是有限的，对于一些复杂的数据处理和计算，通常都是部署在远程服务器上，然后安卓手机作为对应的客户端。为了让Android AP">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-85a70b9dc88caa11.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-5ba756df7190bd3e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://tylerliu.top/2019/07/26/一、Android调用WebService/11843186-85a70b9dc88caa11.png">
+<meta property="og:image" content="http://tylerliu.top/2019/07/26/一、Android调用WebService/11843186-5ba756df7190bd3e.png">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-70ebd2865bece62b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-1e89b8be4f8b6d2d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-18783eb0756adcbd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
@@ -39,11 +39,11 @@
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-2ca8fd15f9c2dbeb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-5f37902ccf47d8aa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/11843186-c31a93ae4bc7daf3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-07-31T04:59:12.660Z">
+<meta property="og:updated_time" content="2019-07-31T07:35:56.812Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一、Android调用WebService">
 <meta name="twitter:description" content="Android调用WebService类似于一些给我们提供了原始数据API服务的数据平台，比如聚合数据。而WebService则用到了XML和SOAP，通过HTTP协议即可完成与远程机器的交互。  1. WebService简介1.1 WebService的引入手机硬件资源是有限的，对于一些复杂的数据处理和计算，通常都是部署在远程服务器上，然后安卓手机作为对应的客户端。为了让Android AP">
-<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/11843186-85a70b9dc88caa11.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta name="twitter:image" content="http://tylerliu.top/2019/07/26/一、Android调用WebService/11843186-85a70b9dc88caa11.png">
     
         <link rel="alternate" type="application/atom+xml" title="Tyler的博客" href="/atom.xml">
     
@@ -216,24 +216,9 @@
 <li>服务请求者：到“服务注册中心”查找相应的服务，然后定位到“服务提供者”。</li>
 <li>服务提供者：开始为“服务请求者”提供相应的服务。</li>
 </ul>
-<h1 id="2-去哪里获取WebService"><a href="#2-去哪里获取WebService" class="headerlink" title="2. 去哪里获取WebService"></a>2. 去哪里获取WebService</h1><p>网上有很多WebService的站点，这里选取了WebXmlu为例。</p>
-<p>WebXml：<a href="http://www.webxml.com.cn/zh_cn/index.aspx" target="_blank" rel="noopener">http://www.webxml.com.cn/zh_cn/index.aspx</a></p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://upload-images.jianshu.io/upload_images/11843186-85a70b9dc88caa11.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
-                </div>
-                <div class="image-caption"></div>
-            </figure>
-
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://upload-images.jianshu.io/upload_images/11843186-5ba756df7190bd3e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt title>
-                </div>
-                <div class="image-caption"></div>
-            </figure>
-
+<h1 id="2-去哪里获取WebService"><a href="#2-去哪里获取WebService" class="headerlink" title="2. 去哪里获取WebService"></a>2. 去哪里获取WebService</h1><p>网上有很多WebService的站点，这里选取了WebXmlu为例。<br>WebXml：<a href="http://www.webxml.com.cn/zh_cn/index.aspx" target="_blank" rel="noopener">http://www.webxml.com.cn/zh_cn/index.aspx</a></p>
+<img src="/2019/07/26/一、Android调用WebService/11843186-85a70b9dc88caa11.png">
+<img src="/2019/07/26/一、Android调用WebService/11843186-5ba756df7190bd3e.png">
 <h1 id="3-第三方jar包准备"><a href="#3-第三方jar包准备" class="headerlink" title="3. 第三方jar包准备"></a>3. 第三方jar包准备</h1><p>首先如果想在Android平台上调用WebService，需要依赖第三方库ksoap2，而在Android平台上使用的是ksoap2-android-releases，一个高效、轻量级的SOAP开发包。</p>
 <ol>
 <li>ksoap2-Android项目网站：<br><a href="https://simpligility.github.io/ksoap2-android/index.html" target="_blank" rel="noopener">https://simpligility.github.io/ksoap2-android/index.html</a></li>
@@ -319,7 +304,7 @@
     <div class="content">
         
 <span class="post-time">
-    最后更新时间：<time datetime="2019-07-31T04:59:12.660Z" itemprop="dateUpdated">2019-07-31 12:59:12</time>
+    最后更新时间：<time datetime="2019-07-31T07:35:56.812Z" itemprop="dateUpdated">2019-07-31 15:35:56</time>
 </span><br>
 
 
