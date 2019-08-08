@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Android-Jetpack-Paging | Tyler的博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Jetpack">
+    <meta name="description" content="在遇到RecyclerView加载大量数据的情况，如果是在数据库请求，需要消耗数据库资源并且需要花费较多的时间，同意，如果是发送网络请求，则需要消耗宽带和更多的时间，无论哪种情形，对于用户的体验都是糟糕的。这时，可以采用分段加载来缩短时间，给带来良好的体验，目前，对于加载大量数据的处理方式有两种：  借助刷新控件来实现用户手动请求数据 数据达到边界自动请求加载  谷歌的Android Jetpac">
+<meta name="keywords" content="Jetpack">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-Jetpack-Paging">
+<meta property="og:url" content="https://tylerLiu.top/2019/08/05/Android-Jetpack-Paging/index.html">
+<meta property="og:site_name" content="Tyler的博客">
+<meta property="og:description" content="在遇到RecyclerView加载大量数据的情况，如果是在数据库请求，需要消耗数据库资源并且需要花费较多的时间，同意，如果是发送网络请求，则需要消耗宽带和更多的时间，无论哪种情形，对于用户的体验都是糟糕的。这时，可以采用分段加载来缩短时间，给带来良好的体验，目前，对于加载大量数据的处理方式有两种：  借助刷新控件来实现用户手动请求数据 数据达到边界自动请求加载  谷歌的Android Jetpac">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://tylerliu.top/2019/08/05/Android-Jetpack-Paging/9271486-9e49790f92f2ff1f.png">
+<meta property="og:updated_time" content="2019-08-06T03:32:24.280Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android-Jetpack-Paging">
+<meta name="twitter:description" content="在遇到RecyclerView加载大量数据的情况，如果是在数据库请求，需要消耗数据库资源并且需要花费较多的时间，同意，如果是发送网络请求，则需要消耗宽带和更多的时间，无论哪种情形，对于用户的体验都是糟糕的。这时，可以采用分段加载来缩短时间，给带来良好的体验，目前，对于加载大量数据的处理方式有两种：  借助刷新控件来实现用户手动请求数据 数据达到边界自动请求加载  谷歌的Android Jetpac">
+<meta name="twitter:image" content="https://tylerliu.top/2019/08/05/Android-Jetpack-Paging/9271486-9e49790f92f2ff1f.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Tyler的博客" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Tyler Liu</h5>
+          <a href="mailto:747962518@qq.com" title="747962518@qq.com" class="mail">747962518@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://gitee.com/QingFengBaiYu" target="_blank" >
+                <i class="icon icon-lg icon-link"></i>
+                码云
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/lightwind" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Android-Jetpack-Paging</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Android-Jetpack-Paging</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-08-05T08:43:24.000Z" itemprop="datePublished" class="page-time">
+  2019-08-05
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/Jetpack/">Jetpack</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#1-介绍"><span class="post-toc-number">1.</span> <span class="post-toc-text">1. 介绍</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#2-Demo"><span class="post-toc-number">2.</span> <span class="post-toc-text">2. Demo</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-1-添加依赖："><span class="post-toc-number">2.1.</span> <span class="post-toc-text">2.1 添加依赖：</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-2-创建数据源"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2.2 创建数据源</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-3-构建LiveData-lt-PagedList-gt"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">2.3 构建LiveData &lt;PagedList&gt;</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-4-创建PagedListAdapter"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">2.4 创建PagedListAdapter</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Android-Jetpack-Paging"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Android-Jetpack-Paging</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-08-05 16:43:24" datetime="2019-08-05T08:43:24.000Z"  itemprop="datePublished">2019-08-05</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/">Android</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Android/Jetpack/">Jetpack</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>在遇到<code>RecyclerView</code>加载大量数据的情况，如果是在数据库请求，需要消耗数据库资源并且需要花费较多的时间，同意，如果是发送网络请求，则需要消耗宽带和更多的时间，无论哪种情形，对于用户的体验都是糟糕的。这时，可以采用分段加载来缩短时间，给带来良好的体验，目前，对于加载大量数据的处理方式有两种：</p>
+<ol>
+<li>借助刷新控件来实现用户手动请求数据</li>
+<li>数据达到边界自动请求加载</li>
+</ol>
+<p>谷歌的Android Jetpack也实现了自己的分页库——<code>Paging</code>。</p>
+<h1 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h1><p>官方文档：<a href="https://developer.android.google.cn/topic/libraries/architecture/paging/" target="_blank" rel="noopener">Paging</a><br>官方Demo：<a href="https://github.com/googlesamples/android-architecture-components/tree/master/PagingWithNetworkSample" target="_blank" rel="noopener">网络方式</a>，<a href="https://github.com/googlesamples/android-architecture-components/tree/master/PagingSample" target="_blank" rel="noopener">数据库方式</a></p>
+<p>官方介绍：</p>
+<blockquote>
+<p>The Paging Library helps you load and display small chunks of data at a time. Loading partial data on demand reduces usage of network bandwidth and system resources.<br>直译：分页库帮助您每次加载和显示小块数据。按需加载部分数据会减少网络带宽和系统资源的使用。</p>
+</blockquote>
+<p><code>Paging</code>架构：</p>
+<img src="/2019/08/05/Android-Jetpack-Paging/9271486-9e49790f92f2ff1f.png">
+
+<ul>
+<li><code>PagedList</code>：一个可以以分页形式异步加载数据的容器，可以跟<code>RecyclerView</code>结合</li>
+<li><code>DataSource</code>或<code>DataSource.Factory</code>：数据源，<code>DataSource</code>将数据转变成<code>PagedList</code>，<code>DataSource.Factory</code>则用来创建<code>DataSource</code></li>
+<li><code>LivePagedListBuilder</code>：用来生成<code>LiveData&lt;PagedList&gt;</code>，需要<code>DataSource.Factory</code>参数</li>
+<li><code>BoundaryCallback</code>：数据达到边界的回调</li>
+<li><code>PagedListAdapter</code>：一种<code>RecyclerView</code>适配器</li>
+</ul>
+<p>优点：</p>
+<ol>
+<li><code>RxJava</code>以及Android Jetpack的支持，如<code>LiveData</code>、<code>Room</code>等</li>
+<li>自定义分页策略</li>
+<li>异步处理数据</li>
+<li>结合<code>RecyclerView</code>等</li>
+</ol>
+<h1 id="2-Demo"><a href="#2-Demo" class="headerlink" title="2. Demo"></a>2. Demo</h1><h2 id="2-1-添加依赖："><a href="#2-1-添加依赖：" class="headerlink" title="2.1 添加依赖："></a>2.1 添加依赖：</h2><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dependencies</span> &#123;</span><br><span class="line">    <span class="comment">// paging</span></span><br><span class="line">    implementation <span class="string">"androidx.paging:paging-runtime:2.1.0"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2-创建数据源"><a href="#2-2-创建数据源" class="headerlink" title="2.2 创建数据源"></a>2.2 创建数据源</h2><ol>
+<li>非<code>Room</code>数据库<br>如果没有使用<code>Room</code>数据库，就需要自定义实现<code>DataSource</code>，通常实现<code>DataSource</code>有三种方式，分别继承三种抽象类，它们分别是：</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th align="left">名称</th>
+<th align="left">使用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>PageKeyedDataSource&lt;Key, Value&gt;</code></td>
+<td align="left">分页请求数据的场景</td>
+</tr>
+<tr>
+<td align="left"><code>ItemKeyedDataSource&lt;Key, Value&gt;</code></td>
+<td align="left">以表的某个列为Key，加载其后的N个数据</td>
+</tr>
+<tr>
+<td align="left"><code>PositionalDataSource&lt;T&gt;</code></td>
+<td align="left">当数据源总数特定，根据指定位置请求数据的场景</td>
+</tr>
+</tbody></table>
+<p>这里以<code>PageKeyedDataSource&lt;Key, Value&gt;</code>为例，虽然这里的数据库使用的是<code>Room</code>，但查询数据以返回<code>List</code>代表着通常数据库的使用方式：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ly.allendemojetpack.db.repository</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ShoeRepository</span> <span class="keyword">private</span> <span class="keyword">constructor</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> shoeDao: ShoeDao) &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">getPageShoes</span><span class="params">(startIndex: <span class="type">Long</span>, endIndex: <span class="type">Long</span>)</span></span>: List&lt;Shoe&gt; = shoeDao.findShoesByIndexRange(startIndex, endIndex)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ly.allendemojetpack.db.datasource</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.util.Log</span><br><span class="line"><span class="keyword">import</span> androidx.paging.PageKeyedDataSource</span><br><span class="line"><span class="keyword">import</span> com.ly.allendemojetpack.common.BaseConstant</span><br><span class="line"><span class="keyword">import</span> com.ly.allendemojetpack.db.<span class="keyword">data</span>.Shoe</span><br><span class="line"><span class="keyword">import</span> com.ly.allendemojetpack.db.repository.ShoeRepository</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 自定义PageKeyedDataSource</span></span><br><span class="line"><span class="comment"> * 演示Paging库的使用</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CustomPageDataSource</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> shoeRepository: ShoeRepository) : PageKeyedDataSource&lt;<span class="built_in">Int</span>, Shoe&gt;() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> TAG: String <span class="keyword">by</span> lazy &#123;</span><br><span class="line">        <span class="keyword">this</span>::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>.<span class="title">simpleName</span></span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 第一次加载时调用</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">loadInitial</span><span class="params">(params: <span class="type">LoadInitialParams</span>&lt;<span class="type">Int</span>&gt;, callback: <span class="type">LoadInitialCallback</span>&lt;<span class="type">Int</span>, Shoe&gt;)</span></span> &#123;</span><br><span class="line">        <span class="keyword">val</span> startIndex = <span class="number">0L</span></span><br><span class="line">        <span class="keyword">val</span> endIndex: <span class="built_in">Long</span> = <span class="number">0L</span> + params.requestedLoadSize</span><br><span class="line">        <span class="keyword">val</span> shoe = shoeRepository.getPageShoes(startIndex, endIndex)</span><br><span class="line"></span><br><span class="line">        callback.onResult(shoe, <span class="literal">null</span>, <span class="number">2</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 每次分页加载时调用</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">loadAfter</span><span class="params">(params: <span class="type">LoadParams</span>&lt;<span class="type">Int</span>&gt;, callback: <span class="type">LoadCallback</span>&lt;<span class="type">Int</span>, Shoe&gt;)</span></span> &#123;</span><br><span class="line">        Log.e(TAG, <span class="string">"startPage:<span class="subst">$&#123;params.key&#125;</span>, size:<span class="subst">$&#123;params.requestedLoadSize&#125;</span>"</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> startPage = params.key</span><br><span class="line">        <span class="keyword">val</span> startIndex = ((startPage - <span class="number">1</span>) * BaseConstant.SINGLE_PAGE_SIZE).toLong() + <span class="number">1</span></span><br><span class="line">        <span class="keyword">val</span> endIndex = startIndex + params.requestedLoadSize - <span class="number">1</span></span><br><span class="line">        <span class="keyword">val</span> shoes = shoeRepository.getPageShoes(startIndex, endIndex)</span><br><span class="line"></span><br><span class="line">        callback.onResult(shoes, params.key + <span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">loadBefore</span><span class="params">(params: <span class="type">LoadParams</span>&lt;<span class="type">Int</span>&gt;, callback: <span class="type">LoadCallback</span>&lt;<span class="type">Int</span>, Shoe&gt;)</span></span> &#123;</span><br><span class="line">        Log.e(TAG, <span class="string">"endPage:<span class="subst">$&#123;params.key&#125;</span>, size:<span class="subst">$&#123;params.requestedLoadSize&#125;</span>"</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> endPage = params.key</span><br><span class="line">        <span class="keyword">val</span> endIndex = ((endPage - <span class="number">1</span>) * BaseConstant.SINGLE_PAGE_SIZE).toLong() + <span class="number">1</span></span><br><span class="line">        <span class="keyword">var</span> startIndex = endIndex - params.requestedLoadSize</span><br><span class="line">        startIndex = <span class="keyword">if</span> (startIndex &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="number">0L</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            startIndex</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">val</span> shoe = shoeRepository.getPageShoes(startIndex, endIndex)</span><br><span class="line"></span><br><span class="line">        callback.onResult(shoe, params.key + <span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>DataSource</code>创建好了，再创建一个<code>DataSource.Factory</code>，返回对应的<code>DataSource</code>实例：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ly.allendemojetpack.db.datasource</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> androidx.paging.DataSource</span><br><span class="line"><span class="keyword">import</span> com.ly.allendemojetpack.db.<span class="keyword">data</span>.Shoe</span><br><span class="line"><span class="keyword">import</span> com.ly.allendemojetpack.db.repository.ShoeRepository</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 构建CustomPageDataSource的工厂类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CustomPageDataSourceFactory</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> shoeRepository: ShoeRepository) : DataSource.Factory&lt;<span class="built_in">Int</span>, Shoe&gt;() &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">create</span><span class="params">()</span></span>: DataSource&lt;<span class="built_in">Int</span>, Shoe&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> CustomPageDataSource(shoeRepository)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><code>Room</code>数据库<br>如果使用<code>Room</code>与<code>Paging</code>结合使用，可以直接在<code>Room</code>的<code>Dao</code>层使用：<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Dao</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">ShoeDao</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Query(<span class="meta-string">"SELECT * FROM shoe"</span>)</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">getAllShoesLD</span><span class="params">()</span></span>: DataSource.Factory&lt;<span class="built_in">Int</span>, Shoe&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>使用起来简单很多。</p>
+<h2 id="2-3-构建LiveData-lt-PagedList-gt"><a href="#2-3-构建LiveData-lt-PagedList-gt" class="headerlink" title="2.3 构建LiveData &lt;PagedList&gt;"></a>2.3 构建LiveData &lt;PagedList&gt;</h2><p>要想获得<code>LiveData&lt;PagedList&gt;</code>，需要先创建<code>LivePagedListBuilder</code>，<code>LivePagedListbuilder</code>有设分页数量和配置参数两种构造方法，设置分页数量比较简单，直接查看API即可，下面看看配置参数使用：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ShoeModel</span> <span class="keyword">constructor</span></span>(repository: ShoeRepository) : ViewModel() &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 鞋子集合的观察类</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">val</span> shoes: LiveData&lt;PagedList&lt;Shoe&gt;&gt; = LivePagedListBuilder&lt;<span class="built_in">Int</span>, Shoe&gt;(</span><br><span class="line">        CustomPageDataSourceFactory(repository),</span><br><span class="line">        PagedList.Config.Builder()</span><br><span class="line">            .setPageSize(<span class="number">10</span>)</span><br><span class="line">            .setEnablePlaceholders(<span class="literal">false</span>)</span><br><span class="line">            .setInitialLoadSizeHint(<span class="number">10</span>)</span><br><span class="line">            .build()</span><br><span class="line">    ).build()</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-4-创建PagedListAdapter"><a href="#2-4-创建PagedListAdapter" class="headerlink" title="2.4 创建PagedListAdapter"></a>2.4 创建PagedListAdapter</h2><p><code>PagedListAdapter</code>是一个特殊的<code>RecyclerView</code>的<code>RecyclerAdapter</code>，使用方法类似，这里使用Data Binding：</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2019-08-06T03:32:24.280Z" itemprop="dateUpdated">2019-08-06 11:32:24</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="https://tylerLiu.top">
+            <img src="/img/avatar.jpg" alt="Tyler Liu">
+            Tyler Liu
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jetpack/">Jetpack</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://tylerLiu.top/2019/08/05/Android-Jetpack-Paging/&title=《Android-Jetpack-Paging》 — Tyler的博客&pic=https://tylerLiu.top/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://tylerLiu.top/2019/08/05/Android-Jetpack-Paging/&title=《Android-Jetpack-Paging》 — Tyler的博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://tylerLiu.top/2019/08/05/Android-Jetpack-Paging/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android-Jetpack-Paging》 — Tyler的博客&url=https://tylerLiu.top/2019/08/05/Android-Jetpack-Paging/&via=https://tylerLiu.top" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://tylerLiu.top/2019/08/05/Android-Jetpack-Paging/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/08/08/你的儿女/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">你的儿女</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/08/05/Android-Jetpack-Room/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Android-Jetpack-Room</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Tyler Liu &copy; 2018 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://tylerLiu.top/2019/08/05/Android-Jetpack-Paging/&title=《Android-Jetpack-Paging》 — Tyler的博客&pic=https://tylerLiu.top/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://tylerLiu.top/2019/08/05/Android-Jetpack-Paging/&title=《Android-Jetpack-Paging》 — Tyler的博客&source=" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://tylerLiu.top/2019/08/05/Android-Jetpack-Paging/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Android-Jetpack-Paging》 — Tyler的博客&url=https://tylerLiu.top/2019/08/05/Android-Jetpack-Paging/&via=https://tylerLiu.top" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://tylerLiu.top/2019/08/05/Android-Jetpack-Paging/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACMUlEQVR42u3aS27jQAwFwNz/0p7tAInl99j2wlRpZSRy1KUABH8/P/H1+O+6/kn+2993/v7Wmy8MDIyvZTwur2fHSo5+/SLa1/GCioGBcQPGswdff27Dax4587NhYGBgJEfJQ/YsccTAwMCYMfLiM08Wr3kYGBgYJ+Eyh83S0DfX4hgYGF/IOCksP/35I/MNDAyMr2I8yus6dJ6Ur3mQ/eMpGBgYqxl5gMsTsrysvT56fR4MDIzVjCRctg21tiTOVzpevHoMDIwbMPKB5ezOPNVLhgQvphwYGBiLGPmts4WwvCRuBwAYGBj3YbSlbNtimyWg7V/AwMDYzciDYH5/0qRrhwRFFY6BgbGOUbe0ypWINrmcte0wMDC2MvLi82RR7L0j0j/ux8DAWM1oC9E2KM/wbcGMgYGxmzELhclKxHtfyouEEgMDYzWjTdHyJYkc1qaPUbjHwMBYxMiPko8ei5w0XtooKloMDIx1jPyReXO/HXbmZW0xwsTAwFjKaBO4NuzmDbhkRaz4n2BgYKxgnBST7Srq+YrYUwwGBsYNGLPCMl/FaMvddv0CAwPjnoyTw52MFmbrGhgYGFsZj/JqB5nnTbqoGYeBgbGaMZsMtu222TizXd3AwMDYzcgDaB7sTgaQMzAGBsYdGEXVexAch5PVk1ocAwMD401rFrOxRB3jMTAwbsNo2/p5K+1onICBgXEDxmwY0Jajn1sjw8DA2M1oS8dZiXv+rTpZxMDA2MD4By+mS6nyZQm/AAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
