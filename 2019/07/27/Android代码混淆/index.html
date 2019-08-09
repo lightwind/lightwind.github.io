@@ -111,7 +111,7 @@
     root: '/',
     scheme: 'Gemini',
     version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
     fancybox: true,
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
@@ -379,6 +379,37 @@
 
           
 
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.2k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  12 分钟
+                </span>
+              
+            </div>
           
 
           
@@ -696,7 +727,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-混淆简介"><span class="nav-number">1.</span> <span class="nav-text">1. 混淆简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-混淆的好处"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 混淆的好处</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Android中的混淆"><span class="nav-number">2.</span> <span class="nav-text">2. Android中的混淆</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-开启混淆"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 开启混淆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-代码混淆"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 代码混淆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-资源压缩"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 资源压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-自定义要保留的资源"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 自定义要保留的资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-启用严格检查模式"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 启用严格检查模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-移除备用资源"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 移除备用资源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-自定义混淆规则"><span class="nav-number">3.</span> <span class="nav-text">3. 自定义混淆规则</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-keep命令"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 keep命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-其他命令"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 其他命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-不能混淆的部分"><span class="nav-number">4.</span> <span class="nav-text">4. 不能混淆的部分</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-枚举"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 枚举</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-被反射的元素"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 被反射的元素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-实体类"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 实体类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4-四大组件"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 四大组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-5-JNI调用的Java方法"><span class="nav-number">4.5.</span> <span class="nav-text">4.5 JNI调用的Java方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-6-其他不应被混淆的"><span class="nav-number">4.6.</span> <span class="nav-text">4.6 其他不应被混淆的</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-混淆后的堆栈跟踪"><span class="nav-number">5.</span> <span class="nav-text">5. 混淆后的堆栈跟踪</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-混淆输出结果"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 混淆输出结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-恢复堆栈跟踪"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 恢复堆栈跟踪</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-其他操作"><span class="nav-number">6.</span> <span class="nav-text">6. 其他操作</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-混淆简介"><span class="nav-text">1. 混淆简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-混淆的好处"><span class="nav-text">1.1 混淆的好处</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Android中的混淆"><span class="nav-text">2. Android中的混淆</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-开启混淆"><span class="nav-text">2.1 开启混淆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-代码混淆"><span class="nav-text">2.2 代码混淆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-资源压缩"><span class="nav-text">2.3 资源压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-自定义要保留的资源"><span class="nav-text">2.4 自定义要保留的资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-启用严格检查模式"><span class="nav-text">2.5 启用严格检查模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-移除备用资源"><span class="nav-text">2.6 移除备用资源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-自定义混淆规则"><span class="nav-text">3. 自定义混淆规则</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-keep命令"><span class="nav-text">3.1 keep命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-其他命令"><span class="nav-text">3.2 其他命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-不能混淆的部分"><span class="nav-text">4. 不能混淆的部分</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-枚举"><span class="nav-text">4.1 枚举</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-被反射的元素"><span class="nav-text">4.2 被反射的元素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-实体类"><span class="nav-text">4.3 实体类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4-四大组件"><span class="nav-text">4.4 四大组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-5-JNI调用的Java方法"><span class="nav-text">4.5 JNI调用的Java方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-6-其他不应被混淆的"><span class="nav-text">4.6 其他不应被混淆的</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-混淆后的堆栈跟踪"><span class="nav-text">5. 混淆后的堆栈跟踪</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-混淆输出结果"><span class="nav-text">5.1 混淆输出结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-恢复堆栈跟踪"><span class="nav-text">5.2 恢复堆栈跟踪</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-其他操作"><span class="nav-text">6. 其他操作</span></a></li></ol></div>
             
 
           </div>
@@ -704,13 +735,6 @@
       <!--/noindex-->
       
 
-      
-        <div class="back-to-top">
-          <i class="fa fa-arrow-up"></i>
-          
-            <span id="scrollpercent"><span>0</span>%</span>
-          
-        </div>
       
 
     </div>
@@ -729,7 +753,18 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Tyler Liu</span>
 
+<!--
   
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">28.5k</span>
+  
+-->
 </div>
 
 
@@ -746,6 +781,11 @@
 
 
 
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共28.5k字</span>
+</div>
+
         
 
 
@@ -758,6 +798,13 @@
       </div>
     </footer>
 
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
     
 
     

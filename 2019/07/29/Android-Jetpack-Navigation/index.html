@@ -110,7 +110,7 @@
     root: '/',
     scheme: 'Gemini',
     version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
     fancybox: true,
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
@@ -378,6 +378,37 @@
 
           
 
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.1k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  10 分钟
+                </span>
+              
+            </div>
           
 
           
@@ -734,7 +765,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-简介"><span class="nav-number">2.</span> <span class="nav-text">1. 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-定义"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-优点"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 优点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-具体学习"><span class="nav-number">3.</span> <span class="nav-text">2. 具体学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-步骤1：添加依赖"><span class="nav-number">3.1.</span> <span class="nav-text">2.1 步骤1：添加依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-步骤2：创建Navigation导航"><span class="nav-number">3.2.</span> <span class="nav-text">2.2 步骤2：创建Navigation导航</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-步骤3：创建NavHostFragment"><span class="nav-number">3.3.</span> <span class="nav-text">2.3 步骤3：创建NavHostFragment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-步骤4：界面跳转、参数传递和动画"><span class="nav-number">3.4.</span> <span class="nav-text">2.4 步骤4：界面跳转、参数传递和动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-1-方式1：利用ID导航"><span class="nav-number">3.4.1.</span> <span class="nav-text">2.4.1 方式1：利用ID导航</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-2-利用Safe-Args"><span class="nav-number">3.4.2.</span> <span class="nav-text">2.4.2 利用Safe Args</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-其他"><span class="nav-number">4.</span> <span class="nav-text">3. 其他</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-总结"><span class="nav-number">5.</span> <span class="nav-text">4. 总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-简介"><span class="nav-text">1. 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-定义"><span class="nav-text">1.1 定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-优点"><span class="nav-text">1.2 优点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-具体学习"><span class="nav-text">2. 具体学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-步骤1：添加依赖"><span class="nav-text">2.1 步骤1：添加依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-步骤2：创建Navigation导航"><span class="nav-text">2.2 步骤2：创建Navigation导航</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-步骤3：创建NavHostFragment"><span class="nav-text">2.3 步骤3：创建NavHostFragment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-步骤4：界面跳转、参数传递和动画"><span class="nav-text">2.4 步骤4：界面跳转、参数传递和动画</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-1-方式1：利用ID导航"><span class="nav-text">2.4.1 方式1：利用ID导航</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-2-利用Safe-Args"><span class="nav-text">2.4.2 利用Safe Args</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-其他"><span class="nav-text">3. 其他</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-总结"><span class="nav-text">4. 总结</span></a></li></ol></div>
             
 
           </div>
@@ -742,13 +773,6 @@
       <!--/noindex-->
       
 
-      
-        <div class="back-to-top">
-          <i class="fa fa-arrow-up"></i>
-          
-            <span id="scrollpercent"><span>0</span>%</span>
-          
-        </div>
       
 
     </div>
@@ -767,7 +791,18 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Tyler Liu</span>
 
+<!--
   
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">28.5k</span>
+  
+-->
 </div>
 
 
@@ -784,6 +819,11 @@
 
 
 
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共28.5k字</span>
+</div>
+
         
 
 
@@ -796,6 +836,13 @@
       </div>
     </footer>
 
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
     
 
     
