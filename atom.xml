@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://tylerLiu.top/"/>
-  <updated>2019-08-08T06:27:27.318Z</updated>
+  <updated>2019-08-09T01:38:54.516Z</updated>
   <id>https://tylerLiu.top/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Android-Jetpack-WorkManager</title>
+    <link href="https://tylerLiu.top/2019/08/09/Android-Jetpack-WorkManager/"/>
+    <id>https://tylerLiu.top/2019/08/09/Android-Jetpack-WorkManager/</id>
+    <published>2019-08-09T00:45:17.000Z</published>
+    <updated>2019-08-09T01:38:54.516Z</updated>
+    
+    <content type="html"><![CDATA[<p>这里的数据不是从网络请求获取的，而是从assets目录下的json读取出来的，通常，从文件读取数据不会放在主线程中执行，这里使用了<code>WorkManager</code>，使能够在后台线程进行数据初始化。</p><h1 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h1><p>官方文档：<a href="https://developer.android.google.cn/topic/libraries/architecture/workmanager" target="_blank" rel="noopener">WorkManger</a><br>WorkManger介绍视频：<a href="https://www.bilibili.com/video/av56276889/" target="_blank" rel="noopener">中文官方介绍视频</a></p><h2 id="1-1-定义"><a href="#1-1-定义" class="headerlink" title="1.1 定义"></a>1.1 定义</h2><p>官方介绍：</p><blockquote><p>The WorkManager API makes it easy to schedule deferrable, asynchronous tasks that are expected to run even if the app exits or device restarts.<br>直译：WorkManager API使调度可延迟的异步任务变得很容易，即使应用程序退出或设备重启，这些任务也会运行。</p></blockquote><h2 id="1-2-选择WorkManager的理由"><a href="#1-2-选择WorkManager的理由" class="headerlink" title="1.2 选择WorkManager的理由"></a>1.2 选择WorkManager的理由</h2><p>Android中处理后台任务的选择很多，如<code>Service</code>、<code>DownloadManager</code>、<code>AlarmManager</code>、<code>JobScheduler</code>等， 为什么还要有<code>WorkManager</code>？</p><ol><li>兼容性更强，可以兼容到API 14</li><li>可以指定约束条件，比如可以选择必须在有网络的条件下执行</li><li>可以定时执行，也可以单次执行</li><li>监听和管理任务状态</li><li>多个任务可以使用任务链</li><li>保证任务执行，如当前执行条件不满足或者APP进程被杀死，它会等到下次条件满足或者APP进行打开后执行</li><li>支持省电模式</li></ol><h2 id="1-3-多线程任务如何选择？"><a href="#1-3-多线程任务如何选择？" class="headerlink" title="1.3 多线程任务如何选择？"></a>1.3 多线程任务如何选择？</h2><p>后台任务会消耗设备的系统资源，若处理不当，可能会造成设备电量的消耗，给用户带来不好的体验。所以，选择正确的后台处理方式很重要，下面是官方给出的选择方式：</p><img src="/2019/08/09/Android-Jetpack-WorkManager/9271486-08aecd36506de3e3.webp"><p>关于后台的的知识，需要补充阅读：<a href="https://juejin.im/post/5b04d064f265da0b80711759#heading-3" target="_blank" rel="noopener">[译]从Service到WorkManager</a>。</p><h1 id="2-Demo"><a href="#2-Demo" class="headerlink" title="2. Demo"></a>2. Demo</h1>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;这里的数据不是从网络请求获取的，而是从assets目录下的json读取出来的，通常，从文件读取数据不会放在主线程中执行，这里使用了&lt;code&gt;WorkManager&lt;/code&gt;，使能够在后台线程进行数据初始化。&lt;/p&gt;
+&lt;h1 id=&quot;1-介绍&quot;&gt;&lt;a href=&quot;#1-
+      
+    
+    </summary>
+    
+      <category term="Android" scheme="https://tylerLiu.top/categories/Android/"/>
+    
+      <category term="Jetpack" scheme="https://tylerLiu.top/categories/Android/Jetpack/"/>
+    
+    
+      <category term="Jetpack" scheme="https://tylerLiu.top/tags/Jetpack/"/>
+    
+  </entry>
   
   <entry>
     <title>你的儿女</title>
