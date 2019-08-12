@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://tylerLiu.top/"/>
-  <updated>2019-08-12T01:23:22.736Z</updated>
+  <updated>2019-08-12T02:59:40.567Z</updated>
   <id>https://tylerLiu.top/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Android RxJava：入门</title>
+    <link href="https://tylerLiu.top/2019/08/12/Android-RxJava%EF%BC%9A%E5%85%A5%E9%97%A8/"/>
+    <id>https://tylerLiu.top/2019/08/12/Android-RxJava：入门/</id>
+    <published>2019-08-12T01:43:32.000Z</published>
+    <updated>2019-08-12T02:59:40.567Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><code>RxJava</code>是<strong>基于事件流的链式调用、逻辑简单且使用简单</strong>。</p><p>GitHub链接：</p><ul><li><a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="noopener">RxJava</a></li><li><a href="https://github.com/ReactiveX/RxAndroid" target="_blank" rel="noopener">RxAndroid</a></li></ul><ol><li>基于RxJava 2.0</li><li>在xJava 1.0上增加了一些新特性，基本原理和使用基本相同</li><li>后面还会介绍原理、操作符、应用场景、背压等</li></ol><img src="/2019/08/12/Android-RxJava：入门/944365-ecd603e8f8a76fa9.png"><h1 id="1-定义"><a href="#1-定义" class="headerlink" title="1. 定义"></a>1. 定义</h1><p>在GitHub上的介绍：</p><blockquote><p>RxJava – Reactive Extensions for the JVM – a library for composing asynchronous and event-based programs using observable sequences for the Java VM.<br>一个在Java JVM上使用可观测的序列来组成异步的、基于事件的程度的库。</p></blockquote><p>总结：<code>RxJava</code>是<strong>基于事件流、实现异步操作</strong>的库</p><h1 id="2-作用"><a href="#2-作用" class="headerlink" title="2. 作用"></a>2. 作用</h1><p>实现异步操作，类似Andorid中的<code>AsyncTask</code>、<code>Handler</code>的作用。</p><h1 id="3-特点"><a href="#3-特点" class="headerlink" title="3. 特点"></a>3. 特点</h1><p>由于<code>RxJava</code>的使用方式是<strong>基于事件流的链式调用</strong>，所以<code>RxJava</code>：</p><ul><li>逻辑简洁</li><li>实现优雅</li><li>使用简单</li></ul><h1 id="4-原理"><a href="#4-原理" class="headerlink" title="4. 原理"></a>4. 原理</h1><p>顾客到饭店点菜吃饭：</p><img src="/2019/08/12/Android-RxJava：入门/944365-4b85ca4862cd598b.png"><img src="/2019/08/12/Android-RxJava：入门/944365-07f12da4616b2b68.png"><p><code>RxJava</code>原理基于<strong>一种扩展的观察者模式</strong>，其中包含四个角色：</p><table><thead><tr><th align="center">角色</th><th align="center">作用</th><th align="center">类比</th></tr></thead><tbody><tr><td align="center">被观察者<code>Observable</code></td><td align="center">产生事件</td><td align="center">顾客</td></tr><tr><td align="center">观察者<code>Observer</code></td><td align="center">接收事件并给出响应动作</td><td align="center">厨房</td></tr><tr><td align="center">订阅<code>Subscribe</code></td><td align="center">连接被观察者和观察者</td><td align="center">服务员</td></tr><tr><td align="center">事件<code>Event</code></td><td align="center">被观察者和观察者沟通的载体</td><td align="center">菜式</td></tr></tbody></table><img src="/2019/08/12/Android-RxJava：入门/944365-5b6e7c8a3bb55f39.png"><img src="/2019/08/12/Android-RxJava：入门/944365-fc3b7eb5a0ad28d0.png"><p>总结：被观察者<code>Observable</code>通过订阅<code>Subscribe</code><strong>按顺序发送事件<code>Event</code></strong>给观察者<code>Observer</code>，观察者<code>Observer</code><strong>按顺序接收事件</strong>并作出对应的响应。</p><img src="/2019/08/12/Android-RxJava：入门/944365-98ec92df0a4d7e0b.png"><h1 id="5-基本使用"><a href="#5-基本使用" class="headerlink" title="5. 基本使用"></a>5. 基本使用</h1><p>使用方式有两种：</p><ol><li>分步骤实现：该方法主要是为了深入说明<code>RxJava</code>的原理和使用，用于演示</li><li>基于事件流的链式调用，用于实际开发</li></ol><h2 id="5-1-分步骤实现"><a href="#5-1-分步骤实现" class="headerlink" title="5.1 分步骤实现"></a>5.1 分步骤实现</h2><h3 id="5-1-1-使用步骤"><a href="#5-1-1-使用步骤" class="headerlink" title="5.1.1 使用步骤"></a>5.1.1 使用步骤</h3><ol><li>创建被观察者<code>Observable</code>并生产事件，对应顾客进入饭店-坐下-点菜</li><li>创建观察者<code>Observer</code>并定义响应事件的行为，即厨房确定对应菜式</li><li>通过订阅<code>Subscribe</code>连接观察者和被观察者，即顾客找到服务员-服务员下单到厨房-厨房烹制</li></ol><h3 id="5-1-2-步骤详解"><a href="#5-1-2-步骤详解" class="headerlink" title="5.1.2 步骤详解"></a>5.1.2 步骤详解</h3><h4 id="步骤1：创建被观察者Observable并生产事件"><a href="#步骤1：创建被观察者Observable并生产事件" class="headerlink" title="步骤1：创建被观察者Observable并生产事件"></a>步骤1：创建被观察者Observable并生产事件</h4>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;&lt;code&gt;RxJava&lt;/code&gt;是&lt;strong&gt;基于事件流的链式调用、逻辑简单且使用简单&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;GitH
+      
+    
+    </summary>
+    
+      <category term="Android" scheme="https://tylerLiu.top/categories/Android/"/>
+    
+      <category term="RxJava" scheme="https://tylerLiu.top/categories/Android/RxJava/"/>
+    
+    
+      <category term="RxJava" scheme="https://tylerLiu.top/tags/RxJava/"/>
+    
+  </entry>
   
   <entry>
     <title>Android-Jetpack-WorkManager</title>
