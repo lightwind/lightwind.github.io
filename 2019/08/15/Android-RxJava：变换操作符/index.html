@@ -81,26 +81,27 @@
 
 
 
-<meta name="description" content="1. 作用对事件序列中的事件/整个事件序列进行加工处理（即变换），使得其转变成不同的事件/整个事件序列。 基础原理：   使用变换操作符（针对事件）：   2. 类型常见的变换操作符：  Map() FlatMap() ContactMap() Buffer()  3. 详细说明3.1 Map()作用：对被观察者发送的每个事件都通过指定函数处理，从而变成另一个事件。即，将被观察者发送的事件转换为任">
+<meta name="description" content="1. 作用对事件序列中的事件/整个事件序列进行加工处理（即变换），使得其转变成不同的事件/整个事件序列。 基础原理：   使用变换操作符（针对事件）：   使用变换操作符（针对事件序列）：   2. 类型常见的变换操作符：  Map() FlatMap() ContactMap() Buffer()  3. 详细说明3.1 Map()作用：对被观察者发送的每个事件都通过指定函数处理，从而变成另一个">
 <meta name="keywords" content="RxJava">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android-RxJava：变换操作符">
 <meta property="og:url" content="https://tylerLiu.top/2019/08/15/Android-RxJava：变换操作符/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="1. 作用对事件序列中的事件/整个事件序列进行加工处理（即变换），使得其转变成不同的事件/整个事件序列。 基础原理：   使用变换操作符（针对事件）：   2. 类型常见的变换操作符：  Map() FlatMap() ContactMap() Buffer()  3. 详细说明3.1 Map()作用：对被观察者发送的每个事件都通过指定函数处理，从而变成另一个事件。即，将被观察者发送的事件转换为任">
+<meta property="og:description" content="1. 作用对事件序列中的事件/整个事件序列进行加工处理（即变换），使得其转变成不同的事件/整个事件序列。 基础原理：   使用变换操作符（针对事件）：   使用变换操作符（针对事件序列）：   2. 类型常见的变换操作符：  Map() FlatMap() ContactMap() Buffer()  3. 详细说明3.1 Map()作用：对被观察者发送的每个事件都通过指定函数处理，从而变成另一个">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/微信图片_20190815131846.png">
 <meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/微信图片_20190815132123.png">
+<meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/微信图片_20190815132305.png">
 <meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/944365-a9c0b5eb2cc573d6.png">
 <meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/944365-a6f852c071db2f15.png">
 <meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/944365-f4340f283e5a954d.png">
 <meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/944365-5278a339e4337494.png">
 <meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/944365-f1d4e320b7c62dd9.png">
 <meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/944365-33a49ffd2ec60794.png">
-<meta property="og:updated_time" content="2019-08-15T07:46:59.687Z">
+<meta property="og:updated_time" content="2019-08-15T07:56:39.877Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-RxJava：变换操作符">
-<meta name="twitter:description" content="1. 作用对事件序列中的事件/整个事件序列进行加工处理（即变换），使得其转变成不同的事件/整个事件序列。 基础原理：   使用变换操作符（针对事件）：   2. 类型常见的变换操作符：  Map() FlatMap() ContactMap() Buffer()  3. 详细说明3.1 Map()作用：对被观察者发送的每个事件都通过指定函数处理，从而变成另一个事件。即，将被观察者发送的事件转换为任">
+<meta name="twitter:description" content="1. 作用对事件序列中的事件/整个事件序列进行加工处理（即变换），使得其转变成不同的事件/整个事件序列。 基础原理：   使用变换操作符（针对事件）：   使用变换操作符（针对事件序列）：   2. 类型常见的变换操作符：  Map() FlatMap() ContactMap() Buffer()  3. 详细说明3.1 Map()作用：对被观察者发送的每个事件都通过指定函数处理，从而变成另一个">
 <meta name="twitter:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/微信图片_20190815131846.png">
 
 
@@ -432,7 +433,10 @@
 <img src="/2019/08/15/Android-RxJava：变换操作符/微信图片_20190815131846.png">
 
 <p>使用变换操作符（针对事件）：</p>
-<img src="/2019/08/15/Android-RxJava：变换操作符/微信图片_20190815132123.png" title="% } 使用变换操作符（针对事件序列）： {% asset_img 微信图片_20190815132305.png">
+<img src="/2019/08/15/Android-RxJava：变换操作符/微信图片_20190815132123.png">
+
+<p>使用变换操作符（针对事件序列）：</p>
+<img src="/2019/08/15/Android-RxJava：变换操作符/微信图片_20190815132305.png">
 
 <h1 id="2-类型"><a href="#2-类型" class="headerlink" title="2. 类型"></a>2. 类型</h1><p>常见的变换操作符：</p>
 <ul>
@@ -522,6 +526,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2019/08/15/Android-RxJava：组合-合并操作符/" rel="prev" title="Android-RxJava：组合/合并操作符">
+                Android-RxJava：组合/合并操作符 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -599,7 +607,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
