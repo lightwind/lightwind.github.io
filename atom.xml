@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://tylerLiu.top/"/>
-  <updated>2019-08-23T07:32:15.851Z</updated>
+  <updated>2019-08-23T08:03:18.945Z</updated>
   <id>https://tylerLiu.top/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Android RxJava应用：功能防抖</title>
+    <link href="https://tylerLiu.top/2019/08/23/Android-RxJava%E5%BA%94%E7%94%A8%EF%BC%9A%E5%8A%9F%E8%83%BD%E9%98%B2%E6%8A%96/"/>
+    <id>https://tylerLiu.top/2019/08/23/Android-RxJava应用：功能防抖/</id>
+    <published>2019-08-23T07:33:33.000Z</published>
+    <updated>2019-08-23T08:03:18.945Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="1-需求场景"><a href="#1-需求场景" class="headerlink" title="1. 需求场景"></a>1. 需求场景</h1><p>背景：用户只需要使用功能一次</p><p>问题：如果多次触发功能，就会导致出现冗余功能操作，如：</p><ul><li>用户只需要使用网络请求功能一次（点击按钮）</li><li>但由于网络不好，点击一次后，用户发现没有响应</li><li>于是就多次点击按钮，就会导致发送多次网络请求</li></ul><p>解决方法：功能防抖，通过根据指定时间过滤事件的过滤操作符实现，防止功能抖动</p><h1 id="2-功能说明"><a href="#2-功能说明" class="headerlink" title="2. 功能说明"></a>2. 功能说明</h1><p>功能防抖：即用户同规定时间内多次触发功能，仅会响应第一次的触发操作。</p><p>原理：使用根据指定时间过滤事件的过滤操作符实现，<code>throttleFirst()</code>操作符。</p><h1 id="3-Demo"><a href="#3-Demo" class="headerlink" title="3. Demo"></a>3. Demo</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AntiShakeActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"RxJava"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressLint</span>(<span class="string">"CheckResult"</span>)</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_anti_shake);</span><br><span class="line"></span><br><span class="line">        Button button = findViewById(R.id.button);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 1. 此处采用了RxBinding：RxView.clicks(button)控件点击进行监听，</span></span><br><span class="line">        <span class="comment">// 需要引入依赖：implementation 'com.jakewharton.rxbinding2:rxbinding:2.0.0'</span></span><br><span class="line">        <span class="comment">// 2. 传入Button控件，点击时，都会发送数据事件，</span></span><br><span class="line">        <span class="comment">// 但由于使用了throttleFirst()操作符，所以只会发送该段时间内的第1次点击事件</span></span><br><span class="line">        RxView.clicks(button)</span><br><span class="line">                <span class="comment">// 2s内第1次点击按钮的事件才发送</span></span><br><span class="line">                .throttleFirst(<span class="number">2</span>, TimeUnit.SECONDS)</span><br><span class="line">                .subscribe(<span class="keyword">new</span> Consumer&lt;Object&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(Object o)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                        Log.d(TAG, <span class="string">"发送了网络请求"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;, <span class="keyword">new</span> Consumer&lt;Throwable&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(Throwable throwable)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                        <span class="comment">// 获取异常错误信息</span></span><br><span class="line">                        Log.d(TAG, <span class="string">"对Error事件作出响应"</span> + throwable.getMessage());</span><br><span class="line"></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>Demo地址：<a href="https://gitee.com/QingFengBaiYu/Allen_Demo_Rx" target="_blank" rel="noopener">Allen_Demo_Rx</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;1-需求场景&quot;&gt;&lt;a href=&quot;#1-需求场景&quot; class=&quot;headerlink&quot; title=&quot;1. 需求场景&quot;&gt;&lt;/a&gt;1. 需求场景&lt;/h1&gt;&lt;p&gt;背景：用户只需要使用功能一次&lt;/p&gt;
+&lt;p&gt;问题：如果多次触发功能，就会导致出现冗余功能操作，如：&lt;/p
+      
+    
+    </summary>
+    
+      <category term="Android" scheme="https://tylerLiu.top/categories/Android/"/>
+    
+      <category term="RxJava" scheme="https://tylerLiu.top/categories/Android/RxJava/"/>
+    
+    
+      <category term="RxJava" scheme="https://tylerLiu.top/tags/RxJava/"/>
+    
+  </entry>
   
   <entry>
     <title>Android RxJava应用：网络请求出错重连</title>

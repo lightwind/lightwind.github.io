@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="RxJava,">
 
 
 
@@ -81,16 +81,18 @@
 
 
 
-<meta name="description" content="人生是一场难得的修行，不要轻易交白卷">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Tyler的博客">
-<meta property="og:url" content="https://tylerLiu.top/categories/Android/RxJava/index.html">
+<meta name="description" content="1. 需求场景背景：用户只需要使用功能一次 问题：如果多次触发功能，就会导致出现冗余功能操作，如：  用户只需要使用网络请求功能一次（点击按钮） 但由于网络不好，点击一次后，用户发现没有响应 于是就多次点击按钮，就会导致发送多次网络请求  解决方法：功能防抖，通过根据指定时间过滤事件的过滤操作符实现，防止功能抖动 2. 功能说明功能防抖：即用户同规定时间内多次触发功能，仅会响应第一次的触发操作。">
+<meta name="keywords" content="RxJava">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android RxJava应用：功能防抖">
+<meta property="og:url" content="https://tylerLiu.top/2019/08/23/Android-RxJava应用：功能防抖/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta property="og:description" content="1. 需求场景背景：用户只需要使用功能一次 问题：如果多次触发功能，就会导致出现冗余功能操作，如：  用户只需要使用网络请求功能一次（点击按钮） 但由于网络不好，点击一次后，用户发现没有响应 于是就多次点击按钮，就会导致发送多次网络请求  解决方法：功能防抖，通过根据指定时间过滤事件的过滤操作符实现，防止功能抖动 2. 功能说明功能防抖：即用户同规定时间内多次触发功能，仅会响应第一次的触发操作。">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-08-23T08:03:18.945Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Tyler的博客">
-<meta name="twitter:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="twitter:title" content="Android RxJava应用：功能防抖">
+<meta name="twitter:description" content="1. 需求场景背景：用户只需要使用功能一次 问题：如果多次触发功能，就会导致出现冗余功能操作，如：  用户只需要使用网络请求功能一次（点击按钮） 但由于网络不好，点击一次后，用户发现没有响应 于是就多次点击按钮，就会导致发送多次网络请求  解决方法：功能防抖，通过根据指定时间过滤事件的过滤操作符实现，防止功能抖动 2. 功能说明功能防抖：即用户同规定时间内多次触发功能，仅会响应第一次的触发操作。">
 
 
 
@@ -120,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="https://tylerLiu.top/categories/Android/RxJava/">
+  <link rel="canonical" href="https://tylerLiu.top/2019/08/23/Android-RxJava应用：功能防抖/">
 
 
 
 
 
-  <title>分类: RxJava | Tyler的博客</title>
+  <title>Android RxJava应用：功能防抖 | Tyler的博客</title>
   
 
 
@@ -145,7 +147,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -271,291 +273,223 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block category">
-
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>RxJava<small>分类</small>
-        </h1>
-      </div>
-
-      
-        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://tylerLiu.top/2019/08/23/Android-RxJava应用：功能防抖/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tyler Liu">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tyler的博客">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2019/08/23/Android-RxJava应用：功能防抖/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：功能防抖</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">Android RxJava应用：功能防抖</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-23T15:33:33+08:00" content="2019-08-23">
-          08-23
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-23T15:33:33+08:00">
+                2019-08-23
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/RxJava/" itemprop="url" rel="index">
+                    <span itemprop="name">RxJava</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  403 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/23/Android-RxJava应用：网络请求出错重连/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：网络请求出错重连</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-23T14:54:33+08:00" content="2019-08-23">
-          08-23
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
 
       
-        
+        <h1 id="1-需求场景"><a href="#1-需求场景" class="headerlink" title="1. 需求场景"></a>1. 需求场景</h1><p>背景：用户只需要使用功能一次</p>
+<p>问题：如果多次触发功能，就会导致出现冗余功能操作，如：</p>
+<ul>
+<li>用户只需要使用网络请求功能一次（点击按钮）</li>
+<li>但由于网络不好，点击一次后，用户发现没有响应</li>
+<li>于是就多次点击按钮，就会导致发送多次网络请求</li>
+</ul>
+<p>解决方法：功能防抖，通过根据指定时间过滤事件的过滤操作符实现，防止功能抖动</p>
+<h1 id="2-功能说明"><a href="#2-功能说明" class="headerlink" title="2. 功能说明"></a>2. 功能说明</h1><p>功能防抖：即用户同规定时间内多次触发功能，仅会响应第一次的触发操作。</p>
+<p>原理：使用根据指定时间过滤事件的过滤操作符实现，<code>throttleFirst()</code>操作符。</p>
+<h1 id="3-Demo"><a href="#3-Demo" class="headerlink" title="3. Demo"></a>3. Demo</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AntiShakeActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"RxJava"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressLint</span>(<span class="string">"CheckResult"</span>)</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_anti_shake);</span><br><span class="line"></span><br><span class="line">        Button button = findViewById(R.id.button);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 1. 此处采用了RxBinding：RxView.clicks(button)控件点击进行监听，</span></span><br><span class="line">        <span class="comment">// 需要引入依赖：implementation 'com.jakewharton.rxbinding2:rxbinding:2.0.0'</span></span><br><span class="line">        <span class="comment">// 2. 传入Button控件，点击时，都会发送数据事件，</span></span><br><span class="line">        <span class="comment">// 但由于使用了throttleFirst()操作符，所以只会发送该段时间内的第1次点击事件</span></span><br><span class="line">        RxView.clicks(button)</span><br><span class="line">                <span class="comment">// 2s内第1次点击按钮的事件才发送</span></span><br><span class="line">                .throttleFirst(<span class="number">2</span>, TimeUnit.SECONDS)</span><br><span class="line">                .subscribe(<span class="keyword">new</span> Consumer&lt;Object&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(Object o)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                        Log.d(TAG, <span class="string">"发送了网络请求"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;, <span class="keyword">new</span> Consumer&lt;Throwable&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(Throwable throwable)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                        <span class="comment">// 获取异常错误信息</span></span><br><span class="line">                        Log.d(TAG, <span class="string">"对Error事件作出响应"</span> + throwable.getMessage());</span><br><span class="line"></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/23/Android-RxJava应用：网络请求轮询（有条件）/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：网络请求轮询（有条件）</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-23T13:01:55+08:00" content="2019-08-23">
-          08-23
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/22/Android-RxJava应用：联合判断多个事件/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：联合判断多个事件</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-22T16:46:29+08:00" content="2019-08-22">
-          08-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/22/Android-RxJava应用：从磁盘-内存缓存中获取数据/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：从磁盘/内存缓存中获取数据</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-22T16:13:41+08:00" content="2019-08-22">
-          08-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/22/Android-RxJava应用：合并数据源并展示/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：合并数据源并展示</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-22T15:47:34+08:00" content="2019-08-22">
-          08-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/22/Android-RxJava应用：网络请求嵌套回调/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：网络请求嵌套回调</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-22T13:46:45+08:00" content="2019-08-22">
-          08-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/22/Android-RxJava应用：网络轮询请求/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：网络请求轮询（无条件）</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-22T11:17:01+08:00" content="2019-08-22">
-          08-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/20/Android-RxJava：背压策略/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava：背压策略</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-20T10:43:13+08:00" content="2019-08-20">
-          08-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/20/Android-RxJava：条件-布尔操作符/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava：条件/布尔操作符</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-20T08:36:27+08:00" content="2019-08-20">
-          08-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+<p>Demo地址：<a href="https://gitee.com/QingFengBaiYu/Allen_Demo_Rx" target="_blank" rel="noopener">Allen_Demo_Rx</a></p>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RxJava/" rel="tag"># RxJava</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/23/Android-RxJava应用：网络请求出错重连/" rel="next" title="Android RxJava应用：网络请求出错重连">
+                <i class="fa fa-chevron-left"></i> Android RxJava应用：网络请求出错重连
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/categories/Android/RxJava/page/2/">2</a><a class="extend next" rel="next" href="/categories/Android/RxJava/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
+  </article>
 
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -563,6 +497,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -583,8 +521,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -653,6 +600,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-需求场景"><span class="nav-text">1. 需求场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-功能说明"><span class="nav-text">2. 功能说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Demo"><span class="nav-text">3. Demo</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -811,6 +774,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
