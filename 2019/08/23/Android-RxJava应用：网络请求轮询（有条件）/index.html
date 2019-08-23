@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="RxJava,">
 
 
 
@@ -81,16 +81,18 @@
 
 
 
-<meta name="description" content="人生是一场难得的修行，不要轻易交白卷">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Tyler的博客">
-<meta property="og:url" content="https://tylerLiu.top/categories/Android/index.html">
+<meta name="description" content="1. 需求场景背景：实现轮询，也称pull。客户端隔固定时间主动向服务器发送请求获取信息，可根据服务器返回信息停止轮询，即，有条件轮询。解决方案：使用RxJava的repeatWhen()操作符 2. 功能说明采用GET，对金山词霸API按规定时间重复发送网络请求，模拟轮询。  停止轮询的条件：当轮询到第四次时 采用Gson解析数据  3. 实现12345678910111213141516171">
+<meta name="keywords" content="RxJava">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android RxJava应用：网络请求轮询（有条件）">
+<meta property="og:url" content="https://tylerLiu.top/2019/08/23/Android-RxJava应用：网络请求轮询（有条件）/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta property="og:description" content="1. 需求场景背景：实现轮询，也称pull。客户端隔固定时间主动向服务器发送请求获取信息，可根据服务器返回信息停止轮询，即，有条件轮询。解决方案：使用RxJava的repeatWhen()操作符 2. 功能说明采用GET，对金山词霸API按规定时间重复发送网络请求，模拟轮询。  停止轮询的条件：当轮询到第四次时 采用Gson解析数据  3. 实现12345678910111213141516171">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-08-23T06:52:39.912Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Tyler的博客">
-<meta name="twitter:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="twitter:title" content="Android RxJava应用：网络请求轮询（有条件）">
+<meta name="twitter:description" content="1. 需求场景背景：实现轮询，也称pull。客户端隔固定时间主动向服务器发送请求获取信息，可根据服务器返回信息停止轮询，即，有条件轮询。解决方案：使用RxJava的repeatWhen()操作符 2. 功能说明采用GET，对金山词霸API按规定时间重复发送网络请求，模拟轮询。  停止轮询的条件：当轮询到第四次时 采用Gson解析数据  3. 实现12345678910111213141516171">
 
 
 
@@ -120,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="https://tylerLiu.top/categories/Android/">
+  <link rel="canonical" href="https://tylerLiu.top/2019/08/23/Android-RxJava应用：网络请求轮询（有条件）/">
 
 
 
 
 
-  <title>分类: Android | Tyler的博客</title>
+  <title>Android RxJava应用：网络请求轮询（有条件） | Tyler的博客</title>
   
 
 
@@ -145,7 +147,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -271,291 +273,221 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block category">
-
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>Android<small>分类</small>
-        </h1>
-      </div>
-
-      
-        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://tylerLiu.top/2019/08/23/Android-RxJava应用：网络请求轮询（有条件）/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tyler Liu">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tyler的博客">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2019/08/23/Android-RxJava应用：网络请求轮询（有条件）/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：网络请求轮询（有条件）</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">Android RxJava应用：网络请求轮询（有条件）</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-23T13:01:55+08:00" content="2019-08-23">
-          08-23
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-23T13:01:55+08:00">
+                2019-08-23
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/RxJava/" itemprop="url" rel="index">
+                    <span itemprop="name">RxJava</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  647 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/22/Android-RxJava应用：联合判断多个事件/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：联合判断多个事件</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-22T16:46:29+08:00" content="2019-08-22">
-          08-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
 
       
-        
+        <h1 id="1-需求场景"><a href="#1-需求场景" class="headerlink" title="1. 需求场景"></a>1. 需求场景</h1><p>背景：实现轮询，也称pull。客户端隔固定时间主动向服务器发送请求获取信息，可根据服务器返回信息停止轮询，即，有条件轮询。<br>解决方案：使用<code>RxJava</code>的<code>repeatWhen()</code>操作符</p>
+<h1 id="2-功能说明"><a href="#2-功能说明" class="headerlink" title="2. 功能说明"></a>2. 功能说明</h1><p>采用<code>GET</code>，对金山词霸API按规定时间重复发送网络请求，模拟轮询。</p>
+<ol>
+<li>停止轮询的条件：当轮询到第四次时</li>
+<li>采用<code>Gson</code>解析数据</li>
+</ol>
+<h1 id="3-实现"><a href="#3-实现" class="headerlink" title="3. 实现"></a>3. 实现</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RxJavafixRxjavaActivity2</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"RxJava"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 模拟轮询服务器次数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_rx_javafix_rxjava2);</span><br><span class="line"></span><br><span class="line">        Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()</span><br><span class="line">                .baseUrl(<span class="string">"http://fy.iciba.com/"</span>)</span><br><span class="line">                .addConverterFactory(GsonConverterFactory.create())</span><br><span class="line">                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())</span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line">        GetRequest_Interface request = retrofit.create(GetRequest_Interface.class);</span><br><span class="line"></span><br><span class="line">        Observable&lt;Translation&gt; observable = request.getCall();</span><br><span class="line"></span><br><span class="line">        observable.repeatWhen(<span class="keyword">new</span> Function&lt;Observable&lt;Object&gt;, ObservableSource&lt;?&gt;&gt;() &#123;</span><br><span class="line">            <span class="comment">// 在Function函数中，必须对输入的 Observable&lt;Object&gt;进行处理，此处使用flatMap()操作符接收上游的数据</span></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> ObservableSource&lt;?&gt; apply(Observable&lt;Object&gt; objectObservable) <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                <span class="comment">// 将原始Observable停止发送事件的标识（Complete()/Error()）转换成一个Object类型数据传递给一个新的Observable，</span></span><br><span class="line">                <span class="comment">// 以此决定是否重新订阅并发送原来的Observable，即轮询</span></span><br><span class="line">                <span class="comment">// 此处由两种情况：</span></span><br><span class="line">                <span class="comment">// 1. 若返回一个Complete()/Error()事件，则不重新订阅并发送原来的Observable，即轮询结束</span></span><br><span class="line">                <span class="comment">// 2. 若返回其余事件，则重新订阅并发送原来的Observable，即继续轮询</span></span><br><span class="line">                <span class="keyword">return</span> objectObservable.flatMap(<span class="keyword">new</span> Function&lt;Object, ObservableSource&lt;?&gt;&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="keyword">public</span> ObservableSource&lt;?&gt; apply(Object o) <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                        <span class="comment">// 加入判断条件，当轮询次数为5次时，停止轮询</span></span><br><span class="line">                        <span class="keyword">if</span> (i &gt; <span class="number">3</span>) &#123;</span><br><span class="line">                            <span class="comment">// 此处选择发送onError()事件以结束轮询，因为可触发下游观察者的onError()方法回调</span></span><br><span class="line">                            <span class="keyword">return</span> Observable.error(<span class="keyword">new</span> Throwable(<span class="string">"轮询结束"</span>));</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="comment">// 若轮询次数 ＜ 4，发送一个Next事件继续轮询</span></span><br><span class="line">                        <span class="keyword">return</span> Observable.just(<span class="number">1</span>).delay(<span class="number">2</span>, TimeUnit.SECONDS);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).subscribeOn(Schedulers.io())</span><br><span class="line">                .observeOn(AndroidSchedulers.mainThread())</span><br><span class="line">                .subscribe(<span class="keyword">new</span> Observer&lt;Translation&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSubscribe</span><span class="params">(Disposable d)</span> </span>&#123;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNext</span><span class="params">(Translation translation)</span> </span>&#123;</span><br><span class="line">                        <span class="comment">// e.接收服务器返回的数据</span></span><br><span class="line">                        translation.show();</span><br><span class="line">                        i++;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(Throwable e)</span> </span>&#123;</span><br><span class="line">                        <span class="comment">// 获取轮询结束信息</span></span><br><span class="line">                        Log.d(TAG, e.toString());</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onComplete</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">14:46:35.250 3950-3950/com.ly.allendemorx D/RxJava: 嗨世界</span><br><span class="line">14:46:37.240 3950-3950/com.ly.allendemorx D/RxJava: 嗨世界</span><br><span class="line">14:46:39.554 3950-3950/com.ly.allendemorx D/RxJava: 嗨世界</span><br><span class="line">14:46:42.787 3950-3950/com.ly.allendemorx D/RxJava: 嗨世界</span><br><span class="line">14:46:44.929 3950-3950/com.ly.allendemorx D/RxJava: 嗨世界</span><br><span class="line">14:46:44.971 3950-3950/com.ly.allendemorx D/RxJava: java.lang.Throwable: 轮询结束</span><br></pre></td></tr></table></figure>
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/22/Android-RxJava应用：从磁盘-内存缓存中获取数据/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：从磁盘/内存缓存中获取数据</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-22T16:13:41+08:00" content="2019-08-22">
-          08-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/22/Android-RxJava应用：合并数据源并展示/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：合并数据源并展示</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-22T15:47:34+08:00" content="2019-08-22">
-          08-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/22/Android-RxJava应用：网络请求嵌套回调/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：网络请求嵌套回调</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-22T13:46:45+08:00" content="2019-08-22">
-          08-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/22/Android-RxJava应用：网络轮询请求/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：网络请求轮询（无条件）</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-22T11:17:01+08:00" content="2019-08-22">
-          08-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/20/Android-RxJava：背压策略/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava：背压策略</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-20T10:43:13+08:00" content="2019-08-20">
-          08-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/20/Android-RxJava：条件-布尔操作符/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava：条件/布尔操作符</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-20T08:36:27+08:00" content="2019-08-20">
-          08-20
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/19/Android-RxJava：过滤操作符/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava：过滤操作符</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-19T11:27:09+08:00" content="2019-08-19">
-          08-19
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/17/Android-RxJava：线程控制/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava：线程控制</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-17T17:23:39+08:00" content="2019-08-17">
-          08-17
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+<p>Demo地址：<a href="https://gitee.com/QingFengBaiYu/Allen_Demo_Rx" target="_blank" rel="noopener">Allen_Demo_Rx</a></p>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RxJava/" rel="tag"># RxJava</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/22/Android-RxJava应用：联合判断多个事件/" rel="next" title="Android RxJava应用：联合判断多个事件">
+                <i class="fa fa-chevron-left"></i> Android RxJava应用：联合判断多个事件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/categories/Android/page/2/">2</a><a class="page-number" href="/categories/Android/page/3/">3</a><a class="extend next" rel="next" href="/categories/Android/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
+  </article>
 
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -563,6 +495,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -583,8 +519,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -653,6 +598,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-需求场景"><span class="nav-text">1. 需求场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-功能说明"><span class="nav-text">2. 功能说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-实现"><span class="nav-text">3. 实现</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -811,6 +772,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
