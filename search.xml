@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Android AOSP02：AOSP源码下载]]></title>
+    <url>%2F2019%2F08%2F29%2FAndroid-AOSP02%EF%BC%9AAOSP%E6%BA%90%E7%A0%81%E4%B8%8B%E8%BD%BD%2F</url>
+    <content type="text"><![CDATA[1. 关于AOSPAOSP就是Andorid系统源码，通过它可以定制Andorid操作系统。国内由于不可抗力，一般使用镜像。 清华大学镜像站 中科大镜像站 本文以清华大学镜像站为例。 2. 下载repo工具Andorid包含数百个Git库，要下载这么多Git库会很麻烦，谷歌开发了trpo，用于管理Android版本库的一个工具，使用Python对Git进行了封装，简化了多个Git版本库的管理。 安装Git，在Ubuntu命令： 1sudo apt-get install git 创建bin，并添加到PATH中： 12mkdir ~/binPATH=~/bin:$PATH 安装curl库： 1sudo apt-get install curl 下载repo，并设置权限： 12curl https://mirrors.tuna.tsinghua.edu.cn/git/git-repo &gt; ~/bin/repochmod a+x ~/bin/repo 安装Python，repo初始化的时候会用到： 1sudo apt-get install python 重启虚拟机后，开始下载源码。 3. 下载源码新建工作目录： 12mkdir aospcd aosp repo在运行时，会尝试访问谷歌官方的Git源来更新自己，如果想使用镜像源进行更新，可以运行以下： 1export REPO_URL=&apos;https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/&apos; 为Git添加邮箱和用户名： 12git config --global user.email &quot;piratemorgen@gmail.com&quot;git config --global user.name &quot;piratemorgen&quot; 初始化仓库： 1repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest 初始化指定源码： 1repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest -b android-9.0.0_r8 同步源码： 1repo sync 即可。]]></content>
+      <categories>
+        <category>Android起飞</category>
+        <category>框架层</category>
+        <category>AOSP</category>
+      </categories>
+      <tags>
+        <tag>AOSP</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Android AOSP01：VM VirtualBox安装Ubuntu]]></title>
     <url>%2F2019%2F08%2F29%2FAndroid-AOSP01%EF%BC%9AVM-VirtualBox%E5%AE%89%E8%A3%85Ubuntu%2F</url>
     <content type="text"><![CDATA[需要下载的两个文件： virtualbox Ubuntu 具体的软件安装和Ubuntu的安装不再说明，这里在配置Ubuntu的虚拟硬盘时，因为要安装AOSP，所以建议配置200GB，内存4GB。 安装增强工具方便虚拟机和主机之间的复制和粘贴。 设备 -&gt; 共享文件夹，新建一个共享文件夹，选择自动挂载和固定分配。 设备 -&gt; 安装增强功能，会在桌面生成一个VBox_GAs_6.0.10，点击运行软件，进行安装配置。 接着就会在桌面生成一个文件夹sf_share。 通过它就能和主机之间进行文件共享了。 设备 -&gt; 共享粘贴板，设备 -&gt; 拖放，都选择双向。]]></content>

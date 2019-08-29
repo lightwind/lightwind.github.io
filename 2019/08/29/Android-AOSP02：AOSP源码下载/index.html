@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="AOSP,">
 
 
 
@@ -81,16 +81,18 @@
 
 
 
-<meta name="description" content="人生是一场难得的修行，不要轻易交白卷">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Tyler的博客">
-<meta property="og:url" content="https://tylerLiu.top/archives/index.html">
+<meta name="description" content="1. 关于AOSPAOSP就是Andorid系统源码，通过它可以定制Andorid操作系统。国内由于不可抗力，一般使用镜像。  清华大学镜像站 中科大镜像站  本文以清华大学镜像站为例。 2. 下载repo工具Andorid包含数百个Git库，要下载这么多Git库会很麻烦，谷歌开发了trpo，用于管理Android版本库的一个工具，使用Python对Git进行了封装，简化了多个Git版本库的管理。">
+<meta name="keywords" content="AOSP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android AOSP02：AOSP源码下载">
+<meta property="og:url" content="https://tylerLiu.top/2019/08/29/Android-AOSP02：AOSP源码下载/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta property="og:description" content="1. 关于AOSPAOSP就是Andorid系统源码，通过它可以定制Andorid操作系统。国内由于不可抗力，一般使用镜像。  清华大学镜像站 中科大镜像站  本文以清华大学镜像站为例。 2. 下载repo工具Andorid包含数百个Git库，要下载这么多Git库会很麻烦，谷歌开发了trpo，用于管理Android版本库的一个工具，使用Python对Git进行了封装，简化了多个Git版本库的管理。">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-08-29T05:49:36.047Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Tyler的博客">
-<meta name="twitter:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="twitter:title" content="Android AOSP02：AOSP源码下载">
+<meta name="twitter:description" content="1. 关于AOSPAOSP就是Andorid系统源码，通过它可以定制Andorid操作系统。国内由于不可抗力，一般使用镜像。  清华大学镜像站 中科大镜像站  本文以清华大学镜像站为例。 2. 下载repo工具Andorid包含数百个Git库，要下载这么多Git库会很麻烦，谷歌开发了trpo，用于管理Android版本库的一个工具，使用Python对Git进行了封装，简化了多个Git版本库的管理。">
 
 
 
@@ -120,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="https://tylerLiu.top/archives/">
+  <link rel="canonical" href="https://tylerLiu.top/2019/08/29/Android-AOSP02：AOSP源码下载/">
 
 
 
 
 
-  <title>归档 | Tyler的博客</title>
+  <title>Android AOSP02：AOSP源码下载 | Tyler的博客</title>
   
 
 
@@ -145,7 +147,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -271,390 +273,263 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
 
-      <span class="archive-page-counter">
-        
-        
-         
-        
-        OK! 目前共计 42 篇日志。 继续努力。
-      </span>
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://tylerLiu.top/2019/08/29/Android-AOSP02：AOSP源码下载/">
 
-      
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tyler Liu">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tyler的博客">
+    </span>
+
+    
+      <header class="post-header">
 
         
         
+          <h1 class="post-title" itemprop="name headline">Android AOSP02：AOSP源码下载</h1>
         
 
-        
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-29T13:35:22+08:00">
+                2019-08-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2019">2019</h1>
-          </div>
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/29/Android-AOSP02：AOSP源码下载/" itemprop="url">
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
               
-                <span itemprop="name">Android AOSP02：AOSP源码下载</span>
+                <span class="post-meta-item-text">分类于</span>
               
-            </a>
-        
-      </h2>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android起飞/" itemprop="url" rel="index">
+                    <span itemprop="name">Android起飞</span>
+                  </a>
+                </span>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-29T13:35:22+08:00" content="2019-08-29">
-          08-29
-        </time>
-      </div>
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android起飞/框架层/" itemprop="url" rel="index">
+                    <span itemprop="name">框架层</span>
+                  </a>
+                </span>
 
-    </header>
-  </article>
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android起飞/框架层/AOSP/" itemprop="url" rel="index">
+                    <span itemprop="name">AOSP</span>
+                  </a>
+                </span>
 
+                
+                
+              
+            </span>
+          
 
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  356 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/29/Android-AOSP01：VM-VirtualBox安装Ubuntu/" itemprop="url">
-              
-                <span itemprop="name">Android AOSP01：VM VirtualBox安装Ubuntu</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-29T13:09:34+08:00" content="2019-08-29">
-          08-29
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
+      
+        <h1 id="1-关于AOSP"><a href="#1-关于AOSP" class="headerlink" title="1. 关于AOSP"></a>1. 关于AOSP</h1><p>AOSP就是Andorid系统源码，通过它可以定制Andorid操作系统。国内由于不可抗力，一般使用镜像。</p>
+<ul>
+<li><a href="https://mirrors.tuna.tsinghua.edu.cn/help/AOSP/" target="_blank" rel="noopener">清华大学镜像站</a></li>
+<li><a href="https://lug.ustc.edu.cn/wiki/mirrors/help/aosp" target="_blank" rel="noopener">中科大镜像站</a></li>
+</ul>
+<p>本文以清华大学镜像站为例。</p>
+<h1 id="2-下载repo工具"><a href="#2-下载repo工具" class="headerlink" title="2. 下载repo工具"></a>2. 下载repo工具</h1><p>Andorid包含数百个Git库，要下载这么多Git库会很麻烦，谷歌开发了trpo，用于管理Android版本库的一个工具，使用Python对Git进行了封装，简化了多个Git版本库的管理。</p>
+<p>安装Git，在Ubuntu命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git</span><br></pre></td></tr></table></figure>
 
-        
-        
+<p>创建bin，并添加到PATH中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/bin</span><br><span class="line">PATH=~/bin:$PATH</span><br></pre></td></tr></table></figure>
 
-        
+<p>安装curl库：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install curl</span><br></pre></td></tr></table></figure>
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+<p>下载repo，并设置权限：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl https://mirrors.tuna.tsinghua.edu.cn/git/git-repo &gt; ~/bin/repo</span><br><span class="line">chmod a+x ~/bin/repo</span><br></pre></td></tr></table></figure>
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/28/Android系统启动流程04：Launcher启动过程和系统启动流程/" itemprop="url">
-              
-                <span itemprop="name">Android系统启动流程04：Launcher启动过程和系统启动流程</span>
-              
-            </a>
-        
-      </h2>
+<p>安装Python，repo初始化的时候会用到：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install python</span><br></pre></td></tr></table></figure>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-28T10:49:16+08:00" content="2019-08-28">
-          08-28
-        </time>
-      </div>
+<p>重启虚拟机后，开始下载源码。</p>
+<h1 id="3-下载源码"><a href="#3-下载源码" class="headerlink" title="3. 下载源码"></a>3. 下载源码</h1><p>新建工作目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir aosp</span><br><span class="line">cd aosp</span><br></pre></td></tr></table></figure>
 
-    </header>
-  </article>
+<p>repo在运行时，会尝试访问谷歌官方的Git源来更新自己，如果想使用镜像源进行更新，可以运行以下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export REPO_URL=&apos;https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/&apos;</span><br></pre></td></tr></table></figure>
 
+<p>为Git添加邮箱和用户名：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.email &quot;piratemorgen@gmail.com&quot;</span><br><span class="line">git config --global user.name &quot;piratemorgen&quot;</span><br></pre></td></tr></table></figure>
 
+<p>初始化仓库：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest</span><br></pre></td></tr></table></figure>
+
+<p>初始化指定源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest -b android-9.0.0_r8</span><br></pre></td></tr></table></figure>
+
+<p>同步源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">repo sync</span><br></pre></td></tr></table></figure>
+
+<p>即可。</p>
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/27/Android系统启动流程03：SystemServer进程/" itemprop="url">
-              
-                <span itemprop="name">Android系统启动流程03：SystemServer进程</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-27T15:45:13+08:00" content="2019-08-27">
-          08-27
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/27/Android系统启动流程02：zygote进程/" itemprop="url">
-              
-                <span itemprop="name">Android系统启动流程02：zygote进程</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-27T09:46:23+08:00" content="2019-08-27">
-          08-27
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/24/Android系统启动流程01：init进程/" itemprop="url">
-              
-                <span itemprop="name">Android系统启动流程01：init进程</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-24T15:49:27+08:00" content="2019-08-24">
-          08-24
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/24/Android系统架构与系统源码目录/" itemprop="url">
-              
-                <span itemprop="name">Android系统架构与系统源码目录</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-24T10:19:25+08:00" content="2019-08-24">
-          08-24
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/23/Android-RxJava应用：联想搜索优化/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：联想搜索优化</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-23T16:07:12+08:00" content="2019-08-23">
-          08-23
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/23/Android-RxJava应用：功能防抖/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：功能防抖</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-23T15:33:33+08:00" content="2019-08-23">
-          08-23
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/08/23/Android-RxJava应用：网络请求出错重连/" itemprop="url">
-              
-                <span itemprop="name">Android RxJava应用：网络请求出错重连</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-08-23T14:54:33+08:00" content="2019-08-23">
-          08-23
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
     </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AOSP/" rel="tag"># AOSP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/29/Android-AOSP01：VM-VirtualBox安装Ubuntu/" rel="next" title="Android AOSP01：VM VirtualBox安装Ubuntu">
+                <i class="fa fa-chevron-left"></i> Android AOSP01：VM VirtualBox安装Ubuntu
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/5/">5</a><a class="extend next" rel="next" href="/archives/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
+  </article>
 
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -662,6 +537,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -682,8 +561,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -752,6 +640,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-关于AOSP"><span class="nav-text">1. 关于AOSP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-下载repo工具"><span class="nav-text">2. 下载repo工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-下载源码"><span class="nav-text">3. 下载源码</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -911,6 +815,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
