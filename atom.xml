@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://tylerLiu.top/"/>
-  <updated>2019-08-28T06:56:16.903Z</updated>
+  <updated>2019-08-29T05:24:46.379Z</updated>
   <id>https://tylerLiu.top/</id>
   
   <author>
@@ -15,6 +15,38 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Android AOSP01：VM VirtualBox安装Ubuntu</title>
+    <link href="https://tylerLiu.top/2019/08/29/Android-AOSP01%EF%BC%9AVM-VirtualBox%E5%AE%89%E8%A3%85Ubuntu/"/>
+    <id>https://tylerLiu.top/2019/08/29/Android-AOSP01：VM-VirtualBox安装Ubuntu/</id>
+    <published>2019-08-29T05:09:34.000Z</published>
+    <updated>2019-08-29T05:24:46.379Z</updated>
+    
+    <content type="html"><![CDATA[<p>需要下载的两个文件：</p><ul><li><a href="https://www.virtualbox.org/wiki/Downloads" target="_blank" rel="noopener">virtualbox</a></li><li><a href="https://ubuntu.com/download/desktop" target="_blank" rel="noopener">Ubuntu</a></li></ul><p>具体的软件安装和Ubuntu的安装不再说明，这里在配置Ubuntu的虚拟硬盘时，因为要安装AOSP，所以建议配置200GB，内存4GB。</p><h1 id="安装增强工具"><a href="#安装增强工具" class="headerlink" title="安装增强工具"></a>安装增强工具</h1><p>方便虚拟机和主机之间的复制和粘贴。</p><p>设备 -&gt; 共享文件夹，新建一个共享文件夹，选择自动挂载和固定分配。</p><img src="/2019/08/29/Android-AOSP01：VM-VirtualBox安装Ubuntu/VZg0mT.png"><p>设备 -&gt; 安装增强功能，会在桌面生成一个VBox_GAs_6.0.10，点击运行软件，进行安装配置。</p><img src="/2019/08/29/Android-AOSP01：VM-VirtualBox安装Ubuntu/企业微信截图_15670560508763.png"><p>接着就会在桌面生成一个文件夹sf_share。</p><img src="/2019/08/29/Android-AOSP01：VM-VirtualBox安装Ubuntu/企业微信截图_156705615722.png"><p>通过它就能和主机之间进行文件共享了。</p><p>设备 -&gt; 共享粘贴板，设备 -&gt; 拖放，都选择双向。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;需要下载的两个文件：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.virtualbox.org/wiki/Downloads&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;virtualbox&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a hre
+      
+    
+    </summary>
+    
+      <category term="Android起飞" scheme="https://tylerLiu.top/categories/Android%E8%B5%B7%E9%A3%9E/"/>
+    
+      <category term="框架层" scheme="https://tylerLiu.top/categories/Android%E8%B5%B7%E9%A3%9E/%E6%A1%86%E6%9E%B6%E5%B1%82/"/>
+    
+      <category term="AOSP" scheme="https://tylerLiu.top/categories/Android%E8%B5%B7%E9%A3%9E/%E6%A1%86%E6%9E%B6%E5%B1%82/AOSP/"/>
+    
+    
+      <category term="AOSP" scheme="https://tylerLiu.top/tags/AOSP/"/>
+    
+  </entry>
   
   <entry>
     <title>Android系统启动流程04：Launcher启动过程和系统启动流程</title>
