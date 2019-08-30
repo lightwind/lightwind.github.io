@@ -90,7 +90,7 @@
 <meta property="og:description" content="前言前面已经将Android系统源码下载下来，但是往往，不止要查看源码，有时还需要：  动态调试Android系统源码 定制Android系统 将最新版本的Android系统刷入到自己的Android设备中 将系统源码导入到Android Studio中  为了实现这些需求，就需要去编译系统源码。 1. 编译系统概述需要了解的概念。  Makefile：Android平台的编译系统，其实就是用Ma">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://tylerliu.top/2019/08/29/Android-AOSP03：Android系统源码的整编和单编/VZRxYQ.png">
-<meta property="og:updated_time" content="2019-08-29T09:07:51.171Z">
+<meta property="og:updated_time" content="2019-08-30T08:55:46.316Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android AOSP03：Android系统源码的整编和单编">
 <meta name="twitter:description" content="前言前面已经将Android系统源码下载下来，但是往往，不止要查看源码，有时还需要：  动态调试Android系统源码 定制Android系统 将最新版本的Android系统刷入到自己的Android设备中 将系统源码导入到Android Studio中  为了实现这些需求，就需要去编译系统源码。 1. 编译系统概述需要了解的概念。  Makefile：Android平台的编译系统，其实就是用Ma">
@@ -394,7 +394,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1k 字
+                  1.9k 字
                 </span>
               
 
@@ -410,7 +410,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  3 分钟
+                  7 分钟
                 </span>
               
             </div>
@@ -468,21 +468,63 @@
 
 <h2 id="3-2-使用Ubuntu-14-，需要安装以下依赖包："><a href="#3-2-使用Ubuntu-14-，需要安装以下依赖包：" class="headerlink" title="3.2 使用Ubuntu 14+，需要安装以下依赖包："></a>3.2 使用Ubuntu 14+，需要安装以下依赖包：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip</span><br></pre></td></tr></table></figure>
 
-<h2 id="3-3-设置处理器数量"><a href="#3-3-设置处理器数量" class="headerlink" title="3.3 设置处理器数量"></a>3.3 设置处理器数量</h2><p>设置 –&gt; 系统 –&gt; 处理器选项，建议设置最大值。</p>
+<h2 id="3-3-设置处理器数量"><a href="#3-3-设置处理器数量" class="headerlink" title="3.3 设置处理器数量"></a>3.3 设置处理器数量</h2><p>设置 –&gt; 系统 –&gt; 处理器选项，设置为6。</p>
 <h2 id="3-4-源码整编"><a href="#3-4-源码整编" class="headerlink" title="3.4 源码整编"></a>3.4 源码整编</h2><p>整编就是编译整个Android源码，整编主要有三个步骤：</p>
-<ol>
-<li>初始化环境：在AOSP根目录中，运行如下命令<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">source build/envsetup.sh</span><br><span class="line">// 编译前删除build文件夹A</span><br><span class="line">make clobber</span><br></pre></td></tr></table></figure>
+<h2 id="3-4-1-初始化环境：在AOSP根目录中，运行如下命令"><a href="#3-4-1-初始化环境：在AOSP根目录中，运行如下命令" class="headerlink" title="3.4.1. 初始化环境：在AOSP根目录中，运行如下命令"></a>3.4.1. 初始化环境：在AOSP根目录中，运行如下命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">source build/envsetup.sh</span><br><span class="line">// 编译前删除build文件夹A</span><br><span class="line">// make clobber</span><br></pre></td></tr></table></figure>
 
-</li>
-</ol>
 <p>使用build目录中的envsetup.sh脚本初始化环境，这个脚本会引入其他的执行脚本。</p>
-<ol start="2">
-<li>选择编译目标<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lunch</span><br></pre></td></tr></table></figure>
+<h2 id="3-4-2-选择编译目标"><a href="#3-4-2-选择编译目标" class="headerlink" title="3.4.2. 选择编译目标"></a>3.4.2. 选择编译目标</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lunch</span><br></pre></td></tr></table></figure>
 
-</li>
-</ol>
 <p><code>lunch</code>命令是envsetup.sh中定义的一个命令，用来让用户选择编译目标。</p>
 <p>会有以下信息输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">You&apos;re building on Linux</span><br><span class="line"></span><br><span class="line">Lunch menu... pick a combo:</span><br><span class="line">     1. aosp_arm-eng</span><br><span class="line">     2. aosp_arm64-eng</span><br><span class="line">     3. aosp_mips-eng</span><br><span class="line">     4. aosp_mips64-eng</span><br><span class="line">     5. aosp_x86-eng</span><br><span class="line">     6. aosp_x86_64-eng</span><br><span class="line">     7. aosp_car_arm-userdebug</span><br><span class="line">     8. aosp_car_arm64-userdebug</span><br><span class="line">     9. aosp_car_x86-userdebug</span><br><span class="line">     10. aosp_car_x86_64-userdebug</span><br><span class="line">     11. mini_emulator_arm64-userdebug</span><br><span class="line">     12. m_e_arm-userdebug</span><br><span class="line">     13. m_e_mips64-eng</span><br><span class="line">     14. m_e_mips-userdebug</span><br><span class="line">     15. mini_emulator_x86_64-userdebug</span><br><span class="line">     16. mini_emulator_x86-userdebug</span><br><span class="line">     17. uml-userdebug</span><br><span class="line">     18. aosp_cf_x86_auto-userdebug</span><br><span class="line">     19. aosp_cf_x86_phone-userdebug</span><br><span class="line">     20. aosp_cf_x86_tablet-userdebug</span><br><span class="line">     21. aosp_cf_x86_tablet_3g-userdebug</span><br><span class="line">     22. aosp_cf_x86_tv-userdebug</span><br><span class="line">     23. aosp_cf_x86_wear-userdebug</span><br><span class="line">     24. aosp_cf_x86_64_auto-userdebug</span><br><span class="line">     25. aosp_cf_x86_64_phone-userdebug</span><br><span class="line">     26. aosp_cf_x86_64_tablet-userdebug</span><br><span class="line">     27. aosp_cf_x86_64_tablet_3g-userdebug</span><br><span class="line">     28. aosp_cf_x86_64_tv-userdebug</span><br><span class="line">     29. aosp_cf_x86_64_wear-userdebug</span><br><span class="line">     30. cf_x86_auto-userdebug</span><br><span class="line">     31. cf_x86_phone-userdebug</span><br><span class="line">     32. cf_x86_tablet-userdebug</span><br><span class="line">     33. cf_x86_tablet_3g-userdebug</span><br><span class="line">     34. cf_x86_tv-userdebug</span><br><span class="line">     35. cf_x86_wear-userdebug</span><br><span class="line">     36. cf_x86_64_auto-userdebug</span><br><span class="line">     37. cf_x86_64_phone-userdebug</span><br><span class="line">     38. cf_x86_64_tablet-userdebug</span><br><span class="line">     39. cf_x86_64_tablet_3g-userdebug</span><br><span class="line">     40. cf_x86_64_tv-userdebug</span><br><span class="line">     41. cf_x86_64_wear-userdebug</span><br><span class="line">     42. aosp_marlin-userdebug</span><br><span class="line">     43. aosp_marlin_svelte-userdebug</span><br><span class="line">     44. aosp_sailfish-userdebug</span><br><span class="line">     45. aosp_walleye-userdebug</span><br><span class="line">     46. aosp_walleye_test-userdebug</span><br><span class="line">     47. aosp_taimen-userdebug</span><br><span class="line">     48. hikey-userdebug</span><br><span class="line">     49. hikey64_only-userdebug</span><br><span class="line">     50. hikey960-userdebug</span><br><span class="line"></span><br><span class="line">Which would you like? [aosp_arm-eng]</span><br></pre></td></tr></table></figure>
+
+<p>意思是要选择编译目标的格式，编译目标的格式组成为BUILD_BUILDTYPE，比如<code>aosp_arm-eng</code>的BUILD为<code>aosp_arm</code>，BUILDTYPE为<code>eng</code>。</p>
+<p>其中BUILD表示编译出的镜像可以运行在什么环境，<code>aosp</code>表示Android开源项目，<code>arm</code>表示系统是运行在ARM架构的处理器上。</p>
+<p>更多可以参考<a href="https://source.android.google.cn/source/running.html#selecting-device-build" target="_blank" rel="noopener">官方文档</a>。</p>
+<p>BUILDTYPE指的是编译类型，有以下三种：</p>
+<ul>
+<li><code>user</code>：用于正式发布到市场的版本，权限受限，如果没有root权限，不能debug，adb默认处于停用状态。</li>
+<li><code>userdebug</code>：在user版本上开放了root权限和debug权限，adb默认处于停用状态。一般用于调试真机。</li>
+<li><code>eng</code>：开发工程师版本，拥有最大的权限，具有额外调试工具的开发配置。一般用于模拟器。</li>
+</ul>
+<p>如果没有Nexus设备，只想在编译完成后，在模拟器上查看，那么BUILD可以选择<code>aosp_x86</code>，BUILDTYPE选择<code>eng</code>，直接在<code>Which would you like? [aosp_arm-eng]</code>后面输入对应的序号（这里是5）即可。</p>
+<p>也可以直接指定编译的目标：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lunch aosp_x86-eng</span><br></pre></td></tr></table></figure>
+
+<p>或者（不同的系统版本，序号的对应会有差别，建议不要直接用序号）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lunch 5</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-4-3-开始编译"><a href="#3-4-3-开始编译" class="headerlink" title="3.4.3. 开始编译"></a>3.4.3. 开始编译</h2><p>通过<code>-jN</code>参数来设置编译的并行任务数，以提高编译速度，此前设置的CPU核心数为6，这里的<code>N</code>值最好在6~12之间，这里设置8：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make -j6</span><br></pre></td></tr></table></figure>
+
+<p>编译成功后会打印如下提示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>由于采用的是虚拟机整编，编译速度会很慢。</p>
+<p>最终会在out/target/product/generic_x86下生成三个重要的镜像文件：system.img、userdata.img、ramdisk.img。</p>
+<ul>
+<li>system.img：系统镜像，里面包含Andorid系统主要的目录和文件，通过init.rc解析并mount挂载到/system目录下。</li>
+<li>userdata.img：用户镜像，Android系统中存放用户数据的，通过init.rc解析并mount挂载到/data目录下。</li>
+<li>ramdisk.img：根文件系统镜像，包含一些启动Android系统的重要文件，如init.rc。</li>
+</ul>
+<p><strong>运行模拟器</strong></p>
+<p>在编译完成之后，可以通过下面的命令运行Android虚拟机了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">source build/envsetup.sh</span><br><span class="line">lunch 5</span><br><span class="line">emulator</span><br></pre></td></tr></table></figure>
+
+<p>由于前面已经完成整编编译，即已经执行过<code>source</code>和<code>lunch</code>，所以这里直接执行<code>emulator</code>即可。</p>
+<h2 id="3-5-源码单编"><a href="#3-5-源码单编" class="headerlink" title="3.5 源码单编"></a>3.5 源码单编</h2><p>比如要编译系统的Settings应用模块，在AOSP根目录执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">source build/envsetup.sh</span><br><span class="line">lunch 5</span><br></pre></td></tr></table></figure>
+
+<p>进入Settings目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd packages/apps/Settings</span><br></pre></td></tr></table></figure>
+
+<p><code>mm</code>，编译当前目录下的模块，不编译依赖模块：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mm</span><br></pre></td></tr></table></figure>
+
+<p>编译成功后会提示生成文件的存放路径：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
 
       
     </div>
@@ -522,6 +564,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/30/Android应用程序进程启动过程01/" rel="prev" title="Android应用程序进程启动过程01">
+                Android应用程序进程启动过程01 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -600,7 +646,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">43</span>
+                  <span class="site-state-item-count">44</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -611,7 +657,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -662,7 +708,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-编译系统概述"><span class="nav-text">1. 编译系统概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-编译源码的方式"><span class="nav-text">2. 编译源码的方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-编译环境"><span class="nav-text">3. 编译环境</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-安装jdk8"><span class="nav-text">3.1 安装jdk8</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-使用Ubuntu-14-，需要安装以下依赖包："><span class="nav-text">3.2 使用Ubuntu 14+，需要安装以下依赖包：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-设置处理器数量"><span class="nav-text">3.3 设置处理器数量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-源码整编"><span class="nav-text">3.4 源码整编</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-编译系统概述"><span class="nav-text">1. 编译系统概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-编译源码的方式"><span class="nav-text">2. 编译源码的方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-编译环境"><span class="nav-text">3. 编译环境</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-安装jdk8"><span class="nav-text">3.1 安装jdk8</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-使用Ubuntu-14-，需要安装以下依赖包："><span class="nav-text">3.2 使用Ubuntu 14+，需要安装以下依赖包：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-设置处理器数量"><span class="nav-text">3.3 设置处理器数量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-源码整编"><span class="nav-text">3.4 源码整编</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-1-初始化环境：在AOSP根目录中，运行如下命令"><span class="nav-text">3.4.1. 初始化环境：在AOSP根目录中，运行如下命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-2-选择编译目标"><span class="nav-text">3.4.2. 选择编译目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-3-开始编译"><span class="nav-text">3.4.3. 开始编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5-源码单编"><span class="nav-text">3.5 源码单编</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -697,7 +743,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">80.7k</span>
+    <span title="Site words total count">82.8k</span>
   
 -->
 </div>
@@ -712,7 +758,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共80.7k字</span>
+  <span class="post-count">博客全站共82.8k字</span>
 </div>
 
         
