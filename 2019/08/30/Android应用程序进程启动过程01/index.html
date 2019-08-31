@@ -81,19 +81,19 @@
 
 
 
-<meta name="description" content="1. 应用程序进程概述要启动一个应用程序，首先要保证这个应用程序所需要的应用程序进程已经启动，ActivityManagerService在启动应用程序时会先检查这个应用程序对应的进程是否已经存在，如果不存在，就请求Zygote进程将需要的应用程序进程启动。 在Android系统启动流程02：zygote进程中，提到Zygote的Java框架中，会创建一个服务端的Socket，用来等待Activi">
+<meta name="description" content="1. 应用程序进程概述要启动一个应用程序，首先要保证这个应用程序所需要的应用程序进程已经启动，ActivityManagerService在启动应用程序时会先检查这个应用程序对应的进程是否已经存在，如果不存在，就请求Zygote进程将需要的应用程序进程启动。 在Android系统启动流程 02：zygote进程中，提到Zygote的Java框架中，会创建一个服务端的Socket，用来等待Activ">
 <meta name="keywords" content="Android系统启动">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android应用程序进程启动过程01">
+<meta property="og:title" content="Android应用程序进程启动过程 01">
 <meta property="og:url" content="https://tylerLiu.top/2019/08/30/Android应用程序进程启动过程01/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="1. 应用程序进程概述要启动一个应用程序，首先要保证这个应用程序所需要的应用程序进程已经启动，ActivityManagerService在启动应用程序时会先检查这个应用程序对应的进程是否已经存在，如果不存在，就请求Zygote进程将需要的应用程序进程启动。 在Android系统启动流程02：zygote进程中，提到Zygote的Java框架中，会创建一个服务端的Socket，用来等待Activi">
+<meta property="og:description" content="1. 应用程序进程概述要启动一个应用程序，首先要保证这个应用程序所需要的应用程序进程已经启动，ActivityManagerService在启动应用程序时会先检查这个应用程序对应的进程是否已经存在，如果不存在，就请求Zygote进程将需要的应用程序进程启动。 在Android系统启动流程 02：zygote进程中，提到Zygote的Java框架中，会创建一个服务端的Socket，用来等待Activ">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://tylerliu.top/2019/08/30/Android应用程序进程启动过程01/Vev4cq.png">
-<meta property="og:updated_time" content="2019-08-30T06:53:35.343Z">
+<meta property="og:updated_time" content="2019-08-31T02:12:05.190Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android应用程序进程启动过程01">
-<meta name="twitter:description" content="1. 应用程序进程概述要启动一个应用程序，首先要保证这个应用程序所需要的应用程序进程已经启动，ActivityManagerService在启动应用程序时会先检查这个应用程序对应的进程是否已经存在，如果不存在，就请求Zygote进程将需要的应用程序进程启动。 在Android系统启动流程02：zygote进程中，提到Zygote的Java框架中，会创建一个服务端的Socket，用来等待Activi">
+<meta name="twitter:title" content="Android应用程序进程启动过程 01">
+<meta name="twitter:description" content="1. 应用程序进程概述要启动一个应用程序，首先要保证这个应用程序所需要的应用程序进程已经启动，ActivityManagerService在启动应用程序时会先检查这个应用程序对应的进程是否已经存在，如果不存在，就请求Zygote进程将需要的应用程序进程启动。 在Android系统启动流程 02：zygote进程中，提到Zygote的Java框架中，会创建一个服务端的Socket，用来等待Activ">
 <meta name="twitter:image" content="https://tylerliu.top/2019/08/30/Android应用程序进程启动过程01/Vev4cq.png">
 
 
@@ -130,7 +130,7 @@
 
 
 
-  <title>Android应用程序进程启动过程01 | Tyler的博客</title>
+  <title>Android应用程序进程启动过程 01 | Tyler的博客</title>
   
 
 
@@ -306,7 +306,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Android应用程序进程启动过程01</h1>
+          <h1 class="post-title" itemprop="name headline">Android应用程序进程启动过程 01</h1>
         
 
         <div class="post-meta">
@@ -394,7 +394,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.3k 字
+                  1.5k 字
                 </span>
               
 
@@ -410,7 +410,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  6 分钟
+                  7 分钟
                 </span>
               
             </div>
@@ -432,7 +432,7 @@
 
       
         <h1 id="1-应用程序进程概述"><a href="#1-应用程序进程概述" class="headerlink" title="1. 应用程序进程概述"></a>1. 应用程序进程概述</h1><p>要启动一个应用程序，首先要保证这个应用程序所需要的应用程序进程已经启动，<code>ActivityManagerService</code>在启动应用程序时会先检查这个应用程序对应的进程是否已经存在，如果不存在，就请求Zygote进程将需要的应用程序进程启动。</p>
-<p>在<a href="https://tylerliu.top/2019/08/27/Android%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B02%EF%BC%9Azygote%E8%BF%9B%E7%A8%8B/#more">Android系统启动流程02：zygote进程</a>中，提到Zygote的Java框架中，会创建一个服务端的Socket，用来等待<code>ActivityManagerService</code>来请求Zygote创建一个新的应用程序进程。Zygote进程通过fock自身创建的应用程序进程，这样应用程序进程就会获得Zygote进程在启动时创建的虚拟机实例。在应用程序创建过程中，除了获取虚拟机实例，还可以获得Binder线程池和循环消息，这样运行应用程序进程中的应用程序就可以使用Binder进行进程间通信和消息处理机制。</p>
+<p>在<a href="https://tylerliu.top/2019/08/27/Android%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B02%EF%BC%9Azygote%E8%BF%9B%E7%A8%8B/#more">Android系统启动流程 02：zygote进程</a>中，提到Zygote的Java框架中，会创建一个服务端的Socket，用来等待<code>ActivityManagerService</code>来请求Zygote创建一个新的应用程序进程。Zygote进程通过fock自身创建的应用程序进程，这样应用程序进程就会获得Zygote进程在启动时创建的虚拟机实例。在应用程序创建过程中，除了获取虚拟机实例，还可以获得Binder线程池和循环消息，这样运行应用程序进程中的应用程序就可以使用Binder进行进程间通信和消息处理机制。</p>
 <p>Binder线程池如何启动和创建会在后面介绍。</p>
 <p>应用程序进程启动过程时序图：</p>
 <img src="/2019/08/30/Android应用程序进程启动过程01/Vev4cq.png">
@@ -461,7 +461,11 @@
 <p>注释1，调用<code>ZygoteState</code>的<code>connect()</code>与名称为<code>ZYGOE_STOCKET</code>的Stoccket建立连接，这里<code>ZYGOE_STOCKET</code>的值为<code>zygote</code>。</p>
 <p>注释2，如果连接<code>name</code>为<code>zygote</code>的Socket返回的<code>primaryZygoteState</code>与当前的<code>abi</code>不匹配，则会在注释3处连接<code>name</code>为<code>zygote_secondary</code>的Socket。</p>
 <p>这两个Socket的区别是：<code>name</code>为<code>zygote</code>的Socket是运行在64位Zygote进程中，而<code>name</code>为<code>zygote_secondary</code>的Socket是运行在32位Zygote进程中。既然应用程序进程是通过Zygote进程fock产生的，当要连接Zygote中的Socket时，也需要保证位数的一致。</p>
-<h2 id="2-2-接收请求并创建应用程序进程"><a href="#2-2-接收请求并创建应用程序进程" class="headerlink" title="2.2 接收请求并创建应用程序进程"></a>2.2 接收请求并创建应用程序进程</h2>
+<h2 id="2-2-接收请求并创建应用程序进程"><a href="#2-2-接收请求并创建应用程序进程" class="headerlink" title="2.2 接收请求并创建应用程序进程"></a>2.2 接收请求并创建应用程序进程</h2><p>Socket进行连接成功并匹配<code>abi</code>后会返回<code>ZygoteState</code>类型对象，在<code>zygoteSendArgsAndGetResult()</code>中讲过，会将应用程序进程的启动参数<code>argsForZygote</code>写入到<code>ZygoteState</code>中，这样Zygote进程就会收到一个创建新的应该程序进程的请求，回到<code>ZygoteInit</code>的<code>main()</code>：frameworks/base/core/java/com/android/internal/os/ZygoteInit.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String argv[])</span> </span>&#123;</span><br><span class="line">   ...</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">     ...       </span><br><span class="line">        <span class="comment">// 注册Zygote用的Socket</span></span><br><span class="line">        registerZygoteSocket(socketName);  <span class="comment">// 1</span></span><br><span class="line">       ...</span><br><span class="line">       <span class="comment">// 预加载类和资源</span></span><br><span class="line">       preload(); <span class="comment">// 2</span></span><br><span class="line">       ...</span><br><span class="line">        <span class="keyword">if</span> (startSystemServer) &#123;</span><br><span class="line">        <span class="comment">// 启动SystemServer进程</span></span><br><span class="line">            startSystemServer(abiList, socketName); <span class="comment">// 3</span></span><br><span class="line">        &#125;</span><br><span class="line">        Log.i(TAG, <span class="string">"Accepting command socket connections"</span>);</span><br><span class="line">        <span class="comment">// 等待客户端请求</span></span><br><span class="line">        runSelectLoop(abiList); <span class="comment">// 4</span></span><br><span class="line">        closeServerSocket();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (MethodAndArgsCaller caller) &#123;</span><br><span class="line">        caller.run();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RuntimeException ex) &#123;</span><br><span class="line">        Log.e(TAG, <span class="string">"Zygote died with exception"</span>, ex);</span><br><span class="line">        closeServerSocket();</span><br><span class="line">        <span class="keyword">throw</span> ex;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这些内容在<a href="https://tylerliu.top/2019/08/27/Android%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B02%EF%BC%9Azygote%E8%BF%9B%E7%A8%8B/#more">Android系统启动流程 02：zygote进程</a>中已经讲过。</p>
+
       
     </div>
     
@@ -491,8 +495,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/29/Android-AOSP03：Android系统源码的整编和单编/" rel="next" title="Android AOSP03：Android系统源码的整编和单编">
-                <i class="fa fa-chevron-left"></i> Android AOSP03：Android系统源码的整编和单编
+              <a href="/2019/08/29/Android-AOSP03：Android系统源码的整编和单编/" rel="next" title="Android AOSP 03：Android系统源码的整编和单编">
+                <i class="fa fa-chevron-left"></i> Android AOSP 03：Android系统源码的整编和单编
               </a>
             
           </div>
@@ -675,7 +679,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">82.8k</span>
+    <span title="Site words total count">83k</span>
   
 -->
 </div>
@@ -690,7 +694,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共82.8k字</span>
+  <span class="post-count">博客全站共83k字</span>
 </div>
 
         
