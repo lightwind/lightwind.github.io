@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="RxJava,">
+  <meta name="keywords" content="Android系统启动,">
 
 
 
@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="1. 需求场景 背景：实现轮询请求，即，客户端固定时间主动向服务器发送请求，获取信息，也称pull。 冲突：通过Handler和Timer定时器 的实现方式较为复杂，可扩展性差。 解决方案：采用RxJava的延时创建操作符   interval()：无限次轮询 intervalRange()：有限次轮询  2. 功能说明采用GET方法对金山词霸API按规定时间重复发送网络请求，模拟轮询需求。采用G">
-<meta name="keywords" content="RxJava">
+<meta name="description" content="前言前面讲到Android应用程序进程启动的过程，留下了一点：在应用程序进程创建过程中会启动Binder创建线程池以及在应用程序进程启动后会创建消息循环。 1. Binder线程池启动过程RuntimeInit的zygoteInit()如下： 123456789public static final void zygoteInit(int targetSdkVersion, String[] ar">
+<meta name="keywords" content="Android系统启动">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android RxJava应用：网络请求轮询（无条件）">
-<meta property="og:url" content="https://tylerLiu.top/2019/08/22/Android-RxJava应用：网络轮询请求/index.html">
+<meta property="og:title" content="Android应用程序进程启动过程 02">
+<meta property="og:url" content="https://tylerLiu.top/2019/08/31/Android应用程序进程启动过程02/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="1. 需求场景 背景：实现轮询请求，即，客户端固定时间主动向服务器发送请求，获取信息，也称pull。 冲突：通过Handler和Timer定时器 的实现方式较为复杂，可扩展性差。 解决方案：采用RxJava的延时创建操作符   interval()：无限次轮询 intervalRange()：有限次轮询  2. 功能说明采用GET方法对金山词霸API按规定时间重复发送网络请求，模拟轮询需求。采用G">
+<meta property="og:description" content="前言前面讲到Android应用程序进程启动的过程，留下了一点：在应用程序进程创建过程中会启动Binder创建线程池以及在应用程序进程启动后会创建消息循环。 1. Binder线程池启动过程RuntimeInit的zygoteInit()如下： 123456789public static final void zygoteInit(int targetSdkVersion, String[] ar">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-23T05:03:32.464Z">
+<meta property="og:updated_time" content="2019-09-02T01:57:33.085Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android RxJava应用：网络请求轮询（无条件）">
-<meta name="twitter:description" content="1. 需求场景 背景：实现轮询请求，即，客户端固定时间主动向服务器发送请求，获取信息，也称pull。 冲突：通过Handler和Timer定时器 的实现方式较为复杂，可扩展性差。 解决方案：采用RxJava的延时创建操作符   interval()：无限次轮询 intervalRange()：有限次轮询  2. 功能说明采用GET方法对金山词霸API按规定时间重复发送网络请求，模拟轮询需求。采用G">
+<meta name="twitter:title" content="Android应用程序进程启动过程 02">
+<meta name="twitter:description" content="前言前面讲到Android应用程序进程启动的过程，留下了一点：在应用程序进程创建过程中会启动Binder创建线程池以及在应用程序进程启动后会创建消息循环。 1. Binder线程池启动过程RuntimeInit的zygoteInit()如下： 123456789public static final void zygoteInit(int targetSdkVersion, String[] ar">
 
 
 
@@ -122,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="https://tylerLiu.top/2019/08/22/Android-RxJava应用：网络轮询请求/">
+  <link rel="canonical" href="https://tylerLiu.top/2019/08/31/Android应用程序进程启动过程02/">
 
 
 
 
 
-  <title>Android RxJava应用：网络请求轮询（无条件） | Tyler的博客</title>
+  <title>Android应用程序进程启动过程 02 | Tyler的博客</title>
   
 
 
@@ -287,7 +287,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://tylerLiu.top/2019/08/22/Android-RxJava应用：网络轮询请求/">
+    <link itemprop="mainEntityOfPage" href="https://tylerLiu.top/2019/08/31/Android应用程序进程启动过程02/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tyler Liu">
@@ -304,7 +304,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Android RxJava应用：网络请求轮询（无条件）</h1>
+          <h1 class="post-title" itemprop="name headline">Android应用程序进程启动过程 02</h1>
         
 
         <div class="post-meta">
@@ -316,8 +316,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-22T11:17:01+08:00">
-                2019-08-22
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-31T10:42:53+08:00">
+                2019-08-31
               </time>
             
 
@@ -339,8 +339,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
+                  <a href="/categories/Android起飞/" itemprop="url" rel="index">
+                    <span itemprop="name">Android起飞</span>
                   </a>
                 </span>
 
@@ -350,8 +350,19 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/RxJava/" itemprop="url" rel="index">
-                    <span itemprop="name">RxJava</span>
+                  <a href="/categories/Android起飞/框架层/" itemprop="url" rel="index">
+                    <span itemprop="name">框架层</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android起飞/框架层/应用进程启动流程/" itemprop="url" rel="index">
+                    <span itemprop="name">应用进程启动流程</span>
                   </a>
                 </span>
 
@@ -381,7 +392,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  792 字
+                  1k 字
                 </span>
               
 
@@ -397,7 +408,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  3 分钟
+                  4 分钟
                 </span>
               
             </div>
@@ -418,29 +429,52 @@
       
 
       
-        <h1 id="1-需求场景"><a href="#1-需求场景" class="headerlink" title="1. 需求场景"></a>1. 需求场景</h1><ol>
-<li>背景：实现轮询请求，即，客户端固定时间主动向服务器发送请求，获取信息，也称pull。</li>
-<li>冲突：通过<code>Handler</code>和<code>Timer</code>定时器 的实现方式较为复杂，可扩展性差。</li>
-<li>解决方案：采用<code>RxJava</code>的延时创建操作符</li>
-</ol>
-<ul>
-<li><code>interval()</code>：无限次轮询</li>
-<li><code>intervalRange()</code>：有限次轮询</li>
-</ul>
-<h1 id="2-功能说明"><a href="#2-功能说明" class="headerlink" title="2. 功能说明"></a>2. 功能说明</h1><p>采用<code>GET</code>方法对金山词霸API按规定时间重复发送网络请求，模拟轮询需求。<br>采用<code>Gson</code>进行数据解析。</p>
-<h1 id="3-具体实现"><a href="#3-具体实现" class="headerlink" title="3. 具体实现"></a>3. 具体实现</h1><h2 id="3-1-步骤说明"><a href="#3-1-步骤说明" class="headerlink" title="3.1 步骤说明"></a>3.1 步骤说明</h2><ol>
-<li>添加依赖</li>
-<li>创建接收服务器返回的数据的类</li>
-<li>创建用于描述网络请求的接口</li>
-<li>创建<code>Retrofit</code>实例</li>
-<li>创建网络请求接口实例，配置网络请求参数</li>
-<li>发送网络请求</li>
-<li>对返回的数据进行处理</li>
-</ol>
-<p>前面的步骤在<a href="https://tylerliu.top/2019/08/17/Android-RxJava%EF%BC%9A线程控制/">Android RxJava：线程控制</a>中已经讲解，这里主要分析轮询部分的实现。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * RxJava实现轮询</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Liuyang</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2019/8/22</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RxJavafixRxjavaActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"Rxjava"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressLint</span>(<span class="string">"CheckResult"</span>)</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_rx_javafix_rxjava);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 步骤1：采用interval()延迟发送</span></span><br><span class="line">        <span class="comment">// 注：此处主要展示无限轮询，要实现有限轮询，使用intervalRange()即可</span></span><br><span class="line">        Observable.interval(<span class="number">2</span>, <span class="number">1</span>, TimeUnit.SECONDS)</span><br><span class="line">                <span class="comment">// 步骤2：每次发送数字前发送一次网络请求（doOnNext()在执行Next事件前调用）</span></span><br><span class="line">                <span class="comment">// 即每隔1秒产生一个数字前，就发送一次网络请求，实现轮询</span></span><br><span class="line">                .doOnNext(<span class="keyword">new</span> Consumer&lt;Long&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(Long aLong)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                        Log.d(TAG, <span class="string">"第 "</span> + aLong + <span class="string">" 次轮询"</span>);</span><br><span class="line"></span><br><span class="line">                        <span class="comment">// 步骤3：通过Retrofit实现网络请求</span></span><br><span class="line">                        Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()</span><br><span class="line">                                .baseUrl(<span class="string">"http://fy.iciba.com/"</span>)</span><br><span class="line">                                .addConverterFactory(GsonConverterFactory.create())</span><br><span class="line">                                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())</span><br><span class="line">                                .build();</span><br><span class="line"></span><br><span class="line">                        GetRequest_Interface request = retrofit.create(GetRequest_Interface.class);</span><br><span class="line"></span><br><span class="line">                        Observable&lt;Translation&gt; observable = request.getCall();</span><br><span class="line"></span><br><span class="line">                        observable.subscribeOn(Schedulers.io())</span><br><span class="line">                                .observeOn(AndroidSchedulers.mainThread())</span><br><span class="line">                                .subscribe(<span class="keyword">new</span> Consumer&lt;Translation&gt;() &#123;</span><br><span class="line">                                    <span class="meta">@Override</span></span><br><span class="line">                                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(Translation translation)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                                        <span class="keyword">if</span> (translation != <span class="keyword">null</span>) &#123;</span><br><span class="line">                                            Log.d(TAG, <span class="string">"结果 from："</span> + translation.getContent().getFrom());</span><br><span class="line">                                            Log.d(TAG, <span class="string">"结果 to："</span> + translation.getContent().getTo());</span><br><span class="line">                                            Log.d(TAG, <span class="string">"结果 vendor："</span> + translation.getContent().getVendor());</span><br><span class="line">                                            Log.d(TAG, <span class="string">"结果 out："</span> + translation.getContent().getOut());</span><br><span class="line">                                            Log.d(TAG, <span class="string">"结果 ciba_use："</span> + translation.getContent().getCiba_use());</span><br><span class="line">                                            Log.d(TAG, <span class="string">"结果 ciba_out："</span> + translation.getContent().getCiba_out());</span><br><span class="line">                                            Log.d(TAG, <span class="string">"结果 err_no："</span> + translation.getContent().getErr_no());</span><br><span class="line">                                        &#125;</span><br><span class="line">                                    &#125;</span><br><span class="line">                                &#125;);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;).subscribe(<span class="keyword">new</span> Consumer&lt;Long&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(Long aLong)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                Log.d(TAG, <span class="string">"接收到的事件："</span> + aLong);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, <span class="keyword">new</span> Consumer&lt;Throwable&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(Throwable throwable)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                Log.d(TAG, <span class="string">"对Error事件作出响应"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前面讲到Android应用程序进程启动的过程，留下了一点：在应用程序进程创建过程中会启动Binder创建线程池以及在应用程序进程启动后会创建消息循环。</p>
+<h1 id="1-Binder线程池启动过程"><a href="#1-Binder线程池启动过程" class="headerlink" title="1. Binder线程池启动过程"></a>1. Binder线程池启动过程</h1><p><code>RuntimeInit</code>的<code>zygoteInit()</code>如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">zygoteInit</span><span class="params">(<span class="keyword">int</span> targetSdkVersion, String[] argv, ClassLoader classLoader)</span></span></span><br><span class="line"><span class="function">      <span class="keyword">throws</span> ZygoteInit.MethodAndArgsCaller </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (DEBUG) Slog.d(TAG, <span class="string">"RuntimeInit: Starting application from zygote"</span>);</span><br><span class="line">  Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"RuntimeInit"</span>);</span><br><span class="line">  redirectLogStreams();</span><br><span class="line">  commonInit();</span><br><span class="line">  nativeZygoteInit(); <span class="comment">// 1</span></span><br><span class="line">  applicationInit(targetSdkVersion, argv, classLoader);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">D/Rxjava: 第 0 次轮询</span><br><span class="line">D/Rxjava: 接收到的事件：0</span><br><span class="line">D/Rxjava: 第 1 次轮询</span><br><span class="line">D/Rxjava: 接收到的事件：1</span><br><span class="line">D/Rxjava: 第 2 次轮询</span><br><span class="line">D/Rxjava: 接收到的事件：2</span><br><span class="line">D/Rxjava: 结果 from：en-EU</span><br><span class="line">D/Rxjava: 结果 to：zh-CN</span><br><span class="line">D/Rxjava: 结果 vendor：tencent</span><br><span class="line">D/Rxjava: 结果 out：嗨世界</span><br><span class="line">D/Rxjava: 结果 ciba_use：来自机器翻译。</span><br><span class="line">D/Rxjava: 结果 ciba_out：</span><br><span class="line">D/Rxjava: 结果 err_no：0</span><br><span class="line">D/Rxjava: 第 3 次轮询</span><br><span class="line">D/Rxjava: 接收到的事件：3</span><br><span class="line">D/Rxjava: 结果 from：en-EU</span><br><span class="line">D/Rxjava: 结果 to：zh-CN</span><br><span class="line">D/Rxjava: 结果 vendor：tencent</span><br><span class="line">D/Rxjava: 结果 out：嗨世界</span><br><span class="line">D/Rxjava: 结果 ciba_use：来自机器翻译。</span><br><span class="line">D/Rxjava: 结果 ciba_out：</span><br><span class="line">D/Rxjava: 结果 err_no：0</span><br><span class="line">D/Rxjava: 结果 from：en-EU</span><br><span class="line">D/Rxjava: 结果 to：zh-CN</span><br><span class="line">D/Rxjava: 结果 vendor：tencent</span><br><span class="line">D/Rxjava: 结果 out：嗨世界</span><br><span class="line">D/Rxjava: 结果 ciba_use：来自机器翻译。</span><br><span class="line">D/Rxjava: 结果 ciba_out：</span><br><span class="line">D/Rxjava: 结果 err_no：0</span><br></pre></td></tr></table></figure>
+<p>注释1，在新创建的应用程序进程中创建Binder线程池，来看看<code>nativeZygoteInit()</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">nativeZygoteInit</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>nativeZygoteInit()</code>是一个jni方法，在AndoridRuntime.cpp中，<code>JNINativeMethod</code>数组中得知它对应的函数是<code>com_android_internal_os_RuntimeInit_nativeZygoteInit</code>：frameworks/base/core/jni/AndroidRuntime.cpp</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> JNINativeMethod gMethods[] = &#123;</span><br><span class="line">    &#123; <span class="string">"nativeFinishInit"</span>, <span class="string">"()V"</span>,</span><br><span class="line">        (<span class="keyword">void</span>*) com_android_internal_os_RuntimeInit_nativeFinishInit &#125;,</span><br><span class="line">    &#123; <span class="string">"nativeZygoteInit"</span>, <span class="string">"()V"</span>,</span><br><span class="line">        (<span class="keyword">void</span>*) com_android_internal_os_RuntimeInit_nativeZygoteInit &#125;,</span><br><span class="line">    &#123; <span class="string">"nativeSetExitWithoutCleanup"</span>, <span class="string">"(Z)V"</span>,</span><br><span class="line">        (<span class="keyword">void</span>*) com_android_internal_os_RuntimeInit_nativeSetExitWithoutCleanup &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>下面看看<code>com_android_internal_os_RuntimeInit_nativeZygoteInit()</code>：frameworks/base/core/jni/AndroidRuntime.cpp</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">com_android_internal_os_RuntimeInit_nativeZygoteInit</span><span class="params">(JNIEnv* env, jobject clazz)</span> </span>&#123;</span><br><span class="line">    gCurRuntime-&gt;onZygoteInit();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>gCurRuntime</code>在<code>AndoridRuntime</code>初始化就创建了：frameworks/base/core/jni/AndroidRuntime.cpp</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">AndroidRuntime::AndroidRuntime(<span class="keyword">char</span>* argBlockStart, <span class="keyword">const</span> <span class="keyword">size_t</span> argBlockLength) :</span><br><span class="line">        mExitWithoutCleanup(<span class="literal">false</span>),</span><br><span class="line">        mArgBlockStart(argBlockStart),</span><br><span class="line">        mArgBlockLength(argBlockLength) &#123;</span><br><span class="line">   ...</span><br><span class="line">    gCurRuntime = <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<a href="https://tylerliu.top/2019/08/27/Android%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B02%EF%BC%9Azygote%E8%BF%9B%E7%A8%8B/#more">Android系统启动流程 02：zygote进程</a>中，得知<code>AppRuntime</code>继承<code>AndroidRuntime</code>，<code>AppRuntime</code>创建时会调用<code>AndroidRuntime</code>的构造函数，<code>gCurRuntime</code>就会被初始化，它指向的是<code>AppRuntime</code>，所以下面来查看<code>AppRunTime</code>的<code>onZygoteInit()</code>，<code>AppRuntime</code>的实现在app_main.cpp中：frameworks/base/cmds/app_process/app_main.cpp</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">onZygoteInit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    sp&lt;ProcessState&gt; proc = ProcessState::self();</span><br><span class="line">    ALOGV(<span class="string">"App process: starting thread pool.\n"</span>);</span><br><span class="line">    proc-&gt;startThreadPool();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后一行会调用<code>ProcessState</code>的<code>startThreadPool()</code>：frameworks/native/libs/binder/ProcessState.cpp</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> ProcessState::startThreadPool() &#123;</span><br><span class="line">    AutoMutex _l(mLock);</span><br><span class="line">    <span class="keyword">if</span> (!mThreadPoolStarted) &#123;</span><br><span class="line">        mThreadPoolStarted = <span class="literal">true</span>;</span><br><span class="line">        spawnPooledThread(<span class="literal">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>支持Binder通信的进程中都有一个<code>ProcessState</code>类，它里面有一个<code>mThreadPoolState</code>变量，来表示Binder线程池是否已经被启动过，默认值为<code>false</code>。每次调用这个函数前会先检查这个标记，确保binder线程池只会被启动一次。如果Binder线程池未设置<code>mThreadPoolState</code>为<code>true</code>，最后会调用<code>spawwnPooledThread()</code>来创建线程池中的第一个线程，即线程池中的main线程。frameworks/native/libs/binder/ProcessState.cpp</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> ProcessState::spawnPooledThread(<span class="keyword">bool</span> isMain) &#123;</span><br><span class="line">    <span class="keyword">if</span> (mThreadPoolStarted) &#123;</span><br><span class="line">        String8 name = makeBinderThreadName();</span><br><span class="line">        ALOGV(<span class="string">"Spawning new pooled thread, name=%s\n"</span>, name.<span class="built_in">string</span>());</span><br><span class="line">        sp&lt;Thread&gt; t = <span class="keyword">new</span> PoolThread(isMain);</span><br><span class="line">        t-&gt;run(name.<span class="built_in">string</span>()); <span class="comment">// 1</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到Binder线程为一个<code>PoolThread</code>。注释1，调用<code>PoolThread</code>的<code>run()</code>来启动一个新的线程。看看<code>PoolThread</code>类：frameworks/native/libs/binder/ProcessState.cpp</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PoolThread</span> :</span> <span class="keyword">public</span> Thread &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">protected</span>:</span><br><span class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span> <span class="title">threadLoop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            IPCThreadState::self()-&gt;joinThreadPool(mIsMain); <span class="comment">// 1</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">bool</span> mIsMain;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><code>PoolThread</code>继承了<code>Thread</code>。注释1，调用<code>IPCThreadState</code>的<code>joinThreadPool()</code>函数，将当前线程注册到Binder驱动程序中，这样创建的线程就加入了Binder线程池中，新创建的应用程序线程也就支持Binder线程间通信。</p>
+<h1 id="2-消息循环创建过程"><a href="#2-消息循环创建过程" class="headerlink" title="2. 消息循环创建过程"></a>2. 消息循环创建过程</h1><p>上篇最后讲到<code>RuntimeInit</code>的<code>invokeStaticMain()</code>：frameworks/base/core/java/com/android/internal/os/RuntimeInit.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">invokeStaticMain</span><span class="params">(String className, String[] argv, ClassLoader classLoader)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> ZygoteInit.MethodAndArgsCaller </span>&#123;</span><br><span class="line">    Class&lt;?&gt; cl;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> ZygoteInit.MethodAndArgsCaller(m, argv);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在最后会抛出<code>MethodAndArgsCaller()</code>异常，这个异常会被<code>ZygoteInit</code>的<code>main()</code>捕获：frameworks/base/core/java/com/android/internal/os/ZygoteInit.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String argv[])</span> </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">     ...</span><br><span class="line">  &#125; <span class="keyword">catch</span> (MethodAndArgsCaller caller) &#123;</span><br><span class="line">      caller.run(); <span class="comment">// 1</span></span><br><span class="line">  &#125; <span class="keyword">catch</span> (RuntimeException ex) &#123;</span><br><span class="line">      Log.e(TAG, <span class="string">"Zygote died with exception"</span>, ex);</span><br><span class="line">      closeServerSocket();</span><br><span class="line">      <span class="keyword">throw</span> ex;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，捕获<code>MethodAndArgsCaller</code>时会执行<code>caler</code>的<code>run()</code>：frameworks/base/core/java/com/android/internal/os/RuntimeInit.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MethodAndArgsCaller</span> <span class="keyword">extends</span> <span class="title">Exception</span></span></span><br><span class="line"><span class="class">       <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> Method mMethod;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> String[] mArgs;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">MethodAndArgsCaller</span><span class="params">(Method method, String[] args)</span> </span>&#123;</span><br><span class="line">       mMethod = method;</span><br><span class="line">       mArgs = args;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           mMethod.invoke(<span class="keyword">null</span>, <span class="keyword">new</span> Object[] &#123; mArgs &#125;); <span class="comment">// 1</span></span><br><span class="line">       &#125; <span class="keyword">catch</span> (IllegalAccessException ex) &#123;</span><br><span class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(ex);</span><br><span class="line">       &#125;</span><br><span class="line">       ...</span><br><span class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(ex);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上一篇得知，<code>mMethod</code>指的就是<code>ActivityThread</code>的<code>main()</code>，<code>mArgs</code>指的是应用程序进程的启动参数。在注释1调用了<code>ActivityThread</code>的<code>main()</code>：frameworks/base/core/java/android/app/ActivityThread.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"ActivityThreadMain"</span>);</span><br><span class="line">    SamplingProfilerIntegration.start();</span><br><span class="line">    ...</span><br><span class="line">    Looper.prepareMainLooper(); <span class="comment">// 1</span></span><br><span class="line">    ActivityThread thread = <span class="keyword">new</span> ActivityThread(); <span class="comment">// 2</span></span><br><span class="line">    thread.attach(<span class="keyword">false</span>);</span><br><span class="line">    <span class="keyword">if</span> (sMainThreadHandler == <span class="keyword">null</span>) &#123;</span><br><span class="line">        sMainThreadHandler = thread.getHandler();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">false</span>) &#123;</span><br><span class="line">        Looper.myLooper().setMessageLogging(<span class="keyword">new</span></span><br><span class="line">                LogPrinter(Log.DEBUG, <span class="string">"ActivityThread"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</span><br><span class="line">    Looper.loop(); <span class="comment">// 3</span></span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Main thread loop unexpectedly exited"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，在当前应用程序进程中创建消息循环。</p>
+<p>注释2，创建<code>ActivityThread</code>。</p>
+<p>注释3，调用<code>Looper</code>的<code>loop()</code>，是的<code>Looper</code>开始处理消息。</p>
+<p>系统在应用程序进程启动完成后，就会创建一个消息循环，用来方便的使用Android消息处理机制。</p>
+
       
     </div>
     
@@ -457,7 +491,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/RxJava/" rel="tag"># RxJava</a>
+            <a href="/tags/Android系统启动/" rel="tag"># Android系统启动</a>
           
         </div>
       
@@ -470,8 +504,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/20/Android-RxJava：背压策略/" rel="next" title="Android RxJava：背压策略">
-                <i class="fa fa-chevron-left"></i> Android RxJava：背压策略
+              <a href="/2019/08/30/Android应用程序进程启动过程01/" rel="next" title="Android应用程序进程启动过程 01">
+                <i class="fa fa-chevron-left"></i> Android应用程序进程启动过程 01
               </a>
             
           </div>
@@ -479,10 +513,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/08/22/Android-RxJava应用：网络请求嵌套回调/" rel="prev" title="Android RxJava应用：网络请求嵌套回调">
-                Android RxJava应用：网络请求嵌套回调 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -623,7 +653,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-需求场景"><span class="nav-text">1. 需求场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-功能说明"><span class="nav-text">2. 功能说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-具体实现"><span class="nav-text">3. 具体实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-步骤说明"><span class="nav-text">3.1 步骤说明</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Binder线程池启动过程"><span class="nav-text">1. Binder线程池启动过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-消息循环创建过程"><span class="nav-text">2. 消息循环创建过程</span></a></li></ol></div>
             
 
           </div>
