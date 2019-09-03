@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="四大组件,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Tyler的博客" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="前言可以通过Context的startService()来绑定Service，也可以通过Context的bindService来绑定Service。 1. ContextImpl到ActivityManagerService的调用过程可以用bindService()来绑定Service，它的实现在ContextWrapper中：frameworks/base/core/java/android/c">
+<meta name="keywords" content="四大组件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Andorid深入理解四大组件 04：Service的绑定过程">
+<meta property="og:url" content="https://tylerLiu.top/2019/09/03/Andorid深入理解四大组件-04：Service的绑定过程/index.html">
+<meta property="og:site_name" content="Tyler的博客">
+<meta property="og:description" content="前言可以通过Context的startService()来绑定Service，也可以通过Context的bindService来绑定Service。 1. ContextImpl到ActivityManagerService的调用过程可以用bindService()来绑定Service，它的实现在ContextWrapper中：frameworks/base/core/java/android/c">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://tylerliu.top/2019/09/03/Andorid深入理解四大组件-04：Service的绑定过程/VeAp9O.png">
+<meta property="og:image" content="https://tylerliu.top/2019/09/03/Andorid深入理解四大组件-04：Service的绑定过程/Vekz4K.png">
+<meta property="og:image" content="https://tylerliu.top/2019/09/03/Andorid深入理解四大组件-04：Service的绑定过程/VekxN6.png">
+<meta property="og:updated_time" content="2019-09-03T06:56:24.606Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Andorid深入理解四大组件 04：Service的绑定过程">
+<meta name="twitter:description" content="前言可以通过Context的startService()来绑定Service，也可以通过Context的bindService来绑定Service。 1. ContextImpl到ActivityManagerService的调用过程可以用bindService()来绑定Service，它的实现在ContextWrapper中：frameworks/base/core/java/android/c">
+<meta name="twitter:image" content="https://tylerliu.top/2019/09/03/Andorid深入理解四大组件-04：Service的绑定过程/VeAp9O.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://tylerLiu.top/2019/09/03/Andorid深入理解四大组件-04：Service的绑定过程/">
+
+
+
+
+
+  <title>Andorid深入理解四大组件 04：Service的绑定过程 | Tyler的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tyler的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://tylerLiu.top/2019/09/03/Andorid深入理解四大组件-04：Service的绑定过程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tyler Liu">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tyler的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Andorid深入理解四大组件 04：Service的绑定过程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-03T10:56:45+08:00">
+                2019-09-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android起飞/" itemprop="url" rel="index">
+                    <span itemprop="name">Android起飞</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android起飞/框架层/" itemprop="url" rel="index">
+                    <span itemprop="name">框架层</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android起飞/框架层/深入理解四大组件/" itemprop="url" rel="index">
+                    <span itemprop="name">深入理解四大组件</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  10 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>可以通过<code>Context</code>的<code>startService()</code>来绑定Service，也可以通过<code>Context</code>的<code>bindService</code>来绑定Service。</p>
+<h1 id="1-ContextImpl到ActivityManagerService的调用过程"><a href="#1-ContextImpl到ActivityManagerService的调用过程" class="headerlink" title="1. ContextImpl到ActivityManagerService的调用过程"></a>1. ContextImpl到ActivityManagerService的调用过程</h1><p>可以用<code>bindService()</code>来绑定Service，它的实现在<code>ContextWrapper</code>中：<br>frameworks/base/core/java/android/content/ContextWrapper.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">bindService</span><span class="params">(Intent service, ServiceConnection conn, <span class="keyword">int</span> flags)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> mBase.bindService(service, conn, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的<code>mBase</code>具体指向就是<code>ContextImpl</code>，在<a href="https://tylerliu.top/2019/09/03/Andorid深入理解四大组件-03%EF%BC%9AService的启动过程/#more">Andorid深入理解四大组件 03：Service的启动过程</a>中已经讲解过。下面看看<code>ContextImpl</code>的<code>bindService()</code>：frameworks/base/core/java/android/app/ContextImpl.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">bindService</span><span class="params">(Intent service, ServiceConnection conn, <span class="keyword">int</span> flags)</span> </span>&#123;</span><br><span class="line">    warnIfCallingFromSystemProcess();</span><br><span class="line">    <span class="keyword">return</span> bindServiceCommon(service, conn, flags, mMainThread.getHandler(), Process.myUserHandle());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在里面<code>return bindServiceCommon()</code>：frameworks/base/core/java/android/app/ContextImpl.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">bindServiceCommon</span><span class="params">(Intent service, ServiceConnection conn, <span class="keyword">int</span> flags, Handler handler, UserHandle user)</span> </span>&#123;</span><br><span class="line">    IServiceConnection sd;</span><br><span class="line">    <span class="keyword">if</span> (conn == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"connection is null"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (mPackageInfo != <span class="keyword">null</span>) &#123;</span><br><span class="line">        sd = mPackageInfo.getServiceDispatcher(conn, getOuterContext(), handler, flags); <span class="comment">// 1</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Not supported in system context"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    validateServiceIntent(service);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        IBinder token = getActivityToken();</span><br><span class="line">        <span class="keyword">if</span> (token == <span class="keyword">null</span> &amp;&amp; (flags&amp;BIND_AUTO_CREATE) == <span class="number">0</span> &amp;&amp; mPackageInfo != <span class="keyword">null</span> &amp;&amp; mPackageInfo.getApplicationInfo().targetSdkVersion &lt; android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) &#123;</span><br><span class="line">            flags |= BIND_WAIVE_PRIORITY;</span><br><span class="line">        &#125;</span><br><span class="line">        service.prepareToLeaveProcess(<span class="keyword">this</span>);</span><br><span class="line">        <span class="comment">// 2</span></span><br><span class="line">        <span class="keyword">int</span> res = ActivityManagerNative.getDefault().bindService(mMainThread.getApplicationThread(), getActivityToken(), service, service.resolveTypeIfNeeded(getContentResolver()), sd, flags, getOpPackageName(), user.getIdentifier());</span><br><span class="line">        <span class="keyword">if</span> (res &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SecurityException(<span class="string">"Not allowed to bind to service "</span> + service);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res != <span class="number">0</span>;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> e.rethrowFromSystemServer();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，调用<code>LoadedApk</code>类型的对象<code>mPackageInfo</code>的<code>getServiceDispatcher()</code>，将<code>ServiceConnection</code>封装为<code>IServiceConnection</code>类型的对象<code>sd</code>，<code>IServiceConnection</code>实现了Binder机制，这样Service的绑定就支持跨进程。</p>
+<p>注释2，调用ASM的<code>bindService()</code>绑定。</p>
+<p><code>ContextImpl</code>到<code>ActivityManagerService</code>调用过程时序图：</p>
+<img src="/2019/09/03/Andorid深入理解四大组件-04：Service的绑定过程/VeAp9O.png">
+
+<h1 id="2-Service的绑定"><a href="#2-Service的绑定" class="headerlink" title="2. Service的绑定"></a>2. Service的绑定</h1><p>AMS的<code>bindService()</code>：frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">bindService</span><span class="params">(IApplicationThread caller, IBinder token, Intent service, String resolvedType, IServiceConnection connection, <span class="keyword">int</span> flags, String callingPackage, <span class="keyword">int</span> userId)</span> <span class="keyword">throws</span> TransactionTooLargeException </span>&#123;</span><br><span class="line">    enforceNotIsolatedCaller(<span class="string">"bindService"</span>);</span><br><span class="line">    <span class="keyword">if</span> (service != <span class="keyword">null</span> &amp;&amp; service.hasFileDescriptors() == <span class="keyword">true</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"File descriptors passed in Intent"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (callingPackage == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"callingPackage cannot be null"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">synchronized</span>(<span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> mServices.bindServiceLocked(caller, token, service, resolvedType, connection, flags, callingPackage, userId);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>bindService()</code>最后会调用<code>ActiveServices</code>类型对象<code>mServices</code>的<code>bindServiceLocked()</code>：frameworks/base/services/core/java/com/android/server/am/ActiveServices.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bindServiceLocked</span><span class="params">(IApplicationThread caller, IBinder token, Intent service, String resolvedType, <span class="keyword">final</span> IServiceConnection connection, <span class="keyword">int</span> flags, String callingPackage, <span class="keyword">final</span> <span class="keyword">int</span> userId)</span> <span class="keyword">throws</span> TransactionTooLargeException </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">if</span> ((flags&amp;Context.BIND_AUTO_CREATE) != <span class="number">0</span>) &#123;</span><br><span class="line">            s.lastActivity = SystemClock.uptimeMillis();</span><br><span class="line">            <span class="comment">// 1</span></span><br><span class="line">            <span class="keyword">if</span> (bringUpServiceLocked(s, service.getFlags(), callerFg, <span class="keyword">false</span>, permissionsReviewRequired) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ......</span><br><span class="line">        <span class="keyword">if</span> (s.app != <span class="keyword">null</span> &amp;&amp; b.intent.received) &#123; <span class="comment">// 2</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                c.conn.connected(s.name, b.intent.binder); <span class="comment">// 3</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            ......</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (b.intent.apps.size() == <span class="number">1</span> &amp;&amp; b.intent.doRebind) &#123; <span class="comment">// 4</span></span><br><span class="line">                requestServiceBindingLocked(s, b.intent, callerFg, <span class="keyword">true</span>); <span class="comment">// 5</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!b.intent.requested) &#123; <span class="comment">// 6</span></span><br><span class="line">            requestServiceBindingLocked(s, b.intent, callerFg, <span class="keyword">false</span>); <span class="comment">// 7</span></span><br><span class="line">        &#125;</span><br><span class="line">        getServiceMap(s.userId).ensureNotStartingBackground(s);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        Binder.restoreCallingIdentity(origId);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，在<code>bringUpServiceLocked()</code>中会调用<code>realStartSewrviceLocked()</code>，最终由<code>ActivityThread</code>来调用Service的<code>onCreate()</code>方法启动Service，这在<a href="https://tylerliu.top/2019/09/03/Andorid深入理解四大组件-03%EF%BC%9AService的启动过程/#more">Andorid深入理解四大组件 03：Service的启动过程</a>中已经讲过。</p>
+<p>注释2，<code>s.app != null</code>表示Service已经运行，其中<code>s</code>是<code>ServiceRecord</code>类型对象，<code>app</code>是<code>ProcessRecord</code>类型对象。<code>b.intent.recevied</code>表示当前应用程序进程的客户端已经接收到绑定Service时返回的<code>Binder</code>，这样应用程序进程的客户端就可以通过<code>Binder</code>来获取要绑定的Service的访问接口。</p>
+<p>注释3，调用<code>c.conn.connected()</code>，其中<code>c.conn</code>指的是<code>IServiceConnection</code>，它的具体实现为<code>ServiceDispatcher.InnerCooection</code>，其中<code>ServiceDispatcher</code>是<code>LoadedApk</code>的内部类，<code>InnerConnection</code>的<code>connected()</code>内部会调用<code>H</code>的<code>post()</code>，向主线程发送消息，从而解决当前应该程序进程和Service跨进程通信的问题。</p>
+<p>注释4，如果当前应用程序进程的客户端第一次与Service进行绑定，并且Service已经调用<code>onUnBind()</code>，就需要调用注释5的代码。</p>
+<p>注释6，如果应用程序进程客户端没有发送过绑定Service的请求，就会调用注释7，注释7与之前注释5唯一的区别是最后一个参数<code>rebind</code>为<code>fasle</code>，表示不重新绑定。<code>requestServiceBindingLocked()</code>：frameworks/base/services/core/java/com/android/server/am/ActiveServices.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">requestServiceBindingLocked</span><span class="params">(ServiceRecord r, IntentBindRecord i, <span class="keyword">boolean</span> execInFg, <span class="keyword">boolean</span> rebind)</span> <span class="keyword">throws</span> TransactionTooLargeException </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">if</span> ((!i.requested || rebind) &amp;&amp; i.apps.size() &gt; <span class="number">0</span>) &#123; <span class="comment">// 1</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            bumpServiceExecutingLocked(r, execInFg, <span class="string">"bind"</span>);</span><br><span class="line">            r.app.forceProcessStateUpTo(ActivityManager.PROCESS_STATE_SERVICE);</span><br><span class="line">            r.app.thread.scheduleBindService(r, i.intent.getIntent(), rebind, r.app.repProcState); <span class="comment">// 2</span></span><br><span class="line">            ......</span><br><span class="line">        &#125; <span class="keyword">catch</span> (TransactionTooLargeException e) &#123;</span><br><span class="line">            ......</span><br><span class="line">        &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">            ......</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，<code>i.requested</code>表示是否发送过绑定Service的请求，从前面的代码得知是没有发送过的，因此<code>!i.requested</code>为<code>true</code>。而<code>rebind</code>为<code>false</code>，那么<code>!i.requested || rebind</code>就是<code>true</code>。如果<code>IntentBindRecord</code>中的应用程序进程记录大于0，则会调用注释2的代码，<code>r.app.thread</code>的类型为<code>IApplicationThread</code>，它的实现是<code>ActivityThread</code>的内部类<code>ApplicationThread</code>，其<code>scheduleBindService()</code>如下：frameworks/base/core/java/android/app/ActivityThread.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">scheduleBindService</span><span class="params">(IBinder token, Intent intent, <span class="keyword">boolean</span> rebind, <span class="keyword">int</span> processState)</span> </span>&#123;</span><br><span class="line">    updateProcessState(processState, <span class="keyword">false</span>);</span><br><span class="line">    BindServiceData s = <span class="keyword">new</span> BindServiceData();</span><br><span class="line">    s.token = token;</span><br><span class="line">    s.intent = intent;</span><br><span class="line">    s.rebind = rebind;</span><br><span class="line">    ......</span><br><span class="line">    sendMessage(H.BIND_SERVICE, s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先将Service的信息封装成<code>BindServiceData</code>对象，<code>BindServiceData</code>成员变量<code>rebind</code>值为<code>fasle</code>，后面会用到。接着将<code>BindServiceData</code>传入到<code>sendMessage()</code>中。<code>sendMessage()</code>向<code>H</code>发送消息，再来看看<code>H</code>中的<code>handleMessage()</code>，这里只看<code>case BIND_SERVICE</code>的处理：frameworks/base/core/java/android/app/ActivityThread.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> BIND_SERVICE:</span><br><span class="line">    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"serviceBind"</span>);</span><br><span class="line">    handleBindService((BindServiceData)msg.obj);</span><br><span class="line">    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</span><br><span class="line">    <span class="keyword">break</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>H</code>在接收到<code>BIND_SERVICE</code>类型消息时，会在里面调用<code>handleBindService()</code>：frameworks/base/core/java/android/app/ActivityThread.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">handleBindService</span><span class="params">(BindServiceData data)</span> </span>&#123;</span><br><span class="line">    Service s = mServices.get(data.token); <span class="comment">// 1</span></span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">if</span> (s != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            data.intent.setExtrasClassLoader(s.getClassLoader());</span><br><span class="line">            data.intent.prepareToEnterProcess();</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (!data.rebind) &#123; <span class="comment">// 2</span></span><br><span class="line">                    IBinder binder = s.onBind(data.intent); <span class="comment">// 3</span></span><br><span class="line">                    ActivityManagerNative.getDefault().publishService(data.token, data.intent, binder); <span class="comment">// 4</span></span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    s.onRebind(data.intent); <span class="comment">// 5</span></span><br><span class="line">                    ActivityManagerNative.getDefault().serviceDoneExecuting(data.token, SERVICE_DONE_EXECUTING_ANON, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                ensureJitEnabled();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (RemoteException ex) &#123;</span><br><span class="line">                <span class="keyword">throw</span> ex.rethrowFromSystemServer();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            ......</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，获取要绑定的Service。</p>
+<p>注释2，<code>BindServiceData</code>的<code>rebind</code>值为<code>fasle</code>，这时，就会在注释3调用Service的<code>onBind()</code>，这样Service就处于绑定状态了。如果<code>rebind</code>为<code>true</code>，就会调用注释5的Service的<code>onRebind()</code>。结合前面的<code>bindServiceLocked()</code>的注释4，得知当前应用程序进程的客户端第一次与Service进行绑定，并且Service已经调用过<code>OnUnBind()</code>，则会调用Service的<code>onRebind()</code>。</p>
+<p>注释4，实际上调用的是AMS<code>publishService()</code>。</p>
+<p>这部分的时序图（不包含Service的启动过程）</p>
+<img src="/2019/09/03/Andorid深入理解四大组件-04：Service的绑定过程/Vekz4K.png">
+
+<p>下面看看AMS的<code>publishService()</code>：frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">publishService</span><span class="params">(IBinder token, Intent intent, IBinder service)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (intent != <span class="keyword">null</span> &amp;&amp; intent.hasFileDescriptors() == <span class="keyword">true</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"File descriptors passed in Intent"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">synchronized</span>(<span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!(token <span class="keyword">instanceof</span> ServiceRecord)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Invalid service token"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        mServices.publishServiceLocked((ServiceRecord)token, intent, service);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用了<code>ActiveServices</code>类型的<code>mServices</code>对象的<code>publishServiceLocked()</code>：frameworks/base/services/core/java/com/android/server/am/ActiveServices.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">publishServiceLocked</span><span class="params">(ServiceRecord r, Intent intent, IBinder service)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">long</span> origId = Binder.clearCallingIdentity();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        ......</span><br><span class="line">        <span class="keyword">if</span> (r != <span class="keyword">null</span>) &#123;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> (b != <span class="keyword">null</span> &amp;&amp; !b.received) &#123;</span><br><span class="line">                ......</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> conni=r.connections.size()-<span class="number">1</span>; conni&gt;=<span class="number">0</span>; conni--) &#123;</span><br><span class="line">                    ArrayList&lt;ConnectionRecord&gt; clist = r.connections.valueAt(conni);</span><br><span class="line">                    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;clist.size(); i++) &#123;</span><br><span class="line">                        ConnectionRecord c = clist.get(i);</span><br><span class="line">                        ......</span><br><span class="line">                        <span class="keyword">try</span> &#123;</span><br><span class="line">                            c.conn.connected(r.name, service); <span class="comment">// 1</span></span><br><span class="line">                        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                            ......</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            serviceDoneExecutingLocked(r, mDestroyingServices.contains(r), <span class="keyword">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        Binder.restoreCallingIdentity(origId);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，<code>c.conn</code>指的是<code>IServiceConnect</code>，它的具体实现为<code>ServiceDispatcher.InnerConnection</code>，其中<code>ServiceDispatcher</code>是<code>LoadedApk</code>的内部类，<code>ServiceDispatcher.InnerConnection</code>的<code>connected()</code>代码如下：frameworks/base/core/java/android/app/LoadedApk.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceDispatcher</span> </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">InnerConnection</span> <span class="keyword">extends</span> <span class="title">IServiceConnection</span>.<span class="title">Stub</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> WeakReference&lt;LoadedApk.ServiceDispatcher&gt; mDispatcher;</span><br><span class="line">        InnerConnection(LoadedApk.ServiceDispatcher sd) &#123;</span><br><span class="line">            mDispatcher = <span class="keyword">new</span> WeakReference&lt;LoadedApk.ServiceDispatcher&gt;(sd);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">connected</span><span class="params">(ComponentName name, IBinder service)</span> <span class="keyword">throws</span> RemoteException </span>&#123;</span><br><span class="line">            LoadedApk.ServiceDispatcher sd = mDispatcher.get();</span><br><span class="line">            <span class="keyword">if</span> (sd != <span class="keyword">null</span>) &#123;</span><br><span class="line">                sd.connected(name, service); <span class="comment">// 1</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，调用<code>ServiceDispatcher</code>类型的<code>sd</code>对象的<code>connected()</code>：frameworks/base/core/java/android/app/LoadedApk.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">connected</span><span class="params">(ComponentName name, IBinder service)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (mActivityThread != <span class="keyword">null</span>) &#123;</span><br><span class="line">        mActivityThread.post(<span class="keyword">new</span> RunConnection(name, service, <span class="number">0</span>)); <span class="comment">// 1</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        doConnected(name, service);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，调用<code>Handler</code>类型的对象<code>mActivityThread</code>的<code>post()</code>方法，<code>mActivityThread</code>实际上指向的是<code>H</code>。因此，通过调用<code>H</code>的<code>post()</code>方法将<code>RunConnection</code>对象的内容运行在主线程中。<code>RunConnection</code>的定义如下：frameworks/base/core/java/android/app/LoadedApk.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">RunConnection</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    RunConnection(ComponentName name, IBinder service, <span class="keyword">int</span> command) &#123;</span><br><span class="line">        mName = name;</span><br><span class="line">        mService = service;</span><br><span class="line">        mCommand = command;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mCommand == <span class="number">0</span>) &#123;</span><br><span class="line">            doConnected(mName, mService);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mCommand == <span class="number">1</span>) &#123;</span><br><span class="line">            doDeath(mName, mService);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">final</span> ComponentName mName;</span><br><span class="line">    <span class="keyword">final</span> IBinder mService;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> mCommand;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>RunConnection</code>的<code>run()</code>方法中调用了<code>doConnected()</code>方法：frameworks/base/core/java/android/app/LoadedApk.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doConnected</span><span class="params">(ComponentName name, IBinder service)</span> </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    <span class="comment">// If there was an old service, it is not disconnected.</span></span><br><span class="line">    <span class="keyword">if</span> (old != <span class="keyword">null</span>) &#123;</span><br><span class="line">        mConnection.onServiceDisconnected(name);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// If there is a new service, it is now connected.</span></span><br><span class="line">    <span class="keyword">if</span> (service != <span class="keyword">null</span>) &#123;</span><br><span class="line">        mConnection.onServiceConnected(name, service); <span class="comment">// 1</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，调用了<code>ServiceConnection</code>类型的对象<code>mConnection</code>的<code>onServcieConnected()</code>方法，这样在客户端中实现了<code>ServcieConnection</code>接口的类的<code>onServiceConnected()</code>方法就会被执行。至此，Service的绑定过程就分析完了。</p>
+<p>剩余部分的时序图：</p>
+<img src="/2019/09/03/Andorid深入理解四大组件-04：Service的绑定过程/VekxN6.png">
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/四大组件/" rel="tag"># 四大组件</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/03/Andorid深入理解四大组件-03：Service的启动过程/" rel="next" title="Andorid深入理解四大组件 03：Service的启动过程">
+                <i class="fa fa-chevron-left"></i> Andorid深入理解四大组件 03：Service的启动过程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Tyler Liu">
+            
+              <p class="site-author-name" itemprop="name">Tyler Liu</p>
+              <p class="site-description motion-element" itemprop="description">人生是一场难得的修行，不要轻易交白卷</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">49</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-ContextImpl到ActivityManagerService的调用过程"><span class="nav-text">1. ContextImpl到ActivityManagerService的调用过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Service的绑定"><span class="nav-text">2. Service的绑定</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tyler Liu</span>
+
+<!--
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">91.3k</span>
+  
+-->
+</div>
+
+
+
+
+
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共91.3k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
