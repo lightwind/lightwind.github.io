@@ -90,7 +90,8 @@
 <meta property="og:description" content="1. AMS到ApplicationThread的调用流程AMS的startActivity()中返回了startActivityAsUser()：frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java 12345@Overridepublic final int startActiv">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://tylerliu.top/2019/09/02/Andorid深入理解四大组件-02：应用程序启动过程（下）/Vek5NV.png">
-<meta property="og:updated_time" content="2019-09-02T09:30:24.495Z">
+<meta property="og:image" content="https://tylerliu.top/2019/09/02/Andorid深入理解四大组件-02：应用程序启动过程（下）/Vek4A0.png">
+<meta property="og:updated_time" content="2019-09-03T00:56:44.222Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Andorid深入理解四大组件 02：应用程序启动过程（下）">
 <meta name="twitter:description" content="1. AMS到ApplicationThread的调用流程AMS的startActivity()中返回了startActivityAsUser()：frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java 12345@Overridepublic final int startActiv">
@@ -394,7 +395,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.6k 字
+                  1.8k 字
                 </span>
               
 
@@ -487,7 +488,19 @@
 <p>注释1，获取<code>ActivityInfo</code>。</p>
 <p>注释2，获取APK文件的描述类<code>LoadedApk</code>。</p>
 <p>注释3，获取要启动的Activity的<code>ComponentName</code>类，<code>ComponentName</code>类中保存了该Activity的包名和类名。</p>
+<p>注释4，根据<code>ComponentName</code>中存储的Activity类名，用类加载器创建该Activity的实例。</p>
+<p>注释5，创建<code>Application</code>，<code>makeApplication()</code>内部会调用<code>Application</code>的<code>onCreate()</code>。</p>
+<p>注释6，创建要启动Activity的上下文环境。</p>
+<p>注释7，调用Activity的<code>attach()</code>初始化Activity，<code>attach()</code>内部会创建Window对象（<code>PhoneWindow</code>）并与Activity自身进行关联。</p>
+<p>注释8，调用<code>Instrumentation</code>的<code>callActivityOnCreate()</code>来启动Activity：frameworks/base/core/java/android/app/Instrumentation.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">callActivityOnCreate</span><span class="params">(Activity activity, Bundle icicle)</span> </span>&#123;</span><br><span class="line">    prePerformCreate(activity);</span><br><span class="line">    activity.performCreate(icicle);</span><br><span class="line">    postPerformCreate(activity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<p>在里面调用了<code>activity.performCreate()</code>：frameworks/base/core/java/android/app/Activity.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">performCreate</span><span class="params">(Bundle icicle)</span> </span>&#123;</span><br><span class="line">    restoreHasCurrentPermissionRequest(icicle);</span><br><span class="line">    onCreate(icicle);</span><br><span class="line">    mActivityTransitionState.readState(icicle);</span><br><span class="line">    performCreateCommon();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>performCreate()</code>中会调用Activity的<code>onCreate()</code>，这样Activity就启动了，即应用程序启动了。</p>
+<p><code>ActivityThread</code>启动Activity的时序图：</p>
+<img src="/2019/09/02/Andorid深入理解四大组件-02：应用程序启动过程（下）/Vek4A0.png">
       
     </div>
     
@@ -701,7 +714,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">87.7k</span>
+    <span title="Site words total count">87.8k</span>
   
 -->
 </div>
@@ -716,7 +729,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共87.7k字</span>
+  <span class="post-count">博客全站共87.8k字</span>
 </div>
 
         
