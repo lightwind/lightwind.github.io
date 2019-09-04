@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="RxJava,">
+  <meta name="keywords" content="四大组件,">
 
 
 
@@ -81,18 +81,21 @@
 
 
 
-<meta name="description" content="1. 需求场景背景：获取数据并统一展示到客户端冲突：数据来源不同，网络和本地，即，数据源多样解决方案：采用RxJava操作符，这里使用merge()和zip()演示。 2. 功能说明获取数据并统一展示到客户端 3. 实现 merge()：实现从（网络和本地）获取数据并统一展示 zip()：结合Retrofit和RxJava，实现合并两个网络请求，向两个服务器获取数据并统一展示。  3.1 merg">
-<meta name="keywords" content="RxJava">
+<meta name="description" content="1. 概述Activity的启动分为两种，一种是根Activity的启动过程，另一种是普通Activity的启动过程，根Activity指的是应用程序进程启动的第一个Activity，因此根Activity一般情况下也能理解为应用程序的启动过程。普通Activity指的是除了应用程序启动的第一个Activity之外的其他Activity。这里介绍的是根Activity的启动过程，它和普通Activ">
+<meta name="keywords" content="四大组件">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android RxJava应用：合并数据源并展示">
-<meta property="og:url" content="https://tylerLiu.top/2019/08/22/Android-RxJava应用：合并数据源并展示/index.html">
+<meta property="og:title" content="Andorid深入理解四大组件 07：Android 8.0 根Activity启动过程（上）">
+<meta property="og:url" content="https://tylerLiu.top/2019/09/04/Andorid深入理解四大组件-07：Android-8-0-根Activity启动过程（上）/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="1. 需求场景背景：获取数据并统一展示到客户端冲突：数据来源不同，网络和本地，即，数据源多样解决方案：采用RxJava操作符，这里使用merge()和zip()演示。 2. 功能说明获取数据并统一展示到客户端 3. 实现 merge()：实现从（网络和本地）获取数据并统一展示 zip()：结合Retrofit和RxJava，实现合并两个网络请求，向两个服务器获取数据并统一展示。  3.1 merg">
+<meta property="og:description" content="1. 概述Activity的启动分为两种，一种是根Activity的启动过程，另一种是普通Activity的启动过程，根Activity指的是应用程序进程启动的第一个Activity，因此根Activity一般情况下也能理解为应用程序的启动过程。普通Activity指的是除了应用程序启动的第一个Activity之外的其他Activity。这里介绍的是根Activity的启动过程，它和普通Activ">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-22T08:12:03.604Z">
+<meta property="og:image" content="https://tylerliu.top/2019/09/04/Andorid深入理解四大组件-07：Android-8-0-根Activity启动过程（上）/Veb67d.png">
+<meta property="og:image" content="https://tylerliu.top/2019/09/04/Andorid深入理解四大组件-07：Android-8-0-根Activity启动过程（上）/Veby0H.png">
+<meta property="og:updated_time" content="2019-09-04T09:30:39.355Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android RxJava应用：合并数据源并展示">
-<meta name="twitter:description" content="1. 需求场景背景：获取数据并统一展示到客户端冲突：数据来源不同，网络和本地，即，数据源多样解决方案：采用RxJava操作符，这里使用merge()和zip()演示。 2. 功能说明获取数据并统一展示到客户端 3. 实现 merge()：实现从（网络和本地）获取数据并统一展示 zip()：结合Retrofit和RxJava，实现合并两个网络请求，向两个服务器获取数据并统一展示。  3.1 merg">
+<meta name="twitter:title" content="Andorid深入理解四大组件 07：Android 8.0 根Activity启动过程（上）">
+<meta name="twitter:description" content="1. 概述Activity的启动分为两种，一种是根Activity的启动过程，另一种是普通Activity的启动过程，根Activity指的是应用程序进程启动的第一个Activity，因此根Activity一般情况下也能理解为应用程序的启动过程。普通Activity指的是除了应用程序启动的第一个Activity之外的其他Activity。这里介绍的是根Activity的启动过程，它和普通Activ">
+<meta name="twitter:image" content="https://tylerliu.top/2019/09/04/Andorid深入理解四大组件-07：Android-8-0-根Activity启动过程（上）/Veb67d.png">
 
 
 
@@ -122,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="https://tylerLiu.top/2019/08/22/Android-RxJava应用：合并数据源并展示/">
+  <link rel="canonical" href="https://tylerLiu.top/2019/09/04/Andorid深入理解四大组件-07：Android-8-0-根Activity启动过程（上）/">
 
 
 
 
 
-  <title>Android RxJava应用：合并数据源并展示 | Tyler的博客</title>
+  <title>Andorid深入理解四大组件 07：Android 8.0 根Activity启动过程（上） | Tyler的博客</title>
   
 
 
@@ -287,7 +290,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://tylerLiu.top/2019/08/22/Android-RxJava应用：合并数据源并展示/">
+    <link itemprop="mainEntityOfPage" href="https://tylerLiu.top/2019/09/04/Andorid深入理解四大组件-07：Android-8-0-根Activity启动过程（上）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tyler Liu">
@@ -304,7 +307,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Android RxJava应用：合并数据源并展示</h1>
+          <h1 class="post-title" itemprop="name headline">Andorid深入理解四大组件 07：Android 8.0 根Activity启动过程（上）</h1>
         
 
         <div class="post-meta">
@@ -316,8 +319,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-22T15:47:34+08:00">
-                2019-08-22
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-04T14:26:22+08:00">
+                2019-09-04
               </time>
             
 
@@ -339,8 +342,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
+                  <a href="/categories/Android起飞/" itemprop="url" rel="index">
+                    <span itemprop="name">Android起飞</span>
                   </a>
                 </span>
 
@@ -350,8 +353,19 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/RxJava/" itemprop="url" rel="index">
-                    <span itemprop="name">RxJava</span>
+                  <a href="/categories/Android起飞/框架层/" itemprop="url" rel="index">
+                    <span itemprop="name">框架层</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android起飞/框架层/深入理解四大组件/" itemprop="url" rel="index">
+                    <span itemprop="name">深入理解四大组件</span>
                   </a>
                 </span>
 
@@ -381,7 +395,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  770 字
+                  1.3k 字
                 </span>
               
 
@@ -397,7 +411,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  3 分钟
+                  6 分钟
                 </span>
               
             </div>
@@ -418,27 +432,45 @@
       
 
       
-        <h1 id="1-需求场景"><a href="#1-需求场景" class="headerlink" title="1. 需求场景"></a>1. 需求场景</h1><p>背景：获取数据并统一展示到客户端<br>冲突：数据来源不同，网络和本地，即，数据源多样<br>解决方案：采用RxJava操作符，这里使用<code>merge()</code>和<code>zip()</code>演示。</p>
-<h1 id="2-功能说明"><a href="#2-功能说明" class="headerlink" title="2. 功能说明"></a>2. 功能说明</h1><p>获取数据并统一展示到客户端</p>
-<h1 id="3-实现"><a href="#3-实现" class="headerlink" title="3. 实现"></a>3. 实现</h1><ul>
-<li><code>merge()</code>：实现从（网络和本地）获取数据并统一展示</li>
-<li><code>zip()</code>：结合<code>Retrofit</code>和<code>RxJava</code>，实现合并两个网络请求，向两个服务器获取数据并统一展示。</li>
-</ul>
-<h2 id="3-1-merge"><a href="#3-1-merge" class="headerlink" title="3.1 merge()"></a>3.1 merge()</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MergeDemoActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"RxJava"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 用于存放最终展示的数据</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String result = <span class="string">"数据源来自 = "</span>;</span><br><span class="line"></span><br><span class="line">    Observable&lt;String&gt; network = Observable.just(<span class="string">"网络"</span>);</span><br><span class="line">    Observable&lt;String&gt; file = Observable.just(<span class="string">"本地文件"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressLint</span>(<span class="string">"CheckResult"</span>)</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_merge_demo);</span><br><span class="line"></span><br><span class="line">        Observable.merge(network, file)</span><br><span class="line">                .subscribe(<span class="keyword">new</span> Observer&lt;String&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSubscribe</span><span class="params">(Disposable d)</span> </span>&#123;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNext</span><span class="params">(String value)</span> </span>&#123;</span><br><span class="line">                        Log.d(TAG, <span class="string">"数据源有： "</span> + value);</span><br><span class="line">                        result += value + <span class="string">"+"</span>;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(Throwable e)</span> </span>&#123;</span><br><span class="line">                        Log.d(TAG, <span class="string">"对Error事件作出响应"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 接收合并事件后，统一展示</span></span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onComplete</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        Log.d(TAG, <span class="string">"获取数据完成"</span>);</span><br><span class="line">                        Log.d(TAG, result);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>Activity的启动分为两种，一种是根Activity的启动过程，另一种是普通Activity的启动过程，根Activity指的是应用程序进程启动的第一个Activity，因此根Activity一般情况下也能理解为应用程序的启动过程。普通Activity指的是除了应用程序启动的第一个Activity之外的其他Activity。这里介绍的是根Activity的启动过程，它和普通Activity的启动过程又重叠部分。根Activity的启动过程一般指的就是应用程序的启动过程。</p>
+<p>根Activity的启动过程比较复杂，这里分成三个部分，分别是<code>Launcher</code>请求AMS的过程、AMS到<code>ApplicationThread</code>的调用过程和<code>ActivityThread</code>启动Activity的。</p>
+<h1 id="2-Launcher请求ASM的过程"><a href="#2-Launcher请求ASM的过程" class="headerlink" title="2. Launcher请求ASM的过程"></a>2. Launcher请求ASM的过程</h1><p><code>Launcher</code>启动后会将已经安装的应用程序的快捷图标显示到桌面上，这些应用程序的快捷图标就是启动根Activity的入口，当点击某个应用程序的快捷图标时，就会通过<code>Launcher</code>请求AMS来启动该应用程序。</p>
+<img src="/2019/09/04/Andorid深入理解四大组件-07：Android-8-0-根Activity启动过程（上）/Veb67d.png">
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">D/RxJava: 数据源有： 网络</span><br><span class="line">D/RxJava: 数据源有： 本地文件</span><br><span class="line">D/RxJava: 获取数据完成</span><br><span class="line">D/RxJava: 数据源来自 = 网络+本地文件+</span><br></pre></td></tr></table></figure>
+<p>当点击应用程序快捷图标时，就会调用<code>Launcher</code>的<code>startActivitySafely()</code>：packages/apps/Launcher3/src/com/android/launcher3/Launcher.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">startActivitySafely</span><span class="params">(View v, Intent intent, ItemInfo item)</span> </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); <span class="comment">// 1</span></span><br><span class="line">    <span class="keyword">if</span> (v != <span class="keyword">null</span>) &#123;</span><br><span class="line">        intent.setSourceBounds(getViewBounds(v));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (Utilities.ATLEAST_MARSHMALLOW &amp;&amp; (item <span class="keyword">instanceof</span> ShortcutInfo) &amp;&amp; (item.itemType == Favorites.ITEM_TYPE_SHORTCUT || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) &amp;&amp; !((ShortcutInfo) item).isPromise()) &#123;</span><br><span class="line">            startShortcutIntentSafely(intent, optsBundle, item);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (user == <span class="keyword">null</span> || user.equals(Process.myUserHandle())) &#123;</span><br><span class="line">            startActivity(intent, optsBundle); <span class="comment">// 2</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            LauncherAppsCompat.getInstance(<span class="keyword">this</span>).startActivityForProfile(intent.getComponent(), user, intent.getSourceBounds(), optsBundle);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ActivityNotFoundException|SecurityException e) &#123;</span><br><span class="line">        Toast.makeText(<span class="keyword">this</span>, R.string.activity_not_found, Toast.LENGTH_SHORT).show();</span><br><span class="line">        Log.e(TAG, <span class="string">"Unable to launch. tag="</span> + item + <span class="string">" intent="</span> + intent, e);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="3-2-zip"><a href="#3-2-zip" class="headerlink" title="3.2 zip()"></a>3.2 zip()</h2><ol>
-<li>从不同数据源（两个服务器）获取数据，并合并</li>
-<li>统一显示结果</li>
-</ol>
-<p>两个接收服务器数据的类：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Translation1</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> status;</span><br><span class="line">    <span class="keyword">private</span> ContentBean content;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ContentBean</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> String from;</span><br><span class="line">        <span class="keyword">private</span> String to;</span><br><span class="line">        <span class="keyword">private</span> String vendor;</span><br><span class="line">        <span class="keyword">private</span> String out;</span><br><span class="line">        <span class="keyword">private</span> String ciba_use;</span><br><span class="line">        <span class="keyword">private</span> String ciba_out;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> err_no;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 定义输出返回数据的方法</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">show</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="string">"第1次翻译="</span> + content.out);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Translation2</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> status;</span><br><span class="line">    <span class="keyword">private</span> ContentBean content;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ContentBean</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> String from;</span><br><span class="line">        <span class="keyword">private</span> String to;</span><br><span class="line">        <span class="keyword">private</span> String vendor;</span><br><span class="line">        <span class="keyword">private</span> String out;</span><br><span class="line">        <span class="keyword">private</span> String ciba_use;</span><br><span class="line">        <span class="keyword">private</span> String ciba_out;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> err_no;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 定义输出返回数据的方法</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">show</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="string">"第2翻译="</span> + content.out);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注释1，设置<code>Flag</code>为<code>Intent.FALG_ACTIVITY_NEW_TASK</code>，这样根Activity会在新的任务栈中启动。</p>
+<p>注释2，调用<code>startActivity()</code>，这个<code>startActivity()</code>的实现在<code>Activity</code>中：frameworks/base/core/java/android/app/Activity.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startActivity</span><span class="params">(Intent intent, @Nullable Bundle options)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (options != <span class="keyword">null</span>) &#123;</span><br><span class="line">        startActivityForResult(intent, -<span class="number">1</span>, options);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        startActivityForResult(intent, -<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>在<code>Activity</code>中的实现：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZipDemoActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"Rxjava"</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 定义Observable接口类型的网络请求对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Observable&lt;Translation1&gt; mObservable1;</span><br><span class="line">    Observable&lt;Translation2&gt; mObservable2;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressLint</span>(<span class="string">"CheckResult"</span>)</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_zip_demo);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 步骤1：创建Retrofit对象</span></span><br><span class="line">        Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()</span><br><span class="line">                .baseUrl(<span class="string">"http://fy.iciba.com/"</span>)</span><br><span class="line">                .addConverterFactory(GsonConverterFactory.create())</span><br><span class="line">                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())</span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 步骤2：创建网络请求接口的实例</span></span><br><span class="line">        GetRequest_Interface request = retrofit.create(GetRequest_Interface.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 步骤3：对两个网络请求进行封装</span></span><br><span class="line">        mObservable1 = request.getCall_1().subscribeOn(Schedulers.io());</span><br><span class="line">        mObservable2 = request.getCall_2().subscribeOn(Schedulers.io());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 步骤4：通过使用zip()对两个网络请求进行合并再发送</span></span><br><span class="line">        Observable.zip(mObservable1, mObservable2, <span class="keyword">new</span> BiFunction&lt;Translation1, Translation2, String&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">apply</span><span class="params">(Translation1 translation1, Translation2 translation2)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> translation1.show() + <span class="string">" &amp; "</span> + translation2.show();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).observeOn(AndroidSchedulers.mainThread())</span><br><span class="line">                .subscribe(<span class="keyword">new</span> Consumer&lt;String&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(String s)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                        <span class="comment">// 结合显示2个网络请求的数据结果</span></span><br><span class="line">                        Log.d(TAG, <span class="string">"最终接收到的数据是："</span> + s);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;, <span class="keyword">new</span> Consumer&lt;Throwable&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(Throwable throwable)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                        Log.d(TAG, <span class="string">"登录失败"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在里面会调用<code>startActivityForResult()</code>，它的第二个参数为-1，表示<code>Launcher</code>不需要知道Activtiy的启动结果：frameworks/base/core/java/android/app/Activity.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startActivityForResult</span><span class="params">(@RequiresPermission Intent intent, <span class="keyword">int</span> requestCode, @Nullable Bundle options)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (mParent == <span class="keyword">null</span>) &#123; <span class="comment">// 1</span></span><br><span class="line">        Instrumentation.ActivityResult ar = mInstrumentation.execStartActivity(<span class="keyword">this</span>, mMainThread.getApplicationThread(), mToken, <span class="keyword">this</span>, intent, requestCode, options);</span><br><span class="line">        ......</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ......</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">D/Rxjava: 最终接收到的数据是：第1次翻译=HI寄存器 &amp; 第2翻译=嗨登录</span><br></pre></td></tr></table></figure>
+<p>注释1，<code>mParent</code>是<code>Activity</code>类型，表示当前Activity的父类。因为目前根Activity还没有创建出来，所以<code>mParent == null</code>为<code>true</code>，接着调用<code>Instrumentation</code>的<code>execStartActivity()</code>，<code>Instrumentation</code>主要用来监听应用程序和系统的交互，<code>execStartActivity()</code>代码如下：frameworks/base/core/java/android/app/Instrumentation.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ActivityResult <span class="title">execStartActivity</span><span class="params">(Context who, IBinder contextThread, IBinder token, String target, Intent intent, <span class="keyword">int</span> requestCode, Bundle options)</span> </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        intent.migrateExtraStreamToClipData();</span><br><span class="line">        intent.prepareToLeaveProcess(who);</span><br><span class="line">        <span class="keyword">int</span> result = ActivityManager.getService().startActivity(whoThread, who.getBasePackageName(), intent, intent.resolveTypeIfNeeded(who.getContentResolver()), token, target, requestCode, <span class="number">0</span>, <span class="keyword">null</span>, options);</span><br><span class="line">        checkStartActivityResult(result, intent);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Failure from system"</span>, e);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先调用<code>ActivityManager</code>的<code>getService()</code>获取AMS的代理对象，接着调用它的<code>startActivity()</code>。这里和Android 7.0不同的是，Android 7.0是通过<code>ActivityManagerNative</code>的<code>getDefault()</code>来获取AMS的代理对象的，现在这个逻辑封装到了<code>ActivityManager</code>中。首先看看<code>ActivtiyManager.getService()</code>：frameworks/base/core/java/android/app/ActivityManager.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> IActivityManager <span class="title">getService</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> IActivityManagerSingleton.get();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton&lt;IActivityManager&gt; IActivityManagerSingleton =</span><br><span class="line">        <span class="keyword">new</span> Singleton&lt;IActivityManager&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">protected</span> IActivityManager <span class="title">create</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">final</span> IBinder b = ServiceManager.getService(Context.ACTIVITY_SERVICE); <span class="comment">// 1</span></span><br><span class="line">                <span class="keyword">final</span> IActivityManager am = IActivityManager.Stub.asInterface(b); <span class="comment">// 2</span></span><br><span class="line">                <span class="keyword">return</span> am;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br></pre></td></tr></table></figure>
+
+<p><code>getService()</code>中调用了<code>IActivtyManagerSingleton</code>的<code>get()</code>。<code>IActivityManagerSingleton</code>是一个<code>Singleton</code>类。</p>
+<p>注释1，获取一个名为<code>&quot;activity&quot;</code>的Service引用，就是<code>IBinder</code>类型的AMS引用。</p>
+<p>注释2，将其转换为<code>IActivityManager</code>类型的对象，这段代码采用的是AIDL，<code>IActivityManager.java</code>类是由AIDL工具在编译时自动生成的，<code>IActivityManager.aidl</code>的文件路径为：frameworks/base/core/java/android/app/IActivityManager.aidl。要实现进程间通信，服务端——AMS只需要继承<code>IActivityManager.Stub</code>类并实现相应的方法就可以了。</p>
+<p>Android 8.0之前没有采用AIDL，而是采用了类似AIDL的形式，用AMS的代理对象<code>ActivityManagerProxy</code>来与AMS进行进程间通信，Android 8.0去除了<code>ActivityManagerNative</code>的内部类<code>ActivityManagerProxy</code>，替代它的是<code>IActivityManager</code>，它是AMS在本地的代理。</p>
+<p>回到<code>Instrumentation</code>类的<code>execStartActivity()</code>，从上面得知<code>execStartActivity()</code>最终调用的是AMS的<code>startActivity()</code>。</p>
+<h1 id="3-AMS到ApplicationThread的调用过程"><a href="#3-AMS到ApplicationThread的调用过程" class="headerlink" title="3. AMS到ApplicationThread的调用过程"></a>3. AMS到ApplicationThread的调用过程</h1><p><code>Launcher</code>请求AMS后，代码逻辑已经走到了AMS中，接着AMS到<code>ApplicationThread</code>的调用流程，时序图：</p>
+<img src="/2019/09/04/Andorid深入理解四大组件-07：Android-8-0-根Activity启动过程（上）/Veby0H.png">
+
+<p>AMS的<code>startActivity()</code>如下：frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">startActivity</span><span class="params">(IApplicationThread caller, String callingPackage, Intent intent, String resolvedType, IBinder resultTo, String resultWho, <span class="keyword">int</span> requestCode, <span class="keyword">int</span> startFlags, ProfilerInfo profilerInfo, Bundle bOptions)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> startActivityAsUser(caller, callingPackage, intent, resolvedType, resultTo, resultWho, requestCode, startFlags, profilerInfo, bOptions, UserHandle.getCallingUserId());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在里面<code>return</code>了<code>startActivityAsUser()</code>，可以发现<code>startActivityAsUser()</code>方法比<code>startActivity()</code>多了一个参数<code>UserHandle.getCallingUserId()</code>，这个方法会获得调用者的<code>UserId</code>，AMS会根据<code>UserId</code>来确定调用者的权限。frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">startActivityAsUser</span><span class="params">(IApplicationThread caller, String callingPackage,</span></span></span><br><span class="line"><span class="function"><span class="params">        Intent intent, String resolvedType, IBinder resultTo, String resultWho, <span class="keyword">int</span> requestCode,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">int</span> startFlags, ProfilerInfo profilerInfo, Bundle bOptions, <span class="keyword">int</span> userId)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 判断调用者进程是否被隔离</span></span><br><span class="line">    enforceNotIsolatedCaller(<span class="string">"startActivity"</span>); <span class="comment">// 1</span></span><br><span class="line">    <span class="comment">// 检查调用者权限</span></span><br><span class="line">    userId = mUserController.handleIncomingUser(Binder.getCallingPid(), Binder.getCallingUid(),</span><br><span class="line">            userId, <span class="keyword">false</span>, ALLOW_FULL_ONLY, <span class="string">"startActivity"</span>, <span class="keyword">null</span>); <span class="comment">// 2</span></span><br><span class="line">    <span class="keyword">return</span> mActivityStarter.startActivityMayWait(caller, -<span class="number">1</span>, callingPackage, intent,</span><br><span class="line">            resolvedType, <span class="keyword">null</span>, <span class="keyword">null</span>, resultTo, resultWho, requestCode, startFlags,</span><br><span class="line">            profilerInfo, <span class="keyword">null</span>, <span class="keyword">null</span>, bOptions, <span class="keyword">false</span>, userId, <span class="keyword">null</span>, <span class="keyword">null</span>,</span><br><span class="line">            <span class="string">"startActivityAsUser"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，判断调用者进程是否被隔离，如果是，抛出<code>SecurityException</code>。</p>
+<p>注释2，检查调用者的权限，如果没有权限，也会抛出<code>SecurityException</code>。</p>
+<p>最后调用<code>ActivityStarter</code>的<code>startActivityMayWait()</code>，倒数第二个参数是<code>TaskRecord</code>，表示启动的Activity所在的栈。最后一个参数<code>&quot;startActivityAsUser&quot;</code>表示启动的理由：frameworks/base/services/core/java/com/android/server/am/ActivityStarter.java</p>
+
       
     </div>
     
@@ -455,7 +487,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/RxJava/" rel="tag"># RxJava</a>
+            <a href="/tags/四大组件/" rel="tag"># 四大组件</a>
           
         </div>
       
@@ -468,8 +500,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/22/Android-RxJava应用：网络请求嵌套回调/" rel="next" title="Android RxJava应用：网络请求嵌套回调">
-                <i class="fa fa-chevron-left"></i> Android RxJava应用：网络请求嵌套回调
+              <a href="/2019/09/04/Andorid深入理解四大组件-06：ContentProvider的启动过程/" rel="next" title="Andorid深入理解四大组件 06：ContentProvider的启动过程">
+                <i class="fa fa-chevron-left"></i> Andorid深入理解四大组件 06：ContentProvider的启动过程
               </a>
             
           </div>
@@ -477,10 +509,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/08/22/Android-RxJava应用：从磁盘-内存缓存中获取数据/" rel="prev" title="Android RxJava应用：从磁盘/内存缓存中获取数据">
-                Android RxJava应用：从磁盘/内存缓存中获取数据 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -621,7 +649,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-需求场景"><span class="nav-text">1. 需求场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-功能说明"><span class="nav-text">2. 功能说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-实现"><span class="nav-text">3. 实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-merge"><span class="nav-text">3.1 merge()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-zip"><span class="nav-text">3.2 zip()</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Launcher请求ASM的过程"><span class="nav-text">2. Launcher请求ASM的过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-AMS到ApplicationThread的调用过程"><span class="nav-text">3. AMS到ApplicationThread的调用过程</span></a></li></ol></div>
             
 
           </div>
