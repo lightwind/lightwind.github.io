@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="RxJava,">
+  <meta name="keywords" content="Context,">
 
 
 
@@ -81,28 +81,21 @@
 
 
 
-<meta name="description" content="1. 作用对事件序列中的事件/整个事件序列进行加工处理（即变换），使得其转变成不同的事件/整个事件序列。 基础原理：   使用变换操作符（针对事件）：   使用变换操作符（针对事件序列）：   2. 类型常见的变换操作符：  Map() FlatMap() ContactMap() Buffer()  3. 详细说明3.1 Map()作用：对被观察者发送的每个事件都通过指定函数处理，从而变成另一个">
-<meta name="keywords" content="RxJava">
+<meta name="description" content="前言Context：上下文对象，这里基于Andorid 7.0源码进行解析。 1. 概述Context：一个应用程序的环境信息的接口。 开发中使用场景主要有两类：  使用Context调用方法，比如：启动Activity、访问资源、调用系统级服务等。 调用方法传入Context，比如：弹出Toast、创建Dialog等。  Activity、Service和Application都间接继承了Con">
+<meta name="keywords" content="Context">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android RxJava：变换操作符">
-<meta property="og:url" content="https://tylerLiu.top/2019/08/15/Android-RxJava：变换操作符/index.html">
+<meta property="og:title" content="Android深入理解Context 01">
+<meta property="og:url" content="https://tylerLiu.top/2019/09/07/Android深入理解Context-01/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="1. 作用对事件序列中的事件/整个事件序列进行加工处理（即变换），使得其转变成不同的事件/整个事件序列。 基础原理：   使用变换操作符（针对事件）：   使用变换操作符（针对事件序列）：   2. 类型常见的变换操作符：  Map() FlatMap() ContactMap() Buffer()  3. 详细说明3.1 Map()作用：对被观察者发送的每个事件都通过指定函数处理，从而变成另一个">
+<meta property="og:description" content="前言Context：上下文对象，这里基于Andorid 7.0源码进行解析。 1. 概述Context：一个应用程序的环境信息的接口。 开发中使用场景主要有两类：  使用Context调用方法，比如：启动Activity、访问资源、调用系统级服务等。 调用方法传入Context，比如：弹出Toast、创建Dialog等。  Activity、Service和Application都间接继承了Con">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/微信图片_20190815131846.png">
-<meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/微信图片_20190815132123.png">
-<meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/微信图片_20190815132305.png">
-<meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/944365-a9c0b5eb2cc573d6.png">
-<meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/944365-a6f852c071db2f15.png">
-<meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/944365-f4340f283e5a954d.png">
-<meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/944365-5278a339e4337494.png">
-<meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/944365-f1d4e320b7c62dd9.png">
-<meta property="og:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/944365-33a49ffd2ec60794.png">
-<meta property="og:updated_time" content="2019-08-22T03:14:09.001Z">
+<meta property="og:image" content="https://tylerliu.top/2019/09/07/Android深入理解Context-01/VejqSI.png">
+<meta property="og:image" content="https://tylerliu.top/2019/09/07/Android深入理解Context-01/VejLlt.png">
+<meta property="og:updated_time" content="2019-09-07T09:23:56.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android RxJava：变换操作符">
-<meta name="twitter:description" content="1. 作用对事件序列中的事件/整个事件序列进行加工处理（即变换），使得其转变成不同的事件/整个事件序列。 基础原理：   使用变换操作符（针对事件）：   使用变换操作符（针对事件序列）：   2. 类型常见的变换操作符：  Map() FlatMap() ContactMap() Buffer()  3. 详细说明3.1 Map()作用：对被观察者发送的每个事件都通过指定函数处理，从而变成另一个">
-<meta name="twitter:image" content="https://tylerliu.top/2019/08/15/Android-RxJava：变换操作符/微信图片_20190815131846.png">
+<meta name="twitter:title" content="Android深入理解Context 01">
+<meta name="twitter:description" content="前言Context：上下文对象，这里基于Andorid 7.0源码进行解析。 1. 概述Context：一个应用程序的环境信息的接口。 开发中使用场景主要有两类：  使用Context调用方法，比如：启动Activity、访问资源、调用系统级服务等。 调用方法传入Context，比如：弹出Toast、创建Dialog等。  Activity、Service和Application都间接继承了Con">
+<meta name="twitter:image" content="https://tylerliu.top/2019/09/07/Android深入理解Context-01/VejqSI.png">
 
 
 
@@ -132,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="https://tylerLiu.top/2019/08/15/Android-RxJava：变换操作符/">
+  <link rel="canonical" href="https://tylerLiu.top/2019/09/07/Android深入理解Context-01/">
 
 
 
 
 
-  <title>Android RxJava：变换操作符 | Tyler的博客</title>
+  <title>Android深入理解Context 01 | Tyler的博客</title>
   
 
 
@@ -297,7 +290,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://tylerLiu.top/2019/08/15/Android-RxJava：变换操作符/">
+    <link itemprop="mainEntityOfPage" href="https://tylerLiu.top/2019/09/07/Android深入理解Context-01/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tyler Liu">
@@ -314,7 +307,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Android RxJava：变换操作符</h1>
+          <h1 class="post-title" itemprop="name headline">Android深入理解Context 01</h1>
         
 
         <div class="post-meta">
@@ -326,8 +319,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-15T11:06:52+08:00">
-                2019-08-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-07T15:35:49+08:00">
+                2019-09-07
               </time>
             
 
@@ -349,8 +342,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
+                  <a href="/categories/Android起飞/" itemprop="url" rel="index">
+                    <span itemprop="name">Android起飞</span>
                   </a>
                 </span>
 
@@ -360,8 +353,19 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/RxJava/" itemprop="url" rel="index">
-                    <span itemprop="name">RxJava</span>
+                  <a href="/categories/Android起飞/框架层/" itemprop="url" rel="index">
+                    <span itemprop="name">框架层</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android起飞/框架层/深入理解Context/" itemprop="url" rel="index">
+                    <span itemprop="name">深入理解Context</span>
                   </a>
                 </span>
 
@@ -391,7 +395,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.2k 字
+                  1.3k 字
                 </span>
               
 
@@ -407,7 +411,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  5 分钟
+                  6 分钟
                 </span>
               
             </div>
@@ -428,64 +432,65 @@
       
 
       
-        <h1 id="1-作用"><a href="#1-作用" class="headerlink" title="1. 作用"></a>1. 作用</h1><p>对事件序列中的事件/整个事件序列进行<strong>加工处理</strong>（即变换），使得其转变成不同的事件/整个事件序列。</p>
-<p>基础原理：</p>
-<img src="/2019/08/15/Android-RxJava：变换操作符/微信图片_20190815131846.png">
-
-<p>使用变换操作符（针对事件）：</p>
-<img src="/2019/08/15/Android-RxJava：变换操作符/微信图片_20190815132123.png">
-
-<p>使用变换操作符（针对事件序列）：</p>
-<img src="/2019/08/15/Android-RxJava：变换操作符/微信图片_20190815132305.png">
-
-<h1 id="2-类型"><a href="#2-类型" class="headerlink" title="2. 类型"></a>2. 类型</h1><p>常见的变换操作符：</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><code>Context</code>：上下文对象，这里基于Andorid 7.0源码进行解析。</p>
+<h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p><code>Context</code>：一个应用程序的环境信息的接口。</p>
+<p>开发中使用场景主要有两类：</p>
 <ul>
-<li><code>Map()</code></li>
-<li><code>FlatMap()</code></li>
-<li><code>ContactMap()</code></li>
-<li><code>Buffer()</code></li>
+<li>使用<code>Context</code>调用方法，比如：启动Activity、访问资源、调用系统级服务等。</li>
+<li>调用方法传入<code>Context</code>，比如：弹出<code>Toast</code>、创建<code>Dialog</code>等。</li>
 </ul>
-<h1 id="3-详细说明"><a href="#3-详细说明" class="headerlink" title="3. 详细说明"></a>3. 详细说明</h1><h2 id="3-1-Map"><a href="#3-1-Map" class="headerlink" title="3.1 Map()"></a>3.1 Map()</h2><p>作用：对被观察者发送的每个事件都通过<strong>指定函数</strong>处理，从而变成另一个事件。即，<strong>将被观察者发送的事件转换为任意类型的事件</strong>。</p>
-<img src="/2019/08/15/Android-RxJava：变换操作符/944365-a9c0b5eb2cc573d6.png">
+<p>Activity、Service和Application都间接继承了Context。因此可以计算出一个应用程序进程中有多少个Context，其个数等于Activity、Service的总和加1，这个1是Application。</p>
+<p><code>Context</code>是一个抽象类，内部定义了很多方法和静态常量，它的具体实现是<code>ContextImpl</code>。和<code>Context</code>相关联的类，除了<code>ContextImpl</code>，还有<code>ContextWrapper</code>、<code>ContextThemeWrapper</code>和<code>Activity</code>等。下面是<code>Context</code>的关系图：</p>
+<img src="/2019/09/07/Android深入理解Context-01/VejqSI.png">
 
-<p>应用场景：数据类型转换</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Observable.create(<span class="keyword">new</span> ObservableOnSubscribe&lt;Integer&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">subscribe</span><span class="params">(ObservableEmitter&lt;Integer&gt; emitter)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">// 被观察者发送事件：整型</span></span><br><span class="line">        emitter.onNext(<span class="number">1</span>);</span><br><span class="line">        emitter.onNext(<span class="number">2</span>);</span><br><span class="line">        emitter.onNext(<span class="number">3</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line">        <span class="comment">// 使用Mapj变换操作符中的Function函数，对被观察者发送的事件进行统一变换，整型变成字符串类型</span></span><br><span class="line">        .map(<span class="keyword">new</span> Function&lt;Integer, String&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">apply</span><span class="params">(Integer integer)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="string">"使用Map变换操作符，将事件"</span> + integer + <span class="string">"的参数从整型"</span> + integer + <span class="string">" 变换成字符串类型"</span> + integer;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).subscribe(<span class="keyword">new</span> Consumer&lt;String&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(String s)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">// 被观察者接收事件时，是接收到变换后的事件</span></span><br><span class="line">        Log.i(TAG, s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>图中可以看出，<code>ContextImpl</code>和<code>ContextWrapper</code>继承自<code>Context</code>，<code>ContextWrapper</code>内部包含有<code>Context</code>类型的<code>mBase</code>对象，<code>mBase</code>具体的指向是<code>ContextImpl</code>。<code>ContextImpl</code>提供了很多功能，但外界还需要使用和拓展<code>ContextImpl</code>，所以将其设计成装饰模式，<code>ContextWrapper</code>是装饰类，它对<code>ContextImpl</code>类进行了包装，<code>ContextWrapper</code>主要起方法传递作用，<code>ContextWrapper</code>中几乎所有的方法实现都是调用<code>ContextImpl</code>的相应方法来实现的。</p>
+<p><code>ContextThemeWrapper</code>、<code>Service</code>和<code>Applicaiton</code>继承自<code>ContextWrapper</code>，它们都可以通过<code>mBase</code>来使用<code>Context</code>的方法，同时它们也都是装饰类，在<code>ContextWrapper</code>的基础上又添加了不同的功能。</p>
+<p><code>ContextThemeWrapper</code>中包含了和主题相关的方法，比如：<code>getTheme()</code>。因此，需要主题的<code>Activity</code>继承自<code>ContextThemeWrapper</code>，而不需要主题的<code>Service</code>继承自<code>ContextWrapper</code>。</p>
+<h1 id="2-Application-Context的创建过程"><a href="#2-Application-Context的创建过程" class="headerlink" title="2. Application Context的创建过程"></a>2. Application Context的创建过程</h1><p>通常使用<code>getApplicationContext()</code>来获取全局的Application Context，那么Application Context是如何创建的？</p>
+<p>在<a href="https://tylerliu.top/2019/09/02/Andorid深入理解四大组件-02%EF%BC%9A应用程序启动过程%EF%BC%88下%EF%BC%89/">Andorid深入理解四大组件 02：应用程序启动过程（下）</a>中最后讲到<code>ActivityThread</code>启动Activity。<code>ActivityThread</code>作为应用程序进程的核心类，它会调用其内部的<code>ApplicationThread</code>的<code>scheduleLaunchActivity()</code>来启动Activity：frameworks/base/core/java/android/app/ActivityThread.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">scheduleLaunchActivity</span><span class="params">(Intent intent, IBinder token, <span class="keyword">int</span> ident,</span></span></span><br><span class="line"><span class="function"><span class="params">        ActivityInfo info, Configuration curConfig, Configuration overrideConfig,</span></span></span><br><span class="line"><span class="function"><span class="params">        CompatibilityInfo compatInfo, String referrer, IVoiceInteractor voiceInteractor,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">int</span> procState, Bundle state, PersistableBundle persistentState,</span></span></span><br><span class="line"><span class="function"><span class="params">        List&lt;ResultInfo&gt; pendingResults, List&lt;ReferrerIntent&gt; pendingNewIntents,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">boolean</span> notResumed, <span class="keyword">boolean</span> isForward, ProfilerInfo profilerInfo)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    updateProcessState(procState, <span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">    ActivityClientRecord r = <span class="keyword">new</span> ActivityClientRecord();</span><br><span class="line"></span><br><span class="line">    r.token = token;</span><br><span class="line">    r.ident = ident;</span><br><span class="line">    r.intent = intent;</span><br><span class="line">    r.referrer = referrer;</span><br><span class="line">    r.voiceInteractor = voiceInteractor;</span><br><span class="line">    r.activityInfo = info;</span><br><span class="line">    r.compatInfo = compatInfo;</span><br><span class="line">    r.state = state;</span><br><span class="line">    r.persistentState = persistentState;</span><br><span class="line"></span><br><span class="line">    r.pendingResults = pendingResults;</span><br><span class="line">    r.pendingIntents = pendingNewIntents;</span><br><span class="line"></span><br><span class="line">    r.startsNotResumed = notResumed;</span><br><span class="line">    r.isForward = isForward;</span><br><span class="line"></span><br><span class="line">    r.profilerInfo = profilerInfo;</span><br><span class="line"></span><br><span class="line">    r.overrideConfig = overrideConfig;</span><br><span class="line">    updatePendingConfiguration(curConfig);</span><br><span class="line"></span><br><span class="line">    sendMessage(H.LAUNCH_ACTIVITY, r);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="3-2-FlatMap"><a href="#3-2-FlatMap" class="headerlink" title="3.2 FlatMap()"></a>3.2 FlatMap()</h2><p>作用：将被观察者发送的事件序列进行<strong>拆分和单独转换</strong>，再合并成一个新的事件序列，最后再进行发送。</p>
-<p>原理：</p>
-<ol>
-<li>为事件序列中的每个事件都创建一个<code>Observable</code>对象</li>
-<li>将对每个原始事件转换后的新事件都放入到对应的<code>Observable</code>对象</li>
-<li>将新建的每个<code>Observable</code>都合并到一个新建的、总的<code>Observable</code>对象</li>
-<li>新建的、总的<code>Observable</code>对象将新合并的事件序列发送给观察者<code>Observer</code></li>
-</ol>
-<img src="/2019/08/15/Android-RxJava：变换操作符/944365-a6f852c071db2f15.png">
+<p>在<code>ApplicationThread</code>的<code>scheduleLaunchActivity()</code>向<code>H</code>类发送类型为<code>LAUNCH_ACTIVITY</code>的消息，目的是将启动Activity的逻辑放到主线程中的消息列里中，这样启动Activity的逻辑就会在主线程中执行。再来查看<code>H</code>中对于<code>LAUNCH_ACTIVITY</code>的处理：frameworks/base/core/java/android/app/ActivityThread.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> LAUNCH_ACTIVITY: &#123;</span><br><span class="line">        Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityStart"</span>);</span><br><span class="line">        <span class="keyword">final</span> ActivityClientRecord r = (ActivityClientRecord) msg.obj;</span><br><span class="line">        r.packageInfo = getPackageInfoNoCheck(r.activityInfo.applicationInfo, r.compatInfo); <span class="comment">// 1</span></span><br><span class="line">        handleLaunchActivity(r, <span class="keyword">null</span>, <span class="string">"LAUNCH_ACTIVITY"</span>); <span class="comment">// 2</span></span><br><span class="line">        Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</span><br><span class="line">    &#125; </span><br><span class="line"><span class="keyword">break</span>;</span><br></pre></td></tr></table></figure>
 
-<p>应用场景：无序的将被观察者发送的整个事件序列进行变换</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Observable.create(<span class="keyword">new</span> ObservableOnSubscribe&lt;Integer&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">subscribe</span><span class="params">(ObservableEmitter&lt;Integer&gt; emitter)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        emitter.onNext(<span class="number">1</span>);</span><br><span class="line">        emitter.onNext(<span class="number">2</span>);</span><br><span class="line">        emitter.onNext(<span class="number">3</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line">        <span class="comment">// 采用flatMap（）变换操作符</span></span><br><span class="line">        .flatMap(<span class="keyword">new</span> Function&lt;Integer, ObservableSource&lt;String&gt;&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> ObservableSource&lt;String&gt; <span class="title">apply</span><span class="params">(Integer integer)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">3</span>; j++) &#123;</span><br><span class="line">                    <span class="comment">// 通过flatMap中将被观察者生成的事件序列先进行拆分，再将每个事件转换为一个新的发送三个String事件</span></span><br><span class="line">                    <span class="comment">// 最终合并，再发送给被观察者</span></span><br><span class="line">                    list.add(<span class="string">"我是事件 "</span> + integer + <span class="string">"拆分后的子事件"</span> + i);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> Observable.fromIterable(list);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).subscribe(<span class="keyword">new</span> Consumer&lt;String&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(String s)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Log.d(TAG, s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>注释1，通过<code>getPackageInfo()</code>获得<code>LoadedApk</code>的对象，并将该值赋值给<code>ActivityClientRecord.packageInfo</code>，<code>LoadedApk</code>是用来描述已加载的APK文件。</p>
+<p>注释2，调用<code>handleLaunchActivity()</code>：frameworks/base/core/java/android/app/ActivityThread.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">handleLaunchActivity</span><span class="params">(ActivityClientRecord r, Intent customIntent, String reason)</span> </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    Activity a = performLaunchActivity(r, customIntent);</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>注：新合并的事件序列顺序是无序的，与旧序列发送事件的顺序无关。</p>
-<h2 id="3-3-ContactMap"><a href="#3-3-ContactMap" class="headerlink" title="3.3 ContactMap()"></a>3.3 ContactMap()</h2><p>作用：与<code>FlatMap()</code>类似，区别在于：<strong>拆分及重新合并生成的事件序列的顺序就是被观察者旧序列生产的序列</strong>。</p>
-<img src="/2019/08/15/Android-RxJava：变换操作符/944365-f4340f283e5a954d.png">
+<p>查看<code>performLaunchActivity()</code>：frameworks/base/core/java/android/app/ActivityThread.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Activity <span class="title">performLaunchActivity</span><span class="params">(ActivityClientRecord r, Intent customIntent)</span> </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Application app = r.packageInfo.makeApplication(<span class="keyword">false</span>, mInstrumentation);</span><br><span class="line">        ......</span><br><span class="line">    &#125; </span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">return</span> activity;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>应用场景：有序的将被观察者发送的整个事件序列进行变换。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Observable.create(<span class="keyword">new</span> ObservableOnSubscribe&lt;Integer&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">subscribe</span><span class="params">(ObservableEmitter&lt;Integer&gt; emitter)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        emitter.onNext(<span class="number">1</span>);</span><br><span class="line">        emitter.onNext(<span class="number">2</span>);</span><br><span class="line">        emitter.onNext(<span class="number">3</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line">        <span class="comment">// 采用concatMap()变换操作符</span></span><br><span class="line">        .concatMap(<span class="keyword">new</span> Function&lt;Integer, ObservableSource&lt;String&gt;&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> ObservableSource&lt;String&gt; <span class="title">apply</span><span class="params">(Integer integer)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                <span class="keyword">final</span> List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) &#123;</span><br><span class="line">                    <span class="comment">// 通过concatMap中将被观察者生产的事件序列先进行拆分，再将每个事件转换为一个新的发送三个String事件</span></span><br><span class="line">                    <span class="comment">// 最终合并，再发送给被观察者</span></span><br><span class="line">                    list.add(<span class="string">"我是事件 "</span> + integer + <span class="string">"拆分后的子事件"</span> + i);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> Observable.fromIterable(list);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).subscribe(<span class="keyword">new</span> Consumer&lt;String&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(String s)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Log.d(TAG, s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>这里只保留与Application Context相关的逻辑。从前面知道，这里的<code>r.packageInfo</code>是<code>LoadedApk</code>类型的，下面查看其<code>makeApplication()</code>：frameworks/base/core/java/android/app/LoadedApk.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Application <span class="title">makeApplication</span><span class="params">(<span class="keyword">boolean</span> forceDefaultAppClass, Instrumentation instrumentation)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (mApplication != <span class="keyword">null</span>) &#123; <span class="comment">// 1</span></span><br><span class="line">        <span class="keyword">return</span> mApplication;</span><br><span class="line">    &#125;</span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        java.lang.ClassLoader cl = getClassLoader();</span><br><span class="line">        ......</span><br><span class="line">        ContextImpl appContext = ContextImpl.createAppContext(mActivityThread, <span class="keyword">this</span>); <span class="comment">// 2</span></span><br><span class="line">        app = mActivityThread.mInstrumentation.newApplication(cl, appClass, appContext); <span class="comment">// 3</span></span><br><span class="line">        appContext.setOuterContext(app); <span class="comment">// 4</span></span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        ......</span><br><span class="line">    &#125;</span><br><span class="line">    mActivityThread.mAllApplications.add(app);</span><br><span class="line">    mApplication = app; <span class="comment">// 5</span></span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">return</span> app;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>注：新合并的事件序列顺序是有序的，即严格按照旧序列发送事件的顺序。</p>
-<h2 id="3-4-Buffer"><a href="#3-4-Buffer" class="headerlink" title="3.4 Buffer()"></a>3.4 Buffer()</h2><p>作用：定期从被观察者<code>Observable</code>需要发送的事件中获取一定数量的事件并放到缓存区中，最终发送。</p>
-<p>原理：</p>
-<img src="/2019/08/15/Android-RxJava：变换操作符/944365-5278a339e4337494.png">
+<p>注释1，如果<code>mApplication</code>不为空，就返回<code>mApplication</code>。这里假设是第一次启动应用程序，所以<code>mApplication</code>为空。</p>
+<p>注释2，通过<code>ContextImpl</code>的<code>createAppContext()</code>创建其实例。</p>
+<p>注释3，创建<code>Application</code>，在<code>Instrumentation</code>的<code>newApplication()</code>中传入了<code>ClassLoader</code>类型的对象以及注释2创建的<code>ContextImpl</code>。</p>
+<p>注释4，将<code>Application</code>赋值给<code>ContextImpl</code>的<code>Context</code>类型的成员变量<code>mOuterContext</code>。</p>
+<p>注释5，将<code>Application</code>赋值给<code>LoadedApk</code>的成员变量<code>mApplication</code>。</p>
+<p>再来看看注释3的<code>Application</code>的创建，<code>Instrumentation</code>的<code>newApplication()</code>：frameworks/base/core/java/android/app/Instrumentation.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">public</span> Application <span class="title">newApplication</span><span class="params">(Class&lt;?&gt; clazz, Context context)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> InstantiationException, IllegalAccessException, </span></span><br><span class="line"><span class="function">        ClassNotFoundException </span>&#123;</span><br><span class="line">    Application app = (Application)clazz.newInstance(); <span class="comment">// 1</span></span><br><span class="line">    app.attach(context);</span><br><span class="line">    <span class="keyword">return</span> app;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>应用场景：缓存被观察者发送的事件</p>
-<p><code>Bufer()</code>每次获取多少个事件放到缓存区中呢？下面看一个例子：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 被观察者需要发送5个数字</span></span><br><span class="line">Observable.just(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>)</span><br><span class="line">        <span class="comment">// 设置缓存区大小和步长</span></span><br><span class="line">        <span class="comment">// 缓存区大小：每次从被观察者中获取的事件数量</span></span><br><span class="line">        <span class="comment">// 步长：每次获取新事件的数量</span></span><br><span class="line">        .buffer(<span class="number">3</span>, <span class="number">1</span>)</span><br><span class="line">        .subscribe(<span class="keyword">new</span> Observer&lt;List&lt;Integer&gt;&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSubscribe</span><span class="params">(Disposable d)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNext</span><span class="params">(List&lt;Integer&gt; stringList)</span> </span>&#123;</span><br><span class="line">                <span class="comment">//</span></span><br><span class="line">                Log.d(TAG, <span class="string">" 缓存区里的事件数量 = "</span> + stringList.size());</span><br><span class="line">                <span class="keyword">for</span> (Integer value : stringList) &#123;</span><br><span class="line">                    Log.d(TAG, <span class="string">" 事件 = "</span> + value);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(Throwable e)</span> </span>&#123;</span><br><span class="line">                Log.d(TAG, <span class="string">"对Error事件作出响应"</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onComplete</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                Log.d(TAG, <span class="string">"对Complete事件作出响应"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
+<p><code>Instrumentation</code>中有两个<code>newApplication()</code>重载方法，最终都会调用上面的这个重载方法。注释1，通过反射创建<code>Application</code>，并调用<code>Application</code>的<code>attach()</code>，传入<code>ContextImpl</code>：frameworks/base/core/java/android/app/Application.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">attach</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">    attachBaseContext(context);</span><br><span class="line">    mLoadedApk = ContextImpl.getImpl(context).mPackageInfo;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<img src="/2019/08/15/Android-RxJava：变换操作符/944365-f1d4e320b7c62dd9.png">
+<p>在<code>attach()</code>中调用了<code>attachBaseContext()</code>，它的实现在<code>Application</code>的父类<code>ContextWrapper</code>中：frameworks/base/core/java/android/content/ContextWrapper.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">attachBaseContext</span><span class="params">(Context base)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (mBase != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Base context already set"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    mBase = base;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>过程解释：</p>
-<img src="/2019/08/15/Android-RxJava：变换操作符/944365-33a49ffd2ec60794.png">
+<p><code>base</code>指的就是<code>ContextImpl</code>，将<code>ContextImpl</code>赋值给<code>ContextWrapper</code>类型的成员变量<code>mBase</code>。Application Context创建的过程就到这里。</p>
+<p>Application Context创建过程的时序图：</p>
+<img src="/2019/09/07/Android深入理解Context-01/VejLlt.png">
 
-<p>Demo地址：<a href="https://gitee.com/QingFengBaiYu/Allen_Demo_Rx" target="_blank" rel="noopener">Allen_Demo_Rx</a></p>
+<h1 id="3-Application-Context的获取过程"><a href="#3-Application-Context的获取过程" class="headerlink" title="3. Application Context的获取过程"></a>3. Application Context的获取过程</h1><p>通过<code>getApplicationContext()</code>来获取Application Context，<code>getApplicationContext()</code>的实现是在<code>ContextWrapper</code>中：frameworks/base/core/java/android/content/ContextWrapper.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Context <span class="title">getApplicationContext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> mBase.getApplicationContext();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从前面得知，<code>mBase</code>指的就是<code>ContextImpl</code>，再来查看<code>ComtextImpl</code>的<code>getApplicationContext()</code>：frameworks/base/core/java/android/app/ContextImpl.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Context <span class="title">getApplicationContext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (mPackageInfo != <span class="keyword">null</span>) ? mPackageInfo.getApplication() : mMainThread.getApplication();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果<code>LoadedApk</code>不为空，就调用<code>LoadedApk</code>的<code>getApplication()</code>，否则就调用<code>ActivityThread</code>的<code>getApplication()</code>。由于应用程序进程已经启动，所以<code>LoadedApk</code>不会为空，就会调用<code>LoadedApk.getApplication()</code>：frameworks/base/core/java/android/app/LoadedApk.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Application <span class="title">getApplication</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> mApplication;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的<code>mApplication</code>就是在<code>LoadedApk.makeApplication()</code>中注释5被赋值。这样就通过<code>getApplicationContext()</code>获取Application Context了。</p>
 
       
     </div>
@@ -503,7 +508,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/RxJava/" rel="tag"># RxJava</a>
+            <a href="/tags/Context/" rel="tag"># Context</a>
           
         </div>
       
@@ -516,8 +521,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/13/香煎土豆片/" rel="next" title="香煎土豆片">
-                <i class="fa fa-chevron-left"></i> 香煎土豆片
+              <a href="/2019/09/07/Andorid深入理解四大组件-08：Android-8-0-根Activity启动过程（下）/" rel="next" title="Andorid深入理解四大组件 08：Android 8.0 根Activity启动过程（下）">
+                <i class="fa fa-chevron-left"></i> Andorid深入理解四大组件 08：Android 8.0 根Activity启动过程（下）
               </a>
             
           </div>
@@ -525,10 +530,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/08/15/Android-RxJava：组合-合并操作符/" rel="prev" title="Android RxJava：组合/合并操作符">
-                Android RxJava：组合/合并操作符 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -669,7 +670,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-作用"><span class="nav-text">1. 作用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-类型"><span class="nav-text">2. 类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-详细说明"><span class="nav-text">3. 详细说明</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-Map"><span class="nav-text">3.1 Map()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-FlatMap"><span class="nav-text">3.2 FlatMap()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-ContactMap"><span class="nav-text">3.3 ContactMap()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-Buffer"><span class="nav-text">3.4 Buffer()</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Application-Context的创建过程"><span class="nav-text">2. Application Context的创建过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Application-Context的获取过程"><span class="nav-text">3. Application Context的获取过程</span></a></li></ol></div>
             
 
           </div>
