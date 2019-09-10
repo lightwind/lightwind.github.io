@@ -81,18 +81,20 @@
 
 
 
-<meta name="description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="description" content="1. 数据类型的转换首先看看上篇文章中andorid_media_MediaRecorder.cpp中的android_media_MediaRecorder_staret()：frameworks/base/media/jni/android_media_MediaRecorder.cpp 12345static void android_media_MediaRecorder_start(JN">
 <meta name="keywords" content="JNI">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android深入理解JNI 02：类型转换、方法签名和JNIEnv">
 <meta property="og:url" content="https://tylerLiu.top/2019/09/10/Android深入理解JNI-02：类型转换、方法签名和JNIEnv/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta property="og:description" content="1. 数据类型的转换首先看看上篇文章中andorid_media_MediaRecorder.cpp中的android_media_MediaRecorder_staret()：frameworks/base/media/jni/android_media_MediaRecorder.cpp 12345static void android_media_MediaRecorder_start(JN">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-10T05:35:38.844Z">
+<meta property="og:image" content="https://tylerliu.top/2019/09/10/Android深入理解JNI-02：类型转换、方法签名和JNIEnv/VmCKhD.jpg">
+<meta property="og:updated_time" content="2019-09-10T08:01:09.096Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android深入理解JNI 02：类型转换、方法签名和JNIEnv">
-<meta name="twitter:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="twitter:description" content="1. 数据类型的转换首先看看上篇文章中andorid_media_MediaRecorder.cpp中的android_media_MediaRecorder_staret()：frameworks/base/media/jni/android_media_MediaRecorder.cpp 12345static void android_media_MediaRecorder_start(JN">
+<meta name="twitter:image" content="https://tylerliu.top/2019/09/10/Android深入理解JNI-02：类型转换、方法签名和JNIEnv/VmCKhD.jpg">
 
 
 
@@ -392,7 +394,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  0 字
+                  2k 字
                 </span>
               
 
@@ -408,7 +410,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1 分钟
+                  9 分钟
                 </span>
               
             </div>
@@ -429,7 +431,211 @@
       
 
       
-        
+        <h1 id="1-数据类型的转换"><a href="#1-数据类型的转换" class="headerlink" title="1. 数据类型的转换"></a>1. 数据类型的转换</h1><p>首先看看上篇文章中andorid_media_MediaRecorder.cpp中的<code>android_media_MediaRecorder_staret()</code>：frameworks/base/media/jni/android_media_MediaRecorder.cpp</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">static void android_media_MediaRecorder_start(JNIEnv *env, jobject thiz) &#123;</span><br><span class="line">    ALOGV(&quot;start&quot;);</span><br><span class="line">    sp&lt;MediaRecorder&gt; mr = getMediaRecorder(env, thiz);</span><br><span class="line">    process_media_recorder_call(env, mr-&gt;start(), &quot;java/lang/RuntimeException&quot;, &quot;start failed.&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>里面有一个参数是<code>Object</code>类型，它是JNI层的数据类型，Java的数据类型到了JNI层就需要转换为JNI层的数据类型。Java的数据类型分为基本数据类型和引用数据类型，JNI层对于这两种类型也做了区分，先来看看基本数据类型的转换。</p>
+<h2 id="1-1-基本数据类型的转换"><a href="#1-1-基本数据类型的转换" class="headerlink" title="1.1 基本数据类型的转换"></a>1.1 基本数据类型的转换</h2><table>
+<thead>
+<tr>
+<th align="center">Java</th>
+<th align="center">Native</th>
+<th align="center">Signature（签名格式）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">byte</td>
+<td align="center">jbyte</td>
+<td align="center">B</td>
+</tr>
+<tr>
+<td align="center">char</td>
+<td align="center">jchar</td>
+<td align="center">C</td>
+</tr>
+<tr>
+<td align="center">double</td>
+<td align="center">jdouble</td>
+<td align="center">D</td>
+</tr>
+<tr>
+<td align="center">float</td>
+<td align="center">jfloat</td>
+<td align="center">F</td>
+</tr>
+<tr>
+<td align="center">int</td>
+<td align="center">jint</td>
+<td align="center">I</td>
+</tr>
+<tr>
+<td align="center">short</td>
+<td align="center">jshort</td>
+<td align="center">S</td>
+</tr>
+<tr>
+<td align="center">long</td>
+<td align="center">jlong</td>
+<td align="center">J</td>
+</tr>
+<tr>
+<td align="center">boolean</td>
+<td align="center">jboolean</td>
+<td align="center">Z</td>
+</tr>
+<tr>
+<td align="center">void</td>
+<td align="center">void</td>
+<td align="center">V</td>
+</tr>
+</tbody></table>
+<h2 id="1-2-引用数据类型的转换"><a href="#1-2-引用数据类型的转换" class="headerlink" title="1.2 引用数据类型的转换"></a>1.2 引用数据类型的转换</h2><table>
+<thead>
+<tr>
+<th align="center">Java</th>
+<th align="center">Native</th>
+<th align="center">Signature（签名格式）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">所有对象</td>
+<td align="center">jobject</td>
+<td align="center">L+classname+;</td>
+</tr>
+<tr>
+<td align="center">Class</td>
+<td align="center">jclass</td>
+<td align="center">Ljava/lang/Class;</td>
+</tr>
+<tr>
+<td align="center">String</td>
+<td align="center">jstring</td>
+<td align="center">Ljava/lang/String;</td>
+</tr>
+<tr>
+<td align="center">Throwable</td>
+<td align="center">jthrowable</td>
+<td align="center">Ljava/lang/Throwable;</td>
+</tr>
+<tr>
+<td align="center">Object[]</td>
+<td align="center">jobjectArray</td>
+<td align="center">[L+Classname+;</td>
+</tr>
+<tr>
+<td align="center">byte[]</td>
+<td align="center">jbyteArray</td>
+<td align="center">[B</td>
+</tr>
+<tr>
+<td align="center">char[]</td>
+<td align="center">jcharArray</td>
+<td align="center">[C</td>
+</tr>
+<tr>
+<td align="center">double[]</td>
+<td align="center">jdoubleArray</td>
+<td align="center">[D</td>
+</tr>
+<tr>
+<td align="center">float[]</td>
+<td align="center">jfloatArray</td>
+<td align="center">[F</td>
+</tr>
+<tr>
+<td align="center">int[]</td>
+<td align="center">jintArray</td>
+<td align="center">[I</td>
+</tr>
+<tr>
+<td align="center">short[]</td>
+<td align="center">jshortArray</td>
+<td align="center">[S</td>
+</tr>
+<tr>
+<td align="center">long[]</td>
+<td align="center">jlongArray</td>
+<td align="center">[J</td>
+</tr>
+<tr>
+<td align="center">boolean[]</td>
+<td align="center">jbooleanArray</td>
+<td align="center">[Z</td>
+</tr>
+</tbody></table>
+<p>引用数据类型还具有继承关系：</p>
+<img src="/2019/09/10/Android深入理解JNI-02：类型转换、方法签名和JNIEnv/VmCKhD.jpg">
+
+<p>再来例举<code>MediaRecorder</code>框架的Java方法：frameworks/base/media/java/android/media/MediaRecorder.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">_setOutputFile</span><span class="params">(FileDescriptor fd, <span class="keyword">long</span> offset, <span class="keyword">long</span> length)</span> <span class="keyword">throws</span> IllegalStateException, IOException</span></span><br></pre></td></tr></table></figure>
+
+<p><code>_setOutputFile()</code>方法对应的JNI层的方法为：frameworks/base/media/jni/android_media_MediaRecorder.cpp</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">android_media_MediaRecorder_setOutputFileFD</span><span class="params">(JNIEnv *env, jobject thiz, jobject fileDescriptor, jlong offset, jlong length)</span> </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对比这两个方法可以看到，<code>FileDescriptor</code>转成了<code>jobject</code>类型，<code>long</code>转成了<code>jlong</code>类型。</p>
+<h1 id="2-方法签名"><a href="#2-方法签名" class="headerlink" title="2. 方法签名"></a>2. 方法签名</h1><p>前面已经列举了数据类型的签名格式，方法签名就是由签名格式组成的，方法签名有什么作用呢？</p>
+<p>frameworks/base/media/jni/android_media_MediaRecorder.cpp</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> JNINativeMethod gMethods[] = &#123;</span><br><span class="line">    ......</span><br><span class="line">    &#123;<span class="string">"native_init"</span>,       <span class="string">"()V"</span>,        (<span class="keyword">void</span> *)android_media_MediaRecorder_native_init&#125;,</span><br><span class="line">    &#123;<span class="string">"native_setup"</span>,      <span class="string">"(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;)V"</span>,</span><br><span class="line">    (<span class="keyword">void</span> *)android_media_MediaRecorder_native_setup&#125;,</span><br><span class="line">    ......</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><code>gMethods[]</code>数组中存储的是<code>MediaRecorder</code>的Native方法与JNI层方法的对应关系，其中<code>&quot;()V&quot;</code>和<code>&quot;(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;)V&quot;</code>就是方法签名。Java有重载方法，可以定义方法名相同，参数不同的方法，因此，在JNI中仅仅通过方法名是为u发找到对应Java的具体方法的，JNI为了解决这一问题，就将参数类型和返回值类型组合在一起作为方法签名。通过方法签名和方法名就可以找到对应的Java方法了。</p>
+<p>JNI方法签名的格式为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(参数签名格式...)返回值签名格式</span><br></pre></td></tr></table></figure>
+
+<p>拿上面的<code>gMethods()</code>数组的<code>native_setup()</code>为例，在Java中的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">native</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">native_setup</span><span class="params">(Object mediarecorder_this, String clientName, String opPackageName)</span> <span class="keyword">throws</span> IllegalStateException</span>;</span><br></pre></td></tr></table></figure>
+
+<p>它在JNI中的方法签名为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;)V&quot;</span><br></pre></td></tr></table></figure>
+
+<p>参照前面的类型转换表格，<code>native_setup()</code>方法的第一个参数的签名为<code>&quot;Ljava/lang/Obnject;&quot;</code>，后面两个参数签名为<code>&quot;Ljava/lang/String;&quot;</code>，返回值的类型<code>Void</code>的签名为<code>&quot;V&quot;</code>，组合起来就是上面的签名了。</p>
+<p>Java提供了<code>javap</code>命令来自动生成方法签名。</p>
+<p>先写一个简单的<code>MediaRecorder.java</code>包含上面的<code>native_sertup()</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MediaRecorder</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">"media_jni"</span>);</span><br><span class="line">        native_init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">native_init</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">native</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">native_setup</span><span class="params">(Object mediarecorder_this, String clientName, String opPackageName)</span> <span class="keyword">throws</span> IllegalStateException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该文件的绝对路径为E:\Project\MyStudy\JNISample\media\src\main\java\com\example\MediaRecorder.java，接着执行如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javac E:\Project\MyStudy\JNISample\media\src\main\java\com\example\MediaRecorder.java</span><br></pre></td></tr></table></figure>
+
+<p>执行后会生成MediaRecorder.class文件，然后执行如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javap -s -p E:\Project\MyStudy\JNISample\media\src\main\java\com\example\MediaRecorder.class</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>s</code>表示输出内部类型签名，<code>p</code>表示打印出所有的方法和成员（默认打印public成员），最终打印如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\AHXIUWU_RJ_LY&gt;javap -s -p E:\Project\MyStudy\JNISample\media\src\main\java\com\example\MediaRecorder.class</span><br><span class="line">Compiled from &quot;MediaRecorder.java&quot;</span><br><span class="line">public class com.example.MediaRecorder &#123;</span><br><span class="line">  public com.example.MediaRecorder();</span><br><span class="line">    descriptor: ()V</span><br><span class="line"></span><br><span class="line">  private static final native void native_init();</span><br><span class="line">    descriptor: ()V</span><br><span class="line"></span><br><span class="line">  private final native void native_setup(java.lang.Object, java.lang.String, java.lang.String) throws java.lang.IllegalStateException;</span><br><span class="line">    descriptor: (Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;)V</span><br><span class="line"></span><br><span class="line">  static &#123;&#125;;</span><br><span class="line">    descriptor: ()V</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到输出的<code>native_setup</code>方法的签名和前面给出的一致。</p>
+<h1 id="3-JNIEnv"><a href="#3-JNIEnv" class="headerlink" title="3. JNIEnv"></a>3. JNIEnv</h1><p>JNIEnv是一个指向全部JNI方法的指针，该指针只在创建它的线程有效，不能跨线程传递，因此，不同线程的JNIEnv是独立的，JNIEnv的主要作用：</p>
+<ol>
+<li>调用Java方法。</li>
+<li>操作Java（获取Java中的对象和变量等）。</li>
+</ol>
+<p>先看看JNIEnv的定义：libnativehelper/include/nativehelper/jni.h</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__cplusplus)</span></span><br><span class="line"><span class="keyword">typedef</span> _JNIEnv JNIEnv; <span class="comment">// C++中JNIEnv的类型</span></span><br><span class="line"><span class="keyword">typedef</span> _JavaVM JavaVM; </span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">JNINativeInterface</span>* <span class="title">JNIEnv</span>;</span> <span class="comment">// C中JNIEnv的类型</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">JNIInvokeInterface</span>* <span class="title">JavaVM</span>;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>这里使用预定义宏<code>__cplusplus</code>来区分C和C++两种代码，如果定义了<code>__cplusplus</code>，则是C++代码中的定义，否则就是C代码中的定义。</p>
+<p>在这里也看到了<code>JavaVM</code>，它是虚拟机在JNI层中的代表，在一个虚拟机进程中只有一个JavaVM，因此，该进程的所有线程都可以使用这个JavaVM。通过JavaVM的<code>AttachCurrentThread</code>函数可以获取这个线程的JNIEnv，这样就可以在不同的线程中调用Java方法了。要注意在使用<code>AttachCurrentThread</code>函数的线程推出前，使用<code>DetachCurrentThread</code>函数来释放资源。</p>
+<h2 id="3-1-jfieldID和jmethodID"><a href="#3-1-jfieldID和jmethodID" class="headerlink" title="3.1 jfieldID和jmethodID"></a>3.1 jfieldID和jmethodID</h2><p>在JNI中使用<code>jfieldID</code>和<code>jmethodID</code>来代表Java类中的成员变量和方法，可以通过JNIEnv的下面两个方法来分别得到：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">jfieldID  <span class="title">GetFieldID</span><span class="params">(jclass clazz,<span class="keyword">const</span> <span class="keyword">char</span> *name,<span class="keyword">const</span> <span class="keyword">char</span> *sig)</span></span>;</span><br><span class="line"><span class="function">jmethodID  <span class="title">GetFieldID</span><span class="params">(jclass clazz,<span class="keyword">const</span> <span class="keyword">char</span> *name,<span class="keyword">const</span> <span class="keyword">char</span> *sig)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>其中，<code>jclass</code>代表Java类，<code>name</code>代表成员方法或成员变量的名字，<code>sig</code>为这个方法和变量的签名。再来查看<code>MediaRecorder</code>框架的JNI层是如何使用上述两个方法的：frameworks/base/media/jni/android_media_MediaRecorder.cpp</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">android_media_MediaRecorder_native_init</span><span class="params">(JNIEnv *env)</span> </span>&#123;</span><br><span class="line">    jclass clazz;</span><br><span class="line">    clazz = env-&gt;FindClass(<span class="string">"android/media/MediaRecorder"</span>); <span class="comment">// 1</span></span><br><span class="line">    <span class="keyword">if</span> (clazz == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    fields.context = env-&gt;GetFieldID(clazz, <span class="string">"mNativeContext"</span>, <span class="string">"J"</span>); <span class="comment">// 2</span></span><br><span class="line">    <span class="keyword">if</span> (fields.context == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    fields.surface = env-&gt;GetFieldID(clazz, <span class="string">"mSurface"</span>, <span class="string">"Landroid/view/Surface;"</span>); <span class="comment">// 3</span></span><br><span class="line">    <span class="keyword">if</span> (fields.surface == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    jclass surface = env-&gt;FindClass(<span class="string">"android/view/Surface"</span>);</span><br><span class="line">    <span class="keyword">if</span> (surface == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    fields.post_event = env-&gt;GetStaticMethodID(clazz, <span class="string">"postEventFromNative"</span>, <span class="string">"(Ljava/lang/Object;IIILjava/lang/Object;)V"</span>); <span class="comment">// 4</span></span><br><span class="line">    <span class="keyword">if</span> (fields.post_event == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，通过<code>FindClass</code>来找到Java层的<code>MediaRecorder</code>的Class对象，并赋值给jclass类型的变量<code>clazz</code>，因此，<code>clazz</code>是Java层的<code>MediaRecorder</code>在JNI层的代表。</p>
+<p>注释2和注释3，用来找到Java层的<code>MediaRecorder</code>中名为<code>mNativeContext</code>和<code>Surface</code>的成员变量，并分别赋值给<code>context</code>和<code>surface</code>。</p>
+<p>注释4，获取Java层的<code>MediaRecorder</code>中名为<code>postEventFromNative()</code>的静态方法，并赋值给<code>post_event</code>。其中<code>fields</code>的定义为：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">fields_t</span> &#123;</span></span><br><span class="line">    jfieldID    context;</span><br><span class="line">    jfieldID    surface;</span><br><span class="line">    jmethodID   post_event;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">fields_t</span> fields;</span><br></pre></td></tr></table></figure>
+
+<p>这些成员变量和方法赋值给<code>jfieldID</code>和<code>jmethodID</code>类型的变量，主要是为了效率考虑，如果每次调用相关方法都要进行查询方法和变量，显然效率会很低，因此在<code>MediaRecorder</code>框架JNI层的初始化方法<code>andorid_media_MediaRecorder_native_init()</code>中，将这些<code>jfieldID</code>和<code>jmethodID</code>类型的变量保存起来，以供后面使用。</p>
+<h2 id="3-2-使用jfieldID和jmethodID"><a href="#3-2-使用jfieldID和jmethodID" class="headerlink" title="3.2 使用jfieldID和jmethodID"></a>3.2 使用jfieldID和jmethodID</h2><p>前面保存了<code>jfieldID</code>和<code>jmethodID</code>的变量，下面如何使用呢？frameworks/base/media/jni/android_media_MediaRecorder.cpp</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> JNIMediaRecorderListener::notify(<span class="keyword">int</span> msg, <span class="keyword">int</span> ext1, <span class="keyword">int</span> ext2) &#123;</span><br><span class="line">    ALOGV(<span class="string">"JNIMediaRecorderListener::notify"</span>);</span><br><span class="line">    JNIEnv *env = AndroidRuntime::getJNIEnv();</span><br><span class="line">    env-&gt;CallStaticVoidMethod(mClass, fields.post_event, mObject, msg, ext1, ext2, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在里面调用了JNIEnv的<code>CallStaticVoidMethod()</code>，其中传入了<code>fields.post_event</code>，从上面可以得知，它其实是保存了Java层的<code>MediaRecorder</code>的静态方法<code>postEventFromNative()</code>：frameworks/base/media/java/android/media/MediaRecorder.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">postEventFromNative</span><span class="params">(Object mediarecorder_ref, <span class="keyword">int</span> what, <span class="keyword">int</span> arg1, <span class="keyword">int</span> arg2, Object obj)</span> </span>&#123;</span><br><span class="line">    MediaRecorder mr = (MediaRecorder)((WeakReference)mediarecorder_ref).get();</span><br><span class="line">    <span class="keyword">if</span> (mr == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (mr.mEventHandler != <span class="keyword">null</span>) &#123;</span><br><span class="line">        Message m = mr.mEventHandler.obtainMessage(what, arg1, arg2, obj);</span><br><span class="line">        mr.mEventHandler.sendMessage(m);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样就能在JNI层中访问Java的静态方法了。同理，要想访问Java的方法，则可以使用JNIEnv的<code>CallVoidMethod()</code>函数。</p>
+<p>上面例子是使用了<code>jmethodID</code>，下面再来看看<code>jfieldID</code>：frameworks/base/media/jni/android_media_MediaRecorder.cpp</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">android_media_MediaRecorder_prepare</span><span class="params">(JNIEnv *env, jobject thiz)</span> </span>&#123;</span><br><span class="line">    ALOGV(<span class="string">"prepare"</span>);</span><br><span class="line">    sp&lt;MediaRecorder&gt; mr = getMediaRecorder(env, thiz);</span><br><span class="line">    jobject surface = env-&gt;GetObjectField(thiz, fields.surface); <span class="comment">// 1</span></span><br><span class="line">    <span class="keyword">if</span> (surface != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> sp&lt;Surface&gt; native_surface = get_surface(env, surface);</span><br><span class="line">        ......</span><br><span class="line">    &#125;</span><br><span class="line">    process_media_recorder_call(env, mr-&gt;prepare(), <span class="string">"java/io/IOException"</span>, <span class="string">"prepare failed."</span>);</span><br></pre></td></tr></table></figure>
+
+<p>注释1，调用了JNIEnv的<code>GetObjectField()</code>，参数中的<code>fields.surface</code>用来保存Java层<code>MediaRecorder</code>中的成员变量<code>mSurface</code>，<code>mSurface</code>的类型为<code>Surface</code>，这样通过<code>GetObjectField()</code>函数就可以得到<code>mSurface</code>在JNI层中对应的<code>jobject</code>类型的变量<code>mSurface</code>。</p>
+
       
     </div>
     
@@ -468,6 +674,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/10/Android深入理解ActivityManagerService-01：AMS启动流程和相关类/" rel="prev" title="Android深入理解ActivityManagerService 01：AMS启动流程和相关类">
+                Android深入理解ActivityManagerService 01：AMS启动流程和相关类 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -519,8 +729,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -537,7 +756,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-count">59</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -548,7 +767,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -559,7 +778,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -590,6 +809,22 @@
       </section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-数据类型的转换"><span class="nav-text">1. 数据类型的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-基本数据类型的转换"><span class="nav-text">1.1 基本数据类型的转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-引用数据类型的转换"><span class="nav-text">1.2 引用数据类型的转换</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-方法签名"><span class="nav-text">2. 方法签名</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-JNIEnv"><span class="nav-text">3. JNIEnv</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-jfieldID和jmethodID"><span class="nav-text">3.1 jfieldID和jmethodID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-使用jfieldID和jmethodID"><span class="nav-text">3.2 使用jfieldID和jmethodID</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
       
 
@@ -618,7 +853,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">104.9k</span>
+    <span title="Site words total count">106.9k</span>
   
 -->
 </div>
@@ -633,7 +868,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共104.9k字</span>
+  <span class="post-count">博客全站共106.9k字</span>
 </div>
 
         
