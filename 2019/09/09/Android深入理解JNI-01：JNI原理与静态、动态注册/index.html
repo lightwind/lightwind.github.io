@@ -45,6 +45,50 @@
 
 
 
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
 
 
 
@@ -90,7 +134,7 @@
 <meta property="og:description" content="前言JNI不仅在NDK开发中应用，更是Android系统中Java与Native交互的桥梁。 1. JNI概述Android系统按语言可以分成两个部分：Java部分和Native部分。这样分的原因是，一方面是性能，一方面是在Java诞生之前，就有很多程序和库是用Native编写的。Native编写的库具有更好的性能。 Java是如何使用Native的代码呢？可以使用桥梁JNI。 2. MediaR">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://tylerliu.top/2019/09/09/Android深入理解JNI-01：JNI原理与静态、动态注册/VmSY7T.png">
-<meta property="og:updated_time" content="2019-09-10T05:33:20.738Z">
+<meta property="og:updated_time" content="2019-09-11T08:03:52.554Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android深入理解JNI 01：JNI原理与静态、动态注册">
 <meta name="twitter:description" content="前言JNI不仅在NDK开发中应用，更是Android系统中Java与Native交互的桥梁。 1. JNI概述Android系统按语言可以分成两个部分：Java部分和Native部分。这样分的原因是，一方面是性能，一方面是在Java诞生之前，就有很多程序和库是用Native编写的。Native编写的库具有更好的性能。 Java是如何使用Native的代码呢？可以使用桥梁JNI。 2. MediaR">
@@ -341,8 +385,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android起飞/" itemprop="url" rel="index">
-                    <span itemprop="name">Android起飞</span>
+                  <a href="/categories/Android进阶/" itemprop="url" rel="index">
+                    <span itemprop="name">Android进阶</span>
                   </a>
                 </span>
 
@@ -352,7 +396,7 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android起飞/框架层/" itemprop="url" rel="index">
+                  <a href="/categories/Android进阶/框架层/" itemprop="url" rel="index">
                     <span itemprop="name">框架层</span>
                   </a>
                 </span>
@@ -363,7 +407,7 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android起飞/框架层/深入理解JNI/" itemprop="url" rel="index">
+                  <a href="/categories/Android进阶/框架层/深入理解JNI/" itemprop="url" rel="index">
                     <span itemprop="name">深入理解JNI</span>
                   </a>
                 </span>
@@ -452,7 +496,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MediaRecorder</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">"media_jni"</span>);</span><br><span class="line">        native_init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">native_init</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> <span class="keyword">throws</span> IllegalStateException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>进入项目的media/src/main/java目录中执行如下命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">javac com/example/MediaRecorder.java</span><br><span class="line">javah com.example.MediaRecorder</span><br></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">javac com/example/MediaRecorder.java</span><br><span class="line">javah com<span class="selector-class">.example</span><span class="selector-class">.MediaRecorder</span></span><br></pre></td></tr></table></figure>
 
 <p>在执行第二条命令后，会在当前目录下生成com_example_MediaRecorder.h文件：E:\Project\MyStudy\JNISample\media\src\main\java\com_example_MediaRecorder.h</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* DO NOT EDIT THIS FILE - it is machine generated */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;jni.h&gt;</span></span></span><br><span class="line"><span class="comment">/* Header for class com_example_MediaRecorder */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _Included_com_example_MediaRecorder</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _Included_com_example_MediaRecorder</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Class:     com_example_MediaRecorder</span></span><br><span class="line"><span class="comment"> * Method:    native_init</span></span><br><span class="line"><span class="comment"> * Signature: ()V</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">JNIEXPORT <span class="keyword">void</span> JNICALL Java_com_example_MediaRecorder_native_1init</span><br><span class="line">  (JNIEnv *, jclass); <span class="comment">// 1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Class:     com_example_MediaRecorder</span></span><br><span class="line"><span class="comment"> * Method:    start</span></span><br><span class="line"><span class="comment"> * Signature: ()V</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">JNIEXPORT <span class="keyword">void</span> JNICALL Java_com_example_MediaRecorder_start</span><br><span class="line">  (JNIEnv *, jobject);</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
@@ -620,7 +664,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">28</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -654,6 +698,32 @@
           
 
           
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://juejin.im/timeline" title="掘金" target="_blank">掘金</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://account.aliyun.com/" title="阿里云" target="_blank">阿里云</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.wanandroid.com/" title="玩Android" target="_blank">玩Android</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://gitee.com/QingFengBaiYu" title="码云个人主页" target="_blank">码云个人主页</a>
+                  </li>
+                
+              </ul>
+            </div>
           
 
           
@@ -706,7 +776,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">106.9k</span>
+    <span title="Site words total count">108.1k</span>
   
 -->
 </div>
@@ -721,7 +791,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共106.9k字</span>
+  <span class="post-count">博客全站共108.1k字</span>
 </div>
 
         
@@ -768,9 +838,10 @@
   
 
 
+
+
   
-
-
+  
 
 
 
@@ -812,7 +883,12 @@
 
   
   
-    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
   
 
 

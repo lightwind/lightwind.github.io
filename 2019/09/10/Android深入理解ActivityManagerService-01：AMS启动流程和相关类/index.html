@@ -45,6 +45,50 @@
 
 
 
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
 
 
 
@@ -81,18 +125,18 @@
 
 
 
-<meta name="description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="description" content="1. 概述AMS是系统的引导服务，应用程序进程的启动、切换和调度、四大组件的启动和管理都需要AMS的支持。当然，并不是AMS一个类去完成这些，还有一些其他关联的类共同完成，后面会讲到。本文主要涉及以下要点：  AMS的启动流程 AMS与进程的启动 AMS相关（关联）的类  2. AMS的启动流程AMS的启动是在SystemServer进程中启动的，在Android系统启动流程 03：SystemS">
 <meta name="keywords" content="ActivityManagerService">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android深入理解ActivityManagerService 01：AMS启动流程和相关类">
 <meta property="og:url" content="https://tylerLiu.top/2019/09/10/Android深入理解ActivityManagerService-01：AMS启动流程和相关类/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta property="og:description" content="1. 概述AMS是系统的引导服务，应用程序进程的启动、切换和调度、四大组件的启动和管理都需要AMS的支持。当然，并不是AMS一个类去完成这些，还有一些其他关联的类共同完成，后面会讲到。本文主要涉及以下要点：  AMS的启动流程 AMS与进程的启动 AMS相关（关联）的类  2. AMS的启动流程AMS的启动是在SystemServer进程中启动的，在Android系统启动流程 03：SystemS">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-10T08:10:18.681Z">
+<meta property="og:updated_time" content="2019-09-11T08:03:46.394Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android深入理解ActivityManagerService 01：AMS启动流程和相关类">
-<meta name="twitter:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="twitter:description" content="1. 概述AMS是系统的引导服务，应用程序进程的启动、切换和调度、四大组件的启动和管理都需要AMS的支持。当然，并不是AMS一个类去完成这些，还有一些其他关联的类共同完成，后面会讲到。本文主要涉及以下要点：  AMS的启动流程 AMS与进程的启动 AMS相关（关联）的类  2. AMS的启动流程AMS的启动是在SystemServer进程中启动的，在Android系统启动流程 03：SystemS">
 
 
 
@@ -339,8 +383,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android起飞/" itemprop="url" rel="index">
-                    <span itemprop="name">Android起飞</span>
+                  <a href="/categories/Android进阶/" itemprop="url" rel="index">
+                    <span itemprop="name">Android进阶</span>
                   </a>
                 </span>
 
@@ -350,7 +394,7 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android起飞/框架层/" itemprop="url" rel="index">
+                  <a href="/categories/Android进阶/框架层/" itemprop="url" rel="index">
                     <span itemprop="name">框架层</span>
                   </a>
                 </span>
@@ -361,7 +405,7 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android起飞/框架层/深入理解ActivityManagerService/" itemprop="url" rel="index">
+                  <a href="/categories/Android进阶/框架层/深入理解ActivityManagerService/" itemprop="url" rel="index">
                     <span itemprop="name">深入理解ActivityManagerService</span>
                   </a>
                 </span>
@@ -392,7 +436,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  0 字
+                  1.3k 字
                 </span>
               
 
@@ -408,7 +452,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1 分钟
+                  5 分钟
                 </span>
               
             </div>
@@ -429,7 +473,45 @@
       
 
       
-        
+        <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>AMS是系统的引导服务，应用程序进程的启动、切换和调度、四大组件的启动和管理都需要AMS的支持。当然，并不是AMS一个类去完成这些，还有一些其他关联的类共同完成，后面会讲到。本文主要涉及以下要点：</p>
+<ul>
+<li>AMS的启动流程</li>
+<li>AMS与进程的启动</li>
+<li>AMS相关（关联）的类</li>
+</ul>
+<h1 id="2-AMS的启动流程"><a href="#2-AMS的启动流程" class="headerlink" title="2. AMS的启动流程"></a>2. AMS的启动流程</h1><p>AMS的启动是在SystemServer进程中启动的，在<a href="https://tylerliu.top/2019/08/27/Android系统启动流程03%EF%BC%9ASystemServer进程/">Android系统启动流程 03：SystemServer进程</a>中提过，这里从SystemServer进程的<code>main()</code>开始讲起：frameworks/base/services/java/com/android/server/SystemServer.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">new</span> SystemServer().run();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>main()</code>调用了<code>SystemServer</code>的<code>run()</code>：frameworks/base/services/java/com/android/server/SystemServer.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">        System.loadLibrary(<span class="string">"android_servers"</span>); <span class="comment">// 1</span></span><br><span class="line">    ......</span><br><span class="line">        mSystemServiceManager = <span class="keyword">new</span> SystemServiceManager(mSystemContext); <span class="comment">// 2</span></span><br><span class="line">        LocalServices.addService(SystemServiceManager.class, mSystemServiceManager);</span><br><span class="line">    ......  </span><br><span class="line">     <span class="keyword">try</span> &#123;</span><br><span class="line">        Trace.traceBegin(Trace.TRACE_TAG_SYSTEM_SERVER, <span class="string">"StartServices"</span>);</span><br><span class="line">        startBootstrapServices(); <span class="comment">// 3</span></span><br><span class="line">        startCoreServices(); <span class="comment">// 4</span></span><br><span class="line">        startOtherServices(); <span class="comment">// 5</span></span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">        ......</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        Trace.traceEnd(Trace.TRACE_TAG_SYSTEM_SERVER);</span><br><span class="line">    &#125;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，加载动态库<code>&quot;android_servers.so&quot;</code>。</p>
+<p>注释2，创建<code>SystemServerManager</code>，它会对系统的服务进行创建、启动和生命周期管理。</p>
+<p>注释3，<code>startBootstrapServices()</code>中，用<code>SystemServiceManager</code>启动了<code>ActivityManagerService</code>、<code>PowerManagerService</code>、<code>PackageManagerService</code>等服务。</p>
+<p>注释4，<code>startCoreServices()</code>中，启动了<code>BatteryService</code>、<code>UsageStatsService</code>、和<code>WebViewUpdateSeervice</code>。</p>
+<p>注释5，<code>startOtherServices()</code>中，启动了<code>CameraService</code>、<code>AlarmManagerService</code>、<code>VrManagerService</code>等服务。</p>
+<p>这些服务的父类均为<code>SystemService</code>。从注释3、4、5可以看出，系统将服务分成三类，引导服务、核心服务和其他服务，其他服务是一些不紧要的和一些不需要立即启动的服务。系统服务总共有80多个，这里主要看看引导服务中的AMS是如何启动的，注释3的<code>startBootstrapServices()</code>：frameworks/base/services/java/com/android/server/SystemServer.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startBootstrapServices</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Installer installer = mSystemServiceManager.startService(Installer.class);</span><br><span class="line">    <span class="comment">// Activity manager runs the show.</span></span><br><span class="line">    mActivityManagerService = mSystemServiceManager.startService(ActivityManagerService.Lifecycle.class).getService(); <span class="comment">// 1</span></span><br><span class="line">    mActivityManagerService.setSystemServiceManager(mSystemServiceManager);</span><br><span class="line">    mActivityManagerService.setInstaller(installer);</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，调用了<code>SystemServiceManager</code>的<code>startService()</code>，方法的参数是<code>ActivityManagerService.Lifecycle.class</code>：frameworks/base/services/core/java/com/android/server/SystemServiceManager.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line"><span class="keyword">public</span> &lt;T extends SystemService&gt; <span class="function">T <span class="title">startService</span><span class="params">(Class&lt;T&gt; serviceClass)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">final</span> T service;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">        Constructor&lt;T&gt; constructor = serviceClass.getConstructor(Context.class); <span class="comment">// 1</span></span><br><span class="line">        service = constructor.newInstance(mContext); <span class="comment">// 2</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (InstantiationException ex) &#123;</span><br><span class="line">        ......</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// Register it.</span></span><br><span class="line">        mServices.add(service); <span class="comment">// 3</span></span><br><span class="line">        <span class="comment">// Start it.</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            service.onStart(); <span class="comment">// 4</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (RuntimeException ex) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Failed to start service "</span> + name + <span class="string">": onStart threw an exception"</span>, ex);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> service;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        Trace.traceEnd(Trace.TRACE_TAG_SYSTEM_SERVER);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>startService()</code>传入的参数是<code>Lifecycle.class</code>，<code>Lifecycle</code>继承自<code>SystemService</code>。首先，通过反射来创建<code>Lifecycle</code>实例，注释1得到传进来的<code>Lifecycle</code>的构造器<code>Constructor</code>，在注释2调用<code>Constructor</code>的<code>newInstance()</code>来创建<code>Lifecycle</code>类型的<code>service</code>对象。</p>
+<p>注释3，将刚创建的<code>service</code>添加到<code>ArrayList</code>类型的<code>mService</code>中来完成注册。</p>
+<p>注释4，调用<code>onStart()</code>启动<code>service</code>，并返回该<code>service</code>。<code>Lifecycle</code>是AMS的内部类：frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Lifecycle</span> <span class="keyword">extends</span> <span class="title">SystemService</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ActivityManagerService mService;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Lifecycle</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context);</span><br><span class="line">        mService = <span class="keyword">new</span> ActivityManagerService(context); <span class="comment">// 1</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mService.start(); <span class="comment">// 2</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ActivityManagerService <span class="title">getService</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mService; <span class="comment">// 3</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码结合<code>SystemServiceManager</code>的<code>startService()</code>来分析，当通过反射来创建<code>Lifecycle</code>实例时，会调用注释1的方法创建ASM实例，当调用<code>Lifecycle</code>类型的<code>service</code>的<code>onStart()</code>时，实际上调用的是注释2处AMS的<code>start()</code>。在<code>SystemServer</code>的<code>startBootstrapService()</code>的注释1处，调用了如下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mActivityManagerService = mSystemServiceManager.startService(ActivityManagerService.Lifecycle.class).getService();</span><br></pre></td></tr></table></figure>
+
+<p><code>SystemServiceManager</code>的<code>startService()</code>最终会返回<code>Lifecycle</code>类型的对象，接着又调用<code>Lifecycle</code>的<code>getService()</code>，这个方法会返回AMS类型的<code>mService</code>对象，见注释3，这样AMS实例就会被创建并返回。</p>
+<h1 id="3-AMS与进程启动"><a href="#3-AMS与进程启动" class="headerlink" title="3. AMS与进程启动"></a>3. AMS与进程启动</h1><p>在<a href="https://tylerliu.top/2019/08/27/Android系统启动流程02%EF%BC%9Azygote进程/">Android系统启动流程 02：zygote进程</a>中，在Zygote的Java框架层中，会创建一个Server端的Socket，这个Socket用来等待AMS请求Zygote来创建新的应用程序进程。要启动一个应用程序，首先要保证这个应用程序所需要的应用程序进程已经被启动。AMS在启动应用程序时，会检查这个应用程序需要的应用程序进程是否存在，不存在就会请求Zygote进程将需要的应用程序进程启动。Service的启动过程中会调用<code>ActiveService</code>的<code>bringUpServiceLocked()</code>：frameworks/base/services/core/java/com/android/server/am/ActiveServices.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> String <span class="title">bringUpServiceLocked</span><span class="params">(ServiceRecord r, <span class="keyword">int</span> intentFlags, <span class="keyword">boolean</span> execInFg, <span class="keyword">boolean</span> whileRestarting, <span class="keyword">boolean</span> permissionsReviewRequired)</span> <span class="keyword">throws</span> TransactionTooLargeException </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">final</span> String procName = r.processName; <span class="comment">// 1</span></span><br><span class="line">    ProcessRecord app;</span><br><span class="line">    <span class="keyword">if</span> (!isolated) &#123;</span><br><span class="line">        app = mAm.getProcessRecordLocked(procName, r.appInfo.uid, <span class="keyword">false</span>); <span class="comment">// 2</span></span><br><span class="line">        ......</span><br><span class="line">        <span class="keyword">if</span> (app != <span class="keyword">null</span> &amp;&amp; app.thread != <span class="keyword">null</span>) &#123; <span class="comment">// 3</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                app.addPackage(r.appInfo.packageName, r.appInfo.versionCode, mAm.mProcessStats);</span><br><span class="line">                realStartServiceLocked(r, app, execInFg); <span class="comment">// 4</span></span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125; </span><br><span class="line">            ......</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        app = r.isolatedProc;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (app == <span class="keyword">null</span> &amp;&amp; !permissionsReviewRequired) &#123; <span class="comment">// 5</span></span><br><span class="line">        <span class="keyword">if</span> ((app=mAm.startProcessLocked(procName, r.appInfo, <span class="keyword">true</span>, intentFlags, <span class="string">"service"</span>, r.name, <span class="keyword">false</span>, isolated, <span class="keyword">false</span>)) == <span class="keyword">null</span>) &#123; <span class="comment">// 6</span></span><br><span class="line">           ......</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (isolated) &#123;</span><br><span class="line">            r.isolatedProc = app;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，得到<code>ServiceRecorder</code>的<code>processName</code>，并赋值给<code>procName</code>，其中<code>ServiceRecorder</code>是用来描述<code>Service</code>的<code>andorid:process</code>属性。</p>
+<p>注释2，将<code>procName</code>和<code>Service</code>的<code>uid</code>传入到AMS的<code>getProcessRecorderLocked()</code>中，来查询是否存在一个<code>Service</code>对应的<code>ProcessRecorder</code>类型的对象<code>app</code>，<code>ProcessRecorder</code>主要用来记录运行的应用程序进程的信息。</p>
+<p>注释5，判断<code>Service</code>对应的<code>app</code>为空，则说明来运行<code>Service</code>的应用程序进程不存在，则调用注释6的<code>startProcessLocked()</code>来创建对应的应用程序进程，具体可以查看<a href="https://tylerliu.top/2019/08/30/Android应用程序进程启动过程01/">Android应用程序进程启动过程 01</a>。</p>
+<h1 id="4-与AMS相关的类"><a href="#4-与AMS相关的类" class="headerlink" title="4. 与AMS相关的类"></a>4. 与AMS相关的类</h1>
       
     </div>
     
@@ -519,8 +601,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -548,7 +639,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">28</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -583,12 +674,54 @@
 
           
           
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://juejin.im/timeline" title="掘金" target="_blank">掘金</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://account.aliyun.com/" title="阿里云" target="_blank">阿里云</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.wanandroid.com/" title="玩Android" target="_blank">玩Android</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://gitee.com/QingFengBaiYu" title="码云个人主页" target="_blank">码云个人主页</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
 
           
 
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-AMS的启动流程"><span class="nav-text">2. AMS的启动流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-AMS与进程启动"><span class="nav-text">3. AMS与进程启动</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-与AMS相关的类"><span class="nav-text">4. 与AMS相关的类</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -618,7 +751,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">106.9k</span>
+    <span title="Site words total count">108.1k</span>
   
 -->
 </div>
@@ -633,7 +766,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共106.9k字</span>
+  <span class="post-count">博客全站共108.1k字</span>
 </div>
 
         
@@ -680,9 +813,10 @@
   
 
 
+
+
   
-
-
+  
 
 
 
@@ -724,7 +858,12 @@
 
   
   
-    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
   
 
 

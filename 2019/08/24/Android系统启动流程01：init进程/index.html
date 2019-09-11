@@ -45,6 +45,50 @@
 
 
 
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
 
 
 
@@ -89,7 +133,7 @@
 <meta property="og:site_name" content="Tyler的博客">
 <meta property="og:description" content="1. 简介init进程是Android系统中用户空间的第一个进程。有很多重要职责，如，创建zygote(孵化器)和属性服务等。 init进程由多个源文件共同组成，这些文件位于源码目录system/core/init中。 本文将基于Android 7.0分析init进程。 2. 引入init进程Android系统启动流程：  启动电源以及系统启动：当按下电源键时，引导芯片代码开始从预定义的地方（固化">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-31T00:55:37.208Z">
+<meta property="og:updated_time" content="2019-09-11T08:04:01.235Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android系统启动流程 01：init进程">
 <meta name="twitter:description" content="1. 简介init进程是Android系统中用户空间的第一个进程。有很多重要职责，如，创建zygote(孵化器)和属性服务等。 init进程由多个源文件共同组成，这些文件位于源码目录system/core/init中。 本文将基于Android 7.0分析init进程。 2. 引入init进程Android系统启动流程：  启动电源以及系统启动：当按下电源键时，引导芯片代码开始从预定义的地方（固化">
@@ -339,8 +383,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android起飞/" itemprop="url" rel="index">
-                    <span itemprop="name">Android起飞</span>
+                  <a href="/categories/Android进阶/" itemprop="url" rel="index">
+                    <span itemprop="name">Android进阶</span>
                   </a>
                 </span>
 
@@ -350,7 +394,7 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android起飞/框架层/" itemprop="url" rel="index">
+                  <a href="/categories/Android进阶/框架层/" itemprop="url" rel="index">
                     <span itemprop="name">框架层</span>
                   </a>
                 </span>
@@ -361,7 +405,7 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android起飞/框架层/系统启动/" itemprop="url" rel="index">
+                  <a href="/categories/Android进阶/框架层/系统启动/" itemprop="url" rel="index">
                     <span itemprop="name">系统启动</span>
                   </a>
                 </span>
@@ -450,16 +494,16 @@
 <p>下面看看<code>init.rc</code>里面做了什么。</p>
 <h1 id="4-init-rc"><a href="#4-init-rc" class="headerlink" title="4. init.rc"></a>4. init.rc</h1><p><code>init.rc</code>是一个配置文件，内部由Android初始化语言（Android Init Language）编写的脚本，主要包含五种类型语句：<code>Action</code>、<code>Commands</code>、<code>Services</code>、<code>Options</code>和<code>Inport</code>。</p>
 <p><code>init.rc</code>配置代码如下：system/core/rootdir/init.rc</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">on init</span><br><span class="line">    sysclktz 0</span><br><span class="line">    # Mix device-specific information into the entropy pool</span><br><span class="line">    copy /proc/cmdline /dev/urandom</span><br><span class="line">    copy /default.prop /dev/urandom</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">on boot</span><br><span class="line">    # basic network init</span><br><span class="line">    ifup lo</span><br><span class="line">    hostname localhost</span><br><span class="line">    domainname localdomain</span><br><span class="line">    # set RLIMIT_NICE to allow priorities from 19 to -20</span><br><span class="line">    setrlimit 13 40 40</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">on init</span><br><span class="line">    sysclktz 0</span><br><span class="line">    # Mix device-specific information into the entropy pool</span><br><span class="line">    copy /proc/cmdline /dev/urandom</span><br><span class="line">    copy /default.prop /dev/urandom</span><br><span class="line"><span class="built_in">..</span>.</span><br><span class="line"></span><br><span class="line">on boot</span><br><span class="line">    # basic<span class="built_in"> network </span>init</span><br><span class="line">    ifup lo</span><br><span class="line">    hostname localhost</span><br><span class="line">    domainname localdomain</span><br><span class="line">    # <span class="builtin-name">set</span> RLIMIT_NICE <span class="keyword">to</span> allow priorities <span class="keyword">from</span> 19 <span class="keyword">to</span> -20</span><br><span class="line">    setrlimit 13 40 40</span><br><span class="line"><span class="built_in">..</span>.</span><br></pre></td></tr></table></figure>
 
 <p><code>on init</code>和<code>on boot</code>是<code>Action</code>语句，格式为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">on &lt;trigger&gt; [&amp;&amp; &lt;trigger&gt;]* // 设置触发器</span><br><span class="line">    &lt;command&gt;</span><br><span class="line">    &lt;command&gt; // 动作触发之后要执行的命令</span><br></pre></td></tr></table></figure>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">on <span class="params">&lt;trigger&gt;</span> [&amp;&amp; <span class="params">&lt;trigger&gt;</span>]* <span class="comment">// 设置触发器</span></span><br><span class="line">    <span class="params">&lt;command&gt;</span></span><br><span class="line">    <span class="params">&lt;command&gt;</span> <span class="comment">// 动作触发之后要执行的命令</span></span><br></pre></td></tr></table></figure>
 
 <p>为了分析如何创建zygote，主要看<code>Services</code>类型的语句，格式如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">service &lt;name&gt; &lt;pathname&gt; [&lt;argument&gt;]* // &lt;service的名字&gt;&lt;执行程序路径&gt;&lt;传递参数&gt;</span><br><span class="line">    &lt;option&gt; // option是service的修饰词，影响什么时候，如何启动services</span><br><span class="line">    &lt;option&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">service &lt;name&gt; &lt;pathname&gt; <span class="meta">[&lt;argument&gt;]</span>* <span class="comment">// &lt;service的名字&gt;&lt;执行程序路径&gt;&lt;传递参数&gt;</span></span><br><span class="line">    &lt;option&gt; <span class="comment">// option是service的修饰词，影响什么时候，如何启动services</span></span><br><span class="line">    &lt;option&gt;</span><br></pre></td></tr></table></figure>
 
 <p>注意：Android 7.0中对<code>init.rc</code>进行了拆分，每个服务一个rc文件。要分析的zygote服务的启动脚本在init.zygoteXX.rc中，这里以64位处理器为例，init.zygote64.rc代码如下：system/core/rootdir/init.zygote64.rc</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">service zygote /system/bin/app_process64 -Xzygote /system/bin --zygote --start-system-server</span><br><span class="line">    class main</span><br><span class="line">    socket zygote stream 660 root system</span><br><span class="line">    onrestart write /sys/android_power/request_state wake</span><br><span class="line">    onrestart write /sys/power/state on</span><br><span class="line">    onrestart restart audioserver</span><br><span class="line">    onrestart restart cameraserver</span><br><span class="line">    onrestart restart media</span><br><span class="line">    onrestart restart netd</span><br><span class="line">    writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks</span><br></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">service zygote /system/bin/app_process64 -Xzygote /system/bin --zygote --start-system-server</span><br><span class="line">    class main</span><br><span class="line">    socket zygote stream 660 root system</span><br><span class="line">    onrestart write /sys/android_power/request_state wake</span><br><span class="line">    onrestart write /sys/power/state on</span><br><span class="line">    onrestart restart audioserver</span><br><span class="line">    onrestart restart cameraserver</span><br><span class="line">    onrestart restart media</span><br><span class="line">    onrestart restart netd</span><br><span class="line">    writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks</span><br></pre></td></tr></table></figure>
 
 <p>其中<code>service</code>用于通知init进程创建名为<code>zygote</code>的进程，这个<code>zygote</code>进程执行程序的路径为<code>/system/bin/app_process64</code>，后面的是要传给<code>app_process64</code>的参数。<code>class main</code>指<code>zygote</code>的<code>calss name</code>为<code>main</code>，后面会用到。</p>
 <h1 id="5-解析service"><a href="#5-解析service" class="headerlink" title="5. 解析service"></a>5. 解析service</h1><p>解析<code>service</code>会用到两个函数：</p>
@@ -479,7 +523,7 @@
 <p>注释1，将<code>service</code>对象添加到<code>services</code>链表中。</p>
 <p>总的来说就是根据参数创建出<code>service</code>对象，然后根据选项域的内容填充<code>service</code>对象，最后将<code>service</code>对象添加到<code>vector</code>类型的<code>services</code>链表中。</p>
 <h1 id="6-init启动zygote"><a href="#6-init启动zygote" class="headerlink" title="6. init启动zygote"></a>6. init启动zygote</h1><p>了解完<code>service</code>，下面看看<code>init</code>是如何启动<code>service</code>，这里主要讲启动zygote的这个<code>service</code>。在zygote的启动脚本中得知zygote的class name为<code>main</code>，在init.rc有如下配置代码：system/core/rootdir/init.rc</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">on nonencrypted    </span><br><span class="line">    # A/B update verifier that marks a successful boot.  </span><br><span class="line">    exec - root -- /system/bin/update_verifier nonencrypted  </span><br><span class="line">    class_start main         </span><br><span class="line">    class_start late_start </span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">on</span> nonencrypted    </span><br><span class="line">    <span class="comment"># A/B update verifier that marks a successful boot.  </span></span><br><span class="line">    exec - root <span class="comment">-- /system/bin/update_verifier nonencrypted  </span></span><br><span class="line">    class_start main         </span><br><span class="line">    class_start late_start </span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p>其中<code>class_start</code>是一个<code>COMMAND</code>，对应的函数为<code>do_class_start</code>。因为<code>main</code>指的是zygote，因此<code>class_start main</code>就是用来启动zygote。<code>do_class_start</code>是定义在builtins.cpp中的，如下：system/core/init/builtins.cpp</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">do_class_start</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt;&amp; args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">/* Starting a class does not start services</span></span><br><span class="line"><span class="comment">         * which are explicitly disabled.  They must</span></span><br><span class="line"><span class="comment">         * be started individually.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">    ServiceManager::GetInstance().</span><br><span class="line">        ForEachServiceInClass(args[<span class="number">1</span>], [] (Service* s) &#123; s-&gt;StartIfNotDisabled(); &#125;);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -664,7 +708,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">28</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -698,6 +742,32 @@
           
 
           
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://juejin.im/timeline" title="掘金" target="_blank">掘金</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://account.aliyun.com/" title="阿里云" target="_blank">阿里云</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.wanandroid.com/" title="玩Android" target="_blank">玩Android</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://gitee.com/QingFengBaiYu" title="码云个人主页" target="_blank">码云个人主页</a>
+                  </li>
+                
+              </ul>
+            </div>
           
 
           
@@ -750,7 +820,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">106.9k</span>
+    <span title="Site words total count">108.1k</span>
   
 -->
 </div>
@@ -765,7 +835,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共106.9k字</span>
+  <span class="post-count">博客全站共108.1k字</span>
 </div>
 
         
@@ -812,9 +882,10 @@
   
 
 
+
+
   
-
-
+  
 
 
 
@@ -856,7 +927,12 @@
 
   
   
-    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
   
 
 

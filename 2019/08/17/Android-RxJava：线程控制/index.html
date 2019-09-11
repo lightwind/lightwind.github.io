@@ -45,6 +45,50 @@
 
 
 
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
 
 
 
@@ -508,7 +552,7 @@
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.INTERNET"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="4-3-2-创建接收服务器返回数据的类"><a href="#4-3-2-创建接收服务器返回数据的类" class="headerlink" title="4.3.2 创建接收服务器返回数据的类"></a>4.3.2 创建接收服务器返回数据的类</h3><p>金山词霸API数据格式说明：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// URL模板</span><br><span class="line">http://fy.iciba.com/ajax.php</span><br><span class="line"></span><br><span class="line">// URL实例</span><br><span class="line">http://fy.iciba.com/ajax.php?a=fy&amp;f=auto&amp;t=auto&amp;w=hello%20world</span><br><span class="line"></span><br><span class="line">// 参数说明：</span><br><span class="line">// a：固定值 fy</span><br><span class="line">// f：原文内容类型，日语取 ja，中文取 zh，英语取 en，韩语取 ko，德语取 de，西班牙语取 es，法语取 fr，自动则取 auto</span><br><span class="line">// t：译文内容类型，日语取 ja，中文取 zh，英语取 en，韩语取 ko，德语取 de，西班牙语取 es，法语取 fr，自动则取 auto</span><br><span class="line">// w：查询内容</span><br></pre></td></tr></table></figure>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// URL模板</span></span><br><span class="line"><span class="symbol">http:</span><span class="comment">//fy.iciba.com/ajax.php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// URL实例</span></span><br><span class="line"><span class="symbol">http:</span><span class="comment">//fy.iciba.com/ajax.php?a=fy&amp;f=auto&amp;t=auto&amp;w=hello%20world</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 参数说明：</span></span><br><span class="line"><span class="comment">// a：固定值 fy</span></span><br><span class="line"><span class="comment">// f：原文内容类型，日语取 ja，中文取 zh，英语取 en，韩语取 ko，德语取 de，西班牙语取 es，法语取 fr，自动则取 auto</span></span><br><span class="line"><span class="comment">// t：译文内容类型，日语取 ja，中文取 zh，英语取 en，韩语取 ko，德语取 de，西班牙语取 es，法语取 fr，自动则取 auto</span></span><br><span class="line"><span class="comment">// w：查询内容</span></span><br></pre></td></tr></table></figure>
 
 <p>示例：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">"status"</span>: <span class="number">1</span>,</span><br><span class="line">	<span class="attr">"content"</span>: &#123;</span><br><span class="line">		<span class="attr">"from"</span>: <span class="string">"en-EU"</span>,</span><br><span class="line">		<span class="attr">"to"</span>: <span class="string">"zh-CN"</span>,</span><br><span class="line">		<span class="attr">"vendor"</span>: <span class="string">"ciba_cnn"</span>,</span><br><span class="line">		<span class="attr">"out"</span>: <span class="string">"\u4f60\u597d\u4e16\u754c"</span>,</span><br><span class="line">		<span class="attr">"ciba_use"</span>: <span class="string">"\u6765\u81ea\u673a\u5668\u7ffb\u8bd1\u3002"</span>,</span><br><span class="line">		<span class="attr">"ciba_out"</span>: <span class="string">""</span>,</span><br><span class="line">		<span class="attr">"err_no"</span>: <span class="number">0</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -521,7 +565,7 @@
 
 <h3 id="4-3-4-后面的步骤均可在Activity中实现，详见代码"><a href="#4-3-4-后面的步骤均可在Activity中实现，详见代码" class="headerlink" title="4.3.4 后面的步骤均可在Activity中实现，详见代码"></a>4.3.4 后面的步骤均可在Activity中实现，详见代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ly.allendemorx;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.os.Bundle;</span><br><span class="line"><span class="keyword">import</span> android.support.v7.app.AppCompatActivity;</span><br><span class="line"><span class="keyword">import</span> android.util.Log;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.reactivex.Observable;</span><br><span class="line"><span class="keyword">import</span> io.reactivex.Observer;</span><br><span class="line"><span class="keyword">import</span> io.reactivex.android.schedulers.AndroidSchedulers;</span><br><span class="line"><span class="keyword">import</span> io.reactivex.disposables.Disposable;</span><br><span class="line"><span class="keyword">import</span> io.reactivex.schedulers.Schedulers;</span><br><span class="line"><span class="keyword">import</span> retrofit2.Retrofit;</span><br><span class="line"><span class="keyword">import</span> retrofit2.converter.gson.GsonConverterFactory;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Liuyang</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2019/8/19</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main3Activity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"Allen"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main3);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 步骤4：创建Retrofit对象</span></span><br><span class="line">        Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()</span><br><span class="line">                <span class="comment">// 设置网络请求URL</span></span><br><span class="line">                .baseUrl(<span class="string">"http://fy.iciba.com/"</span>)</span><br><span class="line">                <span class="comment">// 设置使用GSON解析</span></span><br><span class="line">                .addConverterFactory(GsonConverterFactory.create())</span><br><span class="line">                <span class="comment">// 设置支持RxJava</span></span><br><span class="line">                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())</span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 步骤5：创建网络请求接口实例</span></span><br><span class="line">        <span class="keyword">final</span> GetRequest_Interface request = retrofit.create(GetRequest_Interface.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 步骤6：采用Observable&lt;...&gt;形式对网络请求进行封装</span></span><br><span class="line">        Observable&lt;Translation&gt; observable = request.getCall();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 步骤7：发送网络请求</span></span><br><span class="line">        observable</span><br><span class="line">                <span class="comment">// 在IO线程进行网络请求</span></span><br><span class="line">                .subscribeOn(Schedulers.io())</span><br><span class="line">                <span class="comment">// 回到主线程 处理请求结果</span></span><br><span class="line">                .observeOn(AndroidSchedulers.mainThread())</span><br><span class="line">                .subscribe(<span class="keyword">new</span> Observer&lt;Translation&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSubscribe</span><span class="params">(Disposable d)</span> </span>&#123;</span><br><span class="line">                        Log.d(TAG, <span class="string">"开始采用subscribe连接"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNext</span><span class="params">(Translation translation)</span> </span>&#123;</span><br><span class="line">                        <span class="comment">// 步骤8：对返回的数据进行处理</span></span><br><span class="line">                        <span class="keyword">if</span> (translation != <span class="keyword">null</span>) &#123;</span><br><span class="line">                            Log.d(TAG, <span class="string">"结果 from："</span> + translation.getContent().getFrom());</span><br><span class="line">                            Log.d(TAG, <span class="string">"结果 to："</span> + translation.getContent().getTo());</span><br><span class="line">                            Log.d(TAG, <span class="string">"结果 vendor："</span> + translation.getContent().getVendor());</span><br><span class="line">                            Log.d(TAG, <span class="string">"结果 out："</span> + translation.getContent().getOut());</span><br><span class="line">                            Log.d(TAG, <span class="string">"结果 ciba_use："</span> + translation.getContent().getCiba_use());</span><br><span class="line">                            Log.d(TAG, <span class="string">"结果 ciba_out："</span> + translation.getContent().getCiba_out());</span><br><span class="line">                            Log.d(TAG, <span class="string">"结果 err_no："</span> + translation.getContent().getErr_no());</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(Throwable e)</span> </span>&#123;</span><br><span class="line">                        Log.d(TAG, <span class="string">"请求失败"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onComplete</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        Log.d(TAG, <span class="string">"请求成功"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">D/Allen: 开始采用subscribe连接</span><br><span class="line">D/Allen: 结果 from：en-EU</span><br><span class="line">D/Allen: 结果 to：zh-CN</span><br><span class="line">D/Allen: 结果 vendor：tencent</span><br><span class="line">D/Allen: 结果 out：嗨世界</span><br><span class="line">D/Allen: 结果 ciba_use：来自机器翻译。</span><br><span class="line">D/Allen: 结果 ciba_out：</span><br><span class="line">D/Allen: 结果 err_no：0</span><br><span class="line">D/Allen: 请求成功</span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">D/<span class="string">Allen:</span> 开始采用subscribe连接</span><br><span class="line">D/<span class="string">Allen:</span> 结果 from：en-EU</span><br><span class="line">D/<span class="string">Allen:</span> 结果 to：zh-CN</span><br><span class="line">D/<span class="string">Allen:</span> 结果 vendor：tencent</span><br><span class="line">D/<span class="string">Allen:</span> 结果 out：嗨世界</span><br><span class="line">D/<span class="string">Allen:</span> 结果 ciba_use：来自机器翻译。</span><br><span class="line">D/<span class="string">Allen:</span> 结果 ciba_out：</span><br><span class="line">D/<span class="string">Allen:</span> 结果 err_no：<span class="number">0</span></span><br><span class="line">D/<span class="string">Allen:</span> 请求成功</span><br></pre></td></tr></table></figure>
 
 <p>地址：<a href="https://gitee.com/QingFengBaiYu/Allen_Demo_Rx" target="_blank" rel="noopener">Allen_Demo_Rx</a></p>
 <h1 id="5-程序崩溃问题"><a href="#5-程序崩溃问题" class="headerlink" title="5. 程序崩溃问题"></a>5. 程序崩溃问题</h1><p>背景：在发送网络请求时，退出当前Activity。<br>冲突：此时如果回到主线程更新UI，APP会崩溃<br>解决方案：当Activity退出时，调用<code>Disposiable.dispose()</code>切断观察者和被观察者之间的订阅，使得观察者无法接收到事件和响应事件。</p>
@@ -660,7 +704,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">28</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -694,6 +738,32 @@
           
 
           
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://juejin.im/timeline" title="掘金" target="_blank">掘金</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://account.aliyun.com/" title="阿里云" target="_blank">阿里云</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.wanandroid.com/" title="玩Android" target="_blank">玩Android</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://gitee.com/QingFengBaiYu" title="码云个人主页" target="_blank">码云个人主页</a>
+                  </li>
+                
+              </ul>
+            </div>
           
 
           
@@ -746,7 +816,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">106.9k</span>
+    <span title="Site words total count">108.1k</span>
   
 -->
 </div>
@@ -761,7 +831,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共106.9k字</span>
+  <span class="post-count">博客全站共108.1k字</span>
 </div>
 
         
@@ -808,9 +878,10 @@
   
 
 
+
+
   
-
-
+  
 
 
 
@@ -852,7 +923,12 @@
 
   
   
-    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
   
 
 
