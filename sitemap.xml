@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://tylerLiu.top/2019/09/12/Android%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3ActivityManagerService-02%EF%BC%9AActivityTask%E5%92%8CActivity%E6%A0%88%E7%AE%A1%E7%90%86/</loc>
+    
+    <lastmod>2019-09-12T01:42:50.773Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://tylerLiu.top/2019/09/10/Android%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3ActivityManagerService-01%EF%BC%9AAMS%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%92%8C%E7%9B%B8%E5%85%B3%E7%B1%BB/</loc>
+    
+    <lastmod>2019-09-12T01:34:15.212Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://tylerLiu.top/2019/08/31/Android%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E8%BF%9B%E7%A8%8B%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B02/</loc>
     
     <lastmod>2019-09-11T08:04:12.244Z</lastmod>
@@ -75,13 +89,6 @@
     <loc>https://tylerLiu.top/2019/09/09/Android%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Context-02/</loc>
     
     <lastmod>2019-09-11T08:03:46.428Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://tylerLiu.top/2019/09/10/Android%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3ActivityManagerService-01%EF%BC%9AAMS%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%92%8C%E7%9B%B8%E5%85%B3%E7%B1%BB/</loc>
-    
-    <lastmod>2019-09-11T08:03:46.394Z</lastmod>
     
   </url>
   

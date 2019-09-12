@@ -133,10 +133,13 @@
 <meta property="og:site_name" content="Tyler的博客">
 <meta property="og:description" content="1. 概述AMS是系统的引导服务，应用程序进程的启动、切换和调度、四大组件的启动和管理都需要AMS的支持。当然，并不是AMS一个类去完成这些，还有一些其他关联的类共同完成，后面会讲到。本文主要涉及以下要点：  AMS的启动流程 AMS与进程的启动 AMS相关（关联）的类  2. AMS的启动流程AMS的启动是在SystemServer进程中启动的，在Android系统启动流程 03：SystemS">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-11T08:03:46.394Z">
+<meta property="og:image" content="https://tylerliu.top/2019/09/10/Android深入理解ActivityManagerService-01：AMS启动流程和相关类/VeigPS.png">
+<meta property="og:image" content="https://tylerliu.top/2019/09/10/Android深入理解ActivityManagerService-01：AMS启动流程和相关类/Vei658.png">
+<meta property="og:updated_time" content="2019-09-12T01:34:15.212Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android深入理解ActivityManagerService 01：AMS启动流程和相关类">
 <meta name="twitter:description" content="1. 概述AMS是系统的引导服务，应用程序进程的启动、切换和调度、四大组件的启动和管理都需要AMS的支持。当然，并不是AMS一个类去完成这些，还有一些其他关联的类共同完成，后面会讲到。本文主要涉及以下要点：  AMS的启动流程 AMS与进程的启动 AMS相关（关联）的类  2. AMS的启动流程AMS的启动是在SystemServer进程中启动的，在Android系统启动流程 03：SystemS">
+<meta name="twitter:image" content="https://tylerliu.top/2019/09/10/Android深入理解ActivityManagerService-01：AMS启动流程和相关类/VeigPS.png">
 
 
 
@@ -436,7 +439,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.3k 字
+                  2.3k 字
                 </span>
               
 
@@ -452,7 +455,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  5 分钟
+                  10 分钟
                 </span>
               
             </div>
@@ -511,7 +514,40 @@
 <p>注释1，得到<code>ServiceRecorder</code>的<code>processName</code>，并赋值给<code>procName</code>，其中<code>ServiceRecorder</code>是用来描述<code>Service</code>的<code>andorid:process</code>属性。</p>
 <p>注释2，将<code>procName</code>和<code>Service</code>的<code>uid</code>传入到AMS的<code>getProcessRecorderLocked()</code>中，来查询是否存在一个<code>Service</code>对应的<code>ProcessRecorder</code>类型的对象<code>app</code>，<code>ProcessRecorder</code>主要用来记录运行的应用程序进程的信息。</p>
 <p>注释5，判断<code>Service</code>对应的<code>app</code>为空，则说明来运行<code>Service</code>的应用程序进程不存在，则调用注释6的<code>startProcessLocked()</code>来创建对应的应用程序进程，具体可以查看<a href="https://tylerliu.top/2019/08/30/Android应用程序进程启动过程01/">Android应用程序进程启动过程 01</a>。</p>
-<h1 id="4-与AMS相关的类"><a href="#4-与AMS相关的类" class="headerlink" title="4. 与AMS相关的类"></a>4. 与AMS相关的类</h1>
+<h1 id="4-与AMS相关的类"><a href="#4-与AMS相关的类" class="headerlink" title="4. 与AMS相关的类"></a>4. 与AMS相关的类</h1><p><code>ActivityManager</code>是一个和AMS相关联的类，它主要对运行中的Activity进行管理，这些管理工作并不是由<code>ActivitManager</code>来处理的，而是交由AMS来处理，<code>ActivityManager</code>中的方法会通过<code>ActivityManagerNative</code>（后面简称AMN）的<code>getDefaule()</code>来得到<code>ActivityManagerProxy</code>（后面简称AMP），通过AMP就可以和AMN进行通信，而AMN是一个抽象类，它会将功能交给它的子类AMS来处理，因此，AMP是AMS的代理类。AMS作为系统核心服务，很多API不能直接暴露给<code>ActivityManager</code>的，例如Activity的启动过程中会调用<code>Instrumentation</code>的<code>execStartActivity()</code>：frameworks/base/core/java/android/app/Instrumentation.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ActivityResult <span class="title">execStartActivity</span><span class="params">(Context who, IBinder contextThread, IBinder token, Activity target, Intent intent, <span class="keyword">int</span> requestCode, Bundle options)</span> </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        intent.migrateExtraStreamToClipData();</span><br><span class="line">        intent.prepareToLeaveProcess(who);</span><br><span class="line">        <span class="keyword">int</span> result = ActivityManagerNative.getDefault().startActivity(whoThread, who.getBasePackageName(), intent, intent.resolveTypeIfNeeded(who.getContentResolver()), token, target != <span class="keyword">null</span> ? target.mEmbeddedID : <span class="keyword">null</span>, requestCode, <span class="number">0</span>, <span class="keyword">null</span>, options);</span><br><span class="line">        checkStartActivityResult(result, intent);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Failure from system"</span>, e);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>execStartActivity()</code>中会调用AMN的<code>getDefault()</code>来获取AMS的代理类AMP。接着调用AMP的<code>startActivity()</code>，先来看AMN的<code>getDefault()</code>：frameworks/base/core/java/android/app/ActivityManagerNative.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">public</span> IActivityManager <span class="title">getDefault</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> gDefault.get();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton&lt;IActivityManager&gt; gDefault = <span class="keyword">new</span> Singleton&lt;IActivityManager&gt;() &#123;</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> IActivityManager <span class="title">create</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        IBinder b = ServiceManager.getService(<span class="string">"activity"</span>); <span class="comment">// 1</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">false</span>) &#123;</span><br><span class="line">            Log.v(<span class="string">"ActivityManager"</span>, <span class="string">"default service binder = "</span> + b);</span><br><span class="line">        &#125;</span><br><span class="line">        IActivityManager am = asInterface(b); <span class="comment">// 2</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">false</span>) &#123;</span><br><span class="line">            Log.v(<span class="string">"ActivityManager"</span>, <span class="string">"default service = "</span> + am);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> am;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，得到名为<code>&quot;activity&quot;</code>的Service引用，也就是Binder类型的AMS的引用。</p>
+<p>注释2，将它封装成AMP类型对象，并将它保存到<code>gDefault</code>中，此后调用AMN的<code>getDefault()</code>就会直接获得AMS的代理对象AMP。注释2的<code>asInterface()</code>：frameworks/base/core/java/android/app/ActivityManagerNative.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">public</span> IActivityManager <span class="title">asInterface</span><span class="params">(IBinder obj)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (obj == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    IActivityManager in = (IActivityManager)obj.queryLocalInterface(descriptor);</span><br><span class="line">    <span class="keyword">if</span> (in != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> in;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ActivityManagerProxy(obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主要作用是将IBinder类型的AMS引用封装成AMP，AMP的构造方法如下：frameworks/base/core/java/android/app/ActivityManagerNative.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ActivityManagerProxy</span> <span class="keyword">implements</span> <span class="title">IActivityManager</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ActivityManagerProxy</span><span class="params">(IBinder remote)</span> </span>&#123;</span><br><span class="line">        mRemote = remote;</span><br><span class="line">    &#125;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>AMP的构造方法中将AMS的引用赋值给了变量<code>mRemote</code>，这样在AMP中就可以使用AMS了。其中<code>IActivityManager</code>是一个接口，AMN和AMP都实现了这个接口，用于实现代理模式和Binder通信。</p>
+<p>再回到<code>Instrumentation</code>的<code>execStartActivity()</code>，查看AMP的<code>startActivity()</code>，AMP是AMN的内部类：frameworks/base/core/java/android/app/ActivityManagerNative.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">startActivity</span><span class="params">(IApplicationThread caller, String callingPackage, Intent intent, String resolvedType, IBinder resultTo, String resultWho, <span class="keyword">int</span> requestCode, <span class="keyword">int</span> startFlags, ProfilerInfo profilerInfo, Bundle options)</span> <span class="keyword">throws</span> RemoteException </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    data.writeInt(requestCode);</span><br><span class="line">    data.writeInt(startFlags);</span><br><span class="line">    ......</span><br><span class="line">    mRemote.transact(START_ACTIVITY_TRANSACTION, data, reply, <span class="number">0</span>); <span class="comment">// 1</span></span><br><span class="line">    reply.readException();+</span><br><span class="line">    <span class="keyword">int</span> result = reply.readInt();</span><br><span class="line">    reply.recycle();</span><br><span class="line">    data.recycle();</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先会将传入的参数写入到<code>Parce</code>类型的<code>data</code>中。</p>
+<p>注释1，通过<code>IBinder</code>类型对象<code>mRemote</code>（AMS的引用）向服务端的AMS发送一个<code>START_ACTIVITY_TRANSACTION</code>类型的进程间通信请求。那么服务端AMS就会从Binder线程池中读取客户端发送来的数据，最终会调用AMN的<code>onTransact()</code>：frameworks/base/core/java/android/app/ActivityManagerNative.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTransact</span><span class="params">(<span class="keyword">int</span> code, Parcel data, Parcel reply, <span class="keyword">int</span> flags)</span> <span class="keyword">throws</span> RemoteException </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (code) &#123;</span><br><span class="line">    <span class="keyword">case</span> START_ACTIVITY_TRANSACTION:</span><br><span class="line">    &#123;</span><br><span class="line">        ......</span><br><span class="line">        <span class="keyword">int</span> result = startActivity(app, callingPackage, intent, resolvedType, resultTo, resultWho, requestCode, startFlags, profilerInfo, options);</span><br><span class="line">        reply.writeNoException();</span><br><span class="line">        reply.writeInt(result);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>onTransact()</code>中会调用AMS的<code>startActivity()</code>：frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">startActivity</span><span class="params">(IApplicationThread caller, String callingPackage,</span></span></span><br><span class="line"><span class="function"><span class="params">        Intent intent, String resolvedType, IBinder resultTo, String resultWho, <span class="keyword">int</span> requestCode,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">int</span> startFlags, ProfilerInfo profilerInfo, Bundle bOptions)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> startActivityAsUser(caller, callingPackage, intent, resolvedType, resultTo,</span><br><span class="line">            resultWho, requestCode, startFlags, profilerInfo, bOptions,</span><br><span class="line">            UserHandle.getCallingUserId());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>startActivity()</code>的最后会<code>return</code>了<code>starttActivityAsUser()</code>：frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">startActivityAsUser</span><span class="params">(IApplicationThread caller, String callingPackage,</span></span></span><br><span class="line"><span class="function"><span class="params">        Intent intent, String resolvedType, IBinder resultTo, String resultWho, <span class="keyword">int</span> requestCode,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">int</span> startFlags, ProfilerInfo profilerInfo, Bundle bOptions, <span class="keyword">int</span> userId)</span> </span>&#123;</span><br><span class="line">    enforceNotIsolatedCaller(<span class="string">"startActivity"</span>);</span><br><span class="line">    userId = mUserController.handleIncomingUser(Binder.getCallingPid(), Binder.getCallingUid(), userId, <span class="keyword">false</span>, ALLOW_FULL_ONLY, <span class="string">"startActivity"</span>, <span class="keyword">null</span>);</span><br><span class="line">    <span class="keyword">return</span> mActivityStarter.startActivityMayWait(caller, -<span class="number">1</span>, callingPackage, intent,</span><br><span class="line">            resolvedType, <span class="keyword">null</span>, <span class="keyword">null</span>, resultTo, resultWho, requestCode, startFlags,</span><br><span class="line">            profilerInfo, <span class="keyword">null</span>, <span class="keyword">null</span>, bOptions, <span class="keyword">false</span>, userId, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>方法中最后<code>return</code>了<code>startActivityMayWait()</code>，这里不再详细介绍，具体可以查看<a href="https://tylerliu.top/2019/09/02/Andorid深入理解四大组件-02%EF%BC%9A应用程序启动过程%EF%BC%88下%EF%BC%89/">Andorid深入理解四大组件 02：应用程序启动过程（下）</a>。</p>
+<p>在Activity中启动过程中提到了AMP、AMN和AMS，如下所示：</p>
+<img src="/2019/09/10/Android深入理解ActivityManagerService-01：AMS启动流程和相关类/VeigPS.png">
+
+<p>AMP是AMN的内部类，它们都实现了<code>IActivityManager</code>接口，这样它们就实现了代理模式，具体来讲是远程代理：AMP和AMN的运行在两个进程，AMP是Client端，AMN是Server端，Server端具体的功能都是由AMN的子类AMS来实现，因此，AMP是AMS在Client端的一个代理类。AMN又实现了<code>Binder</code>，这样AMP和AMS就可以通过<code>Binder</code>来进行进程间通信。</p>
+<p><code>ActivityManager</code>通过AMN的<code>getDefault()</code>得到AMP，通过AMP就可以和AMN进行通信，也就间接的与AMS进行通信。除了<code>ActiviyManager</code>，其他要想与AMS进行通信的类都需要通过AMP。</p>
+<img src="/2019/09/10/Android深入理解ActivityManagerService-01：AMS启动流程和相关类/Vei658.png">
       
     </div>
     
@@ -550,6 +586,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/12/Android深入理解ActivityManagerService-02：ActivityTask和Activity栈管理/" rel="prev" title="Android深入理解ActivityManagerService 02：ActivityTask和Activity栈管理">
+                Android深入理解ActivityManagerService 02：ActivityTask和Activity栈管理 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -628,7 +668,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-count">60</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -639,7 +679,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -751,7 +791,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">108.1k</span>
+    <span title="Site words total count">109.2k</span>
   
 -->
 </div>
@@ -766,7 +806,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共108.1k字</span>
+  <span class="post-count">博客全站共109.2k字</span>
 </div>
 
         
