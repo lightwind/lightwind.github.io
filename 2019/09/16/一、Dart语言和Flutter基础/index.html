@@ -134,7 +134,7 @@
 <meta property="og:description" content="1. 基础1.1 环境搭建参照Flutter中文网进行环境搭建即可。 需要注意，国内由于一些原因，有时需要配置Flutter的代理，并且国内在搜索Flutter第三方包时，也是在https://pub.flutter-io.cn/中搜索，下面是需要配置的环境变量的地址。 123// win直接配置到环境编辑即可，mac配置到bash_profileexport PUB_HOSTED_URL=htt">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://tylerliu.top/2019/09/16/一、Dart语言和Flutter基础/1568624171.jpg">
-<meta property="og:updated_time" content="2019-09-16T08:57:29.657Z">
+<meta property="og:updated_time" content="2019-09-16T09:04:31.003Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一、Dart语言和Flutter基础">
 <meta name="twitter:description" content="1. 基础1.1 环境搭建参照Flutter中文网进行环境搭建即可。 需要注意，国内由于一些原因，有时需要配置Flutter的代理，并且国内在搜索Flutter第三方包时，也是在https://pub.flutter-io.cn/中搜索，下面是需要配置的环境变量的地址。 123// win直接配置到环境编辑即可，mac配置到bash_profileexport PUB_HOSTED_URL=htt">
@@ -521,7 +521,47 @@
 <p>Flutter关注点在于创建<code>StatelessWidget</code>或者<code>StatefulWidget</code>。<strong>在<code>build()</code>中添加布局，然后将数据添加到<code>Widget</code>中，最后通过<code>setState()</code>改变数据，从而实现画面变化。</strong></p>
 <figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'package:flutter/material.dart'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DemoStatefulWidget</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span> </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">String</span> text;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 通过构造方法传值</span></span><br><span class="line">  DemoStatefulWidget(<span class="keyword">this</span>.text);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 主要是负责创建state</span></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  _DemoStatefulWidgetState createState() =&gt; _DemoStatefulWidgetState(text);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_DemoStatefulWidgetState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">DemoStatefulWidget</span>&gt; </span>&#123;</span><br><span class="line">  <span class="built_in">String</span> text;</span><br><span class="line"></span><br><span class="line">  _DemoStatefulWidgetState(<span class="keyword">this</span>.text);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="keyword">void</span> initState() &#123;</span><br><span class="line">    <span class="comment">// 初始化，这个函数在生命周期中只调用一次</span></span><br><span class="line">    <span class="keyword">super</span>.initState();</span><br><span class="line">    <span class="comment">// 定时2秒</span></span><br><span class="line">    <span class="keyword">new</span> Future.delayed(<span class="keyword">const</span> <span class="built_in">Duration</span>(seconds: <span class="number">1</span>), () &#123;</span><br><span class="line">      setState(() &#123;</span><br><span class="line">        text = <span class="string">"数值改变"</span>;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="keyword">void</span> didChangeDependencies() &#123;</span><br><span class="line">    <span class="comment">// 在initState()之后调 Called when a dependency of this [State] object changes.</span></span><br><span class="line">    <span class="keyword">super</span>.didChangeDependencies();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="keyword">void</span> dispose() &#123;</span><br><span class="line">    <span class="comment">// 销毁</span></span><br><span class="line">    <span class="keyword">super</span>.dispose();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> Container(</span><br><span class="line">      child: Text(text ?? <span class="string">"这就是有状态Demo"</span>),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h1 id="4-Flutter布局"><a href="#4-Flutter布局" class="headerlink" title="4. Flutter布局"></a>4. Flutter布局</h1><p>Flutter内置了近30多种<a href="https://flutterchina.club/widgets/layout/" target="_blank" rel="noopener">布局<code>Widget</code></a>。下面是常用的布局。<br>|类型|作用特点|<br>|:-:|:–|<br>|Container|只有一个子Widget。默认充满，包含了<code>padding</code>、<code>margin</code>、<code>color</code>、<code>height</code>、<code>width</code>、<code>decoration</code>等配置。|<br>|Padding|只有一个子Widget。只用于设置Padding，常用于嵌套<code>child</code>，给<code>child</code>设置<code>padding</code>。|<br>|Center|只有一个子Widget。只用于居中显示，常用于嵌套<code>child</code>，给<code>child</code>设置居中。|<br>|Stack|可以有多个子Widget。子Widget堆叠在一起。|<br>|Column|可以有多个子Widget。垂直布局。|<br>|Row|可以有多个子Widget。水平布局。|<br>|Expanded|只有一个子Widget。在<code>Column</code>和<code>Row</code>中充满。|<br>|ListView|可以有多个子Widget。|</p>
+<h1 id="4-Flutter布局"><a href="#4-Flutter布局" class="headerlink" title="4. Flutter布局"></a>4. Flutter布局</h1><p>Flutter内置了近30多种<a href="https://flutterchina.club/widgets/layout/" target="_blank" rel="noopener">布局<code>Widget</code></a>。下面是常用的布局。</p>
+<table>
+<thead>
+<tr>
+<th align="center">类型</th>
+<th align="left">作用特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Container</td>
+<td align="left">只有一个子Widget。默认充满，包含了<code>padding</code>、<code>margin</code>、<code>color</code>、<code>height</code>、<code>width</code>、<code>decoration</code>等配置。</td>
+</tr>
+<tr>
+<td align="center">Padding</td>
+<td align="left">只有一个子Widget。只用于设置Padding，常用于嵌套<code>child</code>，给<code>child</code>设置<code>padding</code>。</td>
+</tr>
+<tr>
+<td align="center">Center</td>
+<td align="left">只有一个子Widget。只用于居中显示，常用于嵌套<code>child</code>，给<code>child</code>设置居中。</td>
+</tr>
+<tr>
+<td align="center">Stack</td>
+<td align="left">可以有多个子Widget。子Widget堆叠在一起。</td>
+</tr>
+<tr>
+<td align="center">Column</td>
+<td align="left">可以有多个子Widget。垂直布局。</td>
+</tr>
+<tr>
+<td align="center">Row</td>
+<td align="left">可以有多个子Widget。水平布局。</td>
+</tr>
+<tr>
+<td align="center">Expanded</td>
+<td align="left">只有一个子Widget。在<code>Column</code>和<code>Row</code>中充满。</td>
+</tr>
+<tr>
+<td align="center">ListView</td>
+<td align="left">可以有多个子Widget。</td>
+</tr>
+</tbody></table>
 <ul>
 <li><p><code>Container</code>：最常用的默认布局。只能包含一个<code>child</code>，支持配置<code>padding</code>、<code>margin</code>、<code>color</code>、<code>height</code>、<code>width</code>、<code>decoration</code>（一般配置边框和阴影）等配置。在Flutter中，不是所有的控件都有<code>padding</code>、<code>margin</code>、<code>color</code>、<code>height</code>、<code>width</code>等属性，所有才会有<code>Padding</code>、<code>Center</code>等<code>Widget</code>的存在。</p>
 <figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Container(</span><br><span class="line">    <span class="comment">// 四周都是10的margin</span></span><br><span class="line">    margin: EdgeInsets.all(<span class="number">10.0</span>),</span><br><span class="line">    height: <span class="number">120.0</span>,</span><br><span class="line">    width: <span class="number">500.0</span>,</span><br><span class="line">    <span class="comment">// 透明黑色遮罩</span></span><br><span class="line">    decoration: <span class="keyword">new</span> BoxDecoration(</span><br><span class="line">        <span class="comment">// 弧度</span></span><br><span class="line">        borderRadius: BorderRadius.all(Radius.circular(<span class="number">10.0</span>)),</span><br><span class="line">        <span class="comment">// 设置了decoration的color，就不能设置Container的color</span></span><br><span class="line">        color: Colors.black,</span><br><span class="line">        <span class="comment">// 边框</span></span><br><span class="line">        border: <span class="keyword">new</span> Border.all(color: Colors.indigo, width: <span class="number">3.0</span>)),</span><br><span class="line">    child: <span class="keyword">new</span> Text(<span class="string">"77777"</span>),</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
@@ -548,6 +588,9 @@
 </li>
 </ul>
 <img src="/2019/09/16/一、Dart语言和Flutter基础/1568624171.jpg">
+
+<h1 id="5-Flutter页面"><a href="#5-Flutter页面" class="headerlink" title="5. Flutter页面"></a>5. Flutter页面</h1><p>Flutter中除了布局的<code>Widget</code>，还有交互显示的<code>Widget</code>和完整页面呈现的<code>Widget</code>。常见的有<code>MaterialApp</code>、<code>Scaffold</code>、<code>Appbar</code>、<code>Text</code>、<code>Image</code>、<code>FlatBotton</code>等。<br>|类型|作用特点|<br>|:-:|:–|<br>|MaterialApp|一般作为App顶层的主页入口，可配置主题、多语言、路由等|<br>|Scaffold|一般用户页面的|</p>
+
       
     </div>
     
@@ -756,7 +799,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-基础"><span class="nav-text">1. 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-环境搭建"><span class="nav-text">1.1 环境搭建</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Dart语言下的Flutter"><span class="nav-text">2. Dart语言下的Flutter</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-基本类型"><span class="nav-text">2.1 基本类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-变量"><span class="nav-text">2.2 变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-方法"><span class="nav-text">2.3 方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-Flutter"><span class="nav-text">2.4 Flutter</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Flutter-Widget"><span class="nav-text">3. Flutter Widget</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-StatelessWidget"><span class="nav-text">3.1 StatelessWidget</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-StatefulWidget"><span class="nav-text">3.2 StatefulWidget</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-Flutter布局"><span class="nav-text">4. Flutter布局</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-基础"><span class="nav-text">1. 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-环境搭建"><span class="nav-text">1.1 环境搭建</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Dart语言下的Flutter"><span class="nav-text">2. Dart语言下的Flutter</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-基本类型"><span class="nav-text">2.1 基本类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-变量"><span class="nav-text">2.2 变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-方法"><span class="nav-text">2.3 方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-Flutter"><span class="nav-text">2.4 Flutter</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Flutter-Widget"><span class="nav-text">3. Flutter Widget</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-StatelessWidget"><span class="nav-text">3.1 StatelessWidget</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-StatefulWidget"><span class="nav-text">3.2 StatefulWidget</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-Flutter布局"><span class="nav-text">4. Flutter布局</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-Flutter页面"><span class="nav-text">5. Flutter页面</span></a></li></ol></div>
             
 
           </div>
@@ -791,7 +834,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">114.2k</span>
+    <span title="Site words total count">114.3k</span>
   
 -->
 </div>
@@ -806,7 +849,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共114.2k字</span>
+  <span class="post-count">博客全站共114.3k字</span>
 </div>
 
         
