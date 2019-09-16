@@ -136,7 +136,7 @@
 <meta property="og:image" content="https://tylerliu.top/2019/09/12/Android深入理解ActivityManagerService-02：ActivityTask和Activity栈管理/VeivrR.png">
 <meta property="og:image" content="https://tylerliu.top/2019/09/12/Android深入理解ActivityManagerService-02：ActivityTask和Activity栈管理/VeiL24.png">
 <meta property="og:image" content="https://tylerliu.top/2019/09/12/Android深入理解ActivityManagerService-02：ActivityTask和Activity栈管理/VeiOxJ.png">
-<meta property="og:updated_time" content="2019-09-12T09:20:38.695Z">
+<meta property="og:updated_time" content="2019-09-16T01:59:28.280Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android深入理解ActivityManagerService 02：ActivityTask和Activity栈管理">
 <meta name="twitter:description" content="1. ActivityTaskActivityTask是一个管理类，用来管理系统所有Activity的各种状态，其内部维护了TaskRecord的列表，因此从Activity任务栈这一角度来说，ActivityTask也可以理解为Activity堆栈。它由ActivityStackSupervisor来进行管理的，而ActivityStackSupervisor是在AMS中的构造方法中被创建。fr">
@@ -440,7 +440,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.9k 字
+                  2.2k 字
                 </span>
               
 
@@ -456,7 +456,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  7 分钟
+                  8 分钟
                 </span>
               
             </div>
@@ -583,8 +583,15 @@
 <h2 id="2-3-taskAffinity"><a href="#2-3-taskAffinity" class="headerlink" title="2.3 taskAffinity"></a>2.3 taskAffinity</h2><p>可以在<code>AndoridManifest.xml</code>中设置<code>&quot;android:taskAffinity&quot;</code>，用来指定Activity希望归属的栈，默认，同一个应用程序的所有Activity都有着相同的<code>taskAffinity</code>。</p>
 <p><code>taskAffinity</code>会在下面两种情况产生效果：</p>
 <ol>
-<li><code>taskAffinity</code>与<code>FLAG_ACTIVITY_NEW_TASK</code>或者singleTask配合。如果新启动Activity的<code>taskAffinity</code>与栈的<code>taskAffiniy</code>相同（栈的<code>taskAffini</code>）</li>
+<li><code>taskAffinity</code>与<code>FLAG_ACTIVITY_NEW_TASK</code>或者singleTask配合。如果新启动Activity的<code>taskAffinity</code>与栈的<code>taskAffiniy</code>相同（栈的<code>taskAffinity</code>取决于根Activity的<code>taskAffinity</code>），则加入到该栈中。如果不相同，就会创建新栈。</li>
+<li><code>taskAffinity</code>与<code>allowTaskReparenting</code>配合。如果<code>allowTaskReparenting</code>为<code>true</code>，说明Activity具有转移的能力。用之前的邮件为例，当App启动了发送邮件的Activity，此时发送邮件的Activity和App应用处于同一个栈中。如果发送邮件的Activity的<code>allowTaskReparenting</code>设为<code>false</code>，此后邮件程序所在的栈就位于前台，这时发送邮件的Activity就会由App的栈中转移到与它更关系密切的邮件程序（<code>taskAffinity</code>相同）所在的栈中。</li>
 </ol>
+<p>接着通过源码查看<code>taskAffinity</code>的应用。<code>ActivityStackSupervisor</code>的<code>findTaskLocked</code>方法用于找到Activity最匹配的栈，最终会调用<code>ActivityTask</code>的<code>findTaskLocked()</code>：frameworks/base/services/core/java/com/android/server/am/ActivityStack.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">findTaskLocked</span><span class="params">(ActivityRecord target, FindTaskResult result)</span> </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> taskNdx = mTaskHistory.size() - <span class="number">1</span>; taskNdx &gt;= <span class="number">0</span>; --taskNdx) &#123;<span class="comment">// 1</span></span><br><span class="line">        <span class="keyword">final</span> TaskRecord task = mTaskHistory.get(taskNdx);<span class="comment">// 2</span></span><br><span class="line">        ......</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!isDocument &amp;&amp; !taskIsDocument &amp;&amp; result.r == <span class="keyword">null</span> &amp;&amp; task.canMatchRootAffinity()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (task.rootAffinity.equals(target.taskAffinity)) &#123; <span class="comment">// 3</span></span><br><span class="line">                ......</span><br><span class="line">                result.r = r;</span><br><span class="line">                result.matchedByRootAffinity = <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (DEBUG_TASKS) Slog.d(TAG_TASKS, <span class="string">"Not a match: "</span> + task);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，遍历<code>mTaskHistory</code>列表，列表的元素为<code>TaskRecord</code>，用于存储没有被销毁的Task。</p>
+<p>注释2，得到某个Task的信息。</p>
+<p>注释3，将Task的<code>rootAffinity</code>（初始的<code>taskAffinity</code>）和目标Activity的<code>taskAffinity</code>做对比，如果相同，则将<code>FindTaskResult</code>的<code>matchedByRootAffinity</code>属性设置为<code>true</code>，说明找到了匹配的<code>Task</code>。</p>
 
       
     </div>
@@ -829,7 +836,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">111.1k</span>
+    <span title="Site words total count">111.4k</span>
   
 -->
 </div>
@@ -844,7 +851,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共111.1k字</span>
+  <span class="post-count">博客全站共111.4k字</span>
 </div>
 
         
