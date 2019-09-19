@@ -125,18 +125,22 @@
 
 
 
-<meta name="description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="description" content="Demo地址：tyler_flutter_app 本文主要是使用Redux实现主题切换和多语言切换的功能。 Flutter作为响应式框架，通过state实现跨帧渲染的逻辑。Flutter中使用的Redux库，是flutter_redux。   1. ReduxRedux是状态管理，在已有state基础上，为什么还要用Redux？Redux好处：共享状态和单一数据。 假设，App内有多个使用到了登录">
 <meta name="keywords" content="Flutter">
 <meta property="og:type" content="article">
 <meta property="og:title" content="四、Redux、主题、国际化">
 <meta property="og:url" content="https://tylerLiu.top/2019/09/19/四、Redux、主题、国际化/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta property="og:description" content="Demo地址：tyler_flutter_app 本文主要是使用Redux实现主题切换和多语言切换的功能。 Flutter作为响应式框架，通过state实现跨帧渲染的逻辑。Flutter中使用的Redux库，是flutter_redux。   1. ReduxRedux是状态管理，在已有state基础上，为什么还要用Redux？Redux好处：共享状态和单一数据。 假设，App内有多个使用到了登录">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-19T03:07:53.624Z">
+<meta property="og:image" content="https://tylerliu.top/2019/09/19/四、Redux、主题、国际化/1568863166.jpg">
+<meta property="og:image" content="https://tylerliu.top/2019/09/19/四、Redux、主题、国际化/1568870008.jpg">
+<meta property="og:image" content="https://tylerliu.top/2019/09/19/四、Redux、主题、国际化/1568876501.jpg">
+<meta property="og:updated_time" content="2019-09-19T09:15:07.648Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="四、Redux、主题、国际化">
-<meta name="twitter:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="twitter:description" content="Demo地址：tyler_flutter_app 本文主要是使用Redux实现主题切换和多语言切换的功能。 Flutter作为响应式框架，通过state实现跨帧渲染的逻辑。Flutter中使用的Redux库，是flutter_redux。   1. ReduxRedux是状态管理，在已有state基础上，为什么还要用Redux？Redux好处：共享状态和单一数据。 假设，App内有多个使用到了登录">
+<meta name="twitter:image" content="https://tylerliu.top/2019/09/19/四、Redux、主题、国际化/1568863166.jpg">
 
 
 
@@ -425,7 +429,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  0 字
+                  2k 字
                 </span>
               
 
@@ -441,7 +445,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1 分钟
+                  8 分钟
                 </span>
               
             </div>
@@ -462,7 +466,82 @@
       
 
       
-        
+        <p>Demo地址：<a href="https://gitee.com/QingFengBaiYu/tyler_flutter_app" target="_blank" rel="noopener">tyler_flutter_app</a></p>
+<p>本文主要是使用Redux实现主题切换和多语言切换的功能。</p>
+<p>Flutter作为响应式框架，通过<code>state</code>实现跨帧渲染的逻辑。Flutter中使用的Redux库，是<a href="https://pub.flutter-io.cn/packages/flutter_redux" target="_blank" rel="noopener">flutter_redux</a>。</p>
+<img src="/2019/09/19/四、Redux、主题、国际化/1568863166.jpg">
+
+<h1 id="1-Redux"><a href="#1-Redux" class="headerlink" title="1. Redux"></a>1. Redux</h1><p>Redux是<strong>状态管理</strong>，在已有<code>state</code>基础上，为什么还要用Redux？Redux好处：<strong>共享状态</strong>和<strong>单一数据</strong>。</p>
+<p>假设，App内有多个使用到了登录用户的数据，这时如果某处对用户数据进行了修改，各个页面的同步更新就会很麻烦。使用Redux后，某个页面修改了用户信息，所有绑定了Redux的控件，将由Redux自动同步刷新。同理，主题和语言的切换也是如此。</p>
+<img src="/2019/09/19/四、Redux、主题、国际化/1568870008.jpg">
+
+<p>如上图，Redux主要组成部分为：</p>
+<ul>
+<li>Store：用于存储和管理State</li>
+<li>Action：用于定义一个数据变化的请求行为</li>
+<li>Reducer：用于根据Action产生新状态，一般是一个方法</li>
+</ul>
+<p>所以一般流程为：</p>
+<ol>
+<li>Widget绑定Store中的State数据；</li>
+<li>Widget通过Action发布一个新的动作；</li>
+<li>Reducer根据Action更新State；</li>
+<li>更新Store中State绑定的Widget。</li>
+</ol>
+<p>首先，要创建一个Store。创建<code>Store</code>，需要<code>reducer</code>，而<code>reducer</code>实际上是一个带有<code>action</code>和<code>state</code>的方法，并返回新的<code>State</code>。所以需要先创建一个State对象<code>TylerState</code>类，用于存储需要共享的数据，如：用户信息、主题、语言等。</p>
+<p>然后定义一个<code>Reducer</code>方法<code>appReducer()</code>：将<code>TylerState</code>内的每个参数和对应的<code>action</code>绑定起来，返回完整的<code>TylerState</code>。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TylerState</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 用户信息</span></span><br><span class="line">  User userInfo;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 主题数据</span></span><br><span class="line">  ThemeData themeData;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 语言</span></span><br><span class="line">  Locale locale;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 构造方法</span></span><br><span class="line">  TylerState(&#123;<span class="keyword">this</span>.userInfo, <span class="keyword">this</span>.themeData, <span class="keyword">this</span>.locale&#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">创建 Reducer</span></span><br><span class="line"><span class="comment">源码中 Reducer 是一个方法 typedef State Reducer&lt;State&gt;(State state, dynamic action);</span></span><br><span class="line"><span class="comment">这里自定义 appReducer 用于创建 store</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">TylerState appReducer(TylerState state, action) &#123;</span><br><span class="line">  <span class="keyword">return</span> TylerState(</span><br><span class="line">    <span class="comment">// 通过 UserReducer 将 TylerState 内的 userInfo 和 action 关联在一起</span></span><br><span class="line">    userInfo: UserReducer(state.userInfo, action),</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 通过 ThemeDataReducer 将 TylerState 内的 themeData 和 action 关联在一起</span></span><br><span class="line">    themeData: ThemeDataReducer(state.themeData, action),</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 通过 LocaleReducer 将 TylerState 内的 locale 和 action 关联在一起</span></span><br><span class="line">    locale: LocaleReducer(state.locale, action),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>TylerState</code>中的每个参数都是通过各自的<code>Recuder</code>返回的。比如，<code>themeData</code>是通过<code>ThemeDataReducer()</code>产生的，<code>ThemeDataReducer</code>是将<code>ThemeData</code>和一系列Theme相关的<code>Action</code>绑定起来。</p>
+<p>然后通过<code>flutter_redux</code>的<code>combineReducers()</code>与<code>TypedReducer</code>，将<code>RefreshThemeDataAction</code>类和<code>_refresh()</code>方法绑定起来，最终返回一个<code>ThemeData</code>实例。即：用户每发出一个<code>RefreshThemeDataAction</code>，最终都会触发<code>_refresh()</code>，然后更新<code>TylerState</code>中的<code>themeData</code>。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> ThemeDataReducer = combineReducers&lt;ThemeData&gt;([TypedReducer&lt;ThemeData, RefreshThemeDataAction&gt;(_refresh)]);</span><br><span class="line"></span><br><span class="line">ThemeData _refresh(ThemeData themeData, action) &#123;</span><br><span class="line">  themeData = action.themeData;</span><br><span class="line">  <span class="keyword">return</span> themeData;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RefreshThemeDataAction</span> </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> ThemeData themeData;</span><br><span class="line"></span><br><span class="line">  RefreshThemeDataAction(<span class="keyword">this</span>.themeData);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这时，就可以创建<code>Store</code>了。在创建<code>Store</code>的同时，通过<code>initialState</code>对<code>TylerState</code>初始化，然后通过<code>StoreProvider</code>加载<code>Store</code>并包裹<code>MaterialApp</code>。这样就完成了Redux的构建。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FlutterReduxApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> store = <span class="keyword">new</span> Store&lt;TylerState&gt;(appReducer,</span><br><span class="line">      initialState: <span class="keyword">new</span> TylerState(</span><br><span class="line">          themeData: <span class="keyword">new</span> ThemeData(</span><br><span class="line">            primarySwatch: TylerColor.primarySwatch,</span><br><span class="line">          ),</span><br><span class="line">          locale: Locale(<span class="string">'zh'</span>, <span class="string">'CH'</span>)));</span><br><span class="line"></span><br><span class="line">  FlutterReduxApp(&#123;Key key&#125;) : <span class="keyword">super</span>(key: key);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="comment">// 通过 StoreProvider 应用 store</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StoreProvider(</span><br><span class="line">      store: store,</span><br><span class="line">      <span class="comment">// 通过 StoreBuilder 获取 themeData</span></span><br><span class="line">      child: <span class="keyword">new</span> StoreBuilder(builder: (context, store) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MaterialApp();</span><br><span class="line">      &#125;),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面就是使用，如下，通过在<code>build()</code>中使用<code>StoreConnector</code>，通过<code>converter</code>转换<code>store.state</code>的数据，最后通过<code>builder</code>返回实际需要渲染的控件，这样就完成了数据和控件的绑定。也可以使用<code>StoreBuilder</code>。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DemoUserStorePage</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="comment">// 通过 StoreConnector 关联 TylerState 中的 User</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StoreConnector&lt;TylerState, User&gt;(</span><br><span class="line">      <span class="comment">// 通过 converter 将 TylerState 中的 userInfo 返回</span></span><br><span class="line">      converter: (store) =&gt; store.state.userInfo,</span><br><span class="line">      <span class="comment">// 在 userInfo 中返回实际渲染的控件</span></span><br><span class="line">      builder: (context, userInfo) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Text(</span><br><span class="line">          userInfo.name,</span><br><span class="line">          style: Theme.of(context).textTheme.display1,</span><br><span class="line">        );</span><br><span class="line">      &#125;,</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后，当需要触发更新时，使用下面代码即可：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">StoreProvider.of(context).dispatch(<span class="keyword">new</span> UpdateUserAction(newUserInfo));</span><br></pre></td></tr></table></figure>
+
+<h1 id="2-主题"><a href="#2-主题" class="headerlink" title="2. 主题"></a>2. 主题</h1><p>Flutter默认支持主题设置，<code>MaterialApp</code>提供了<code>theme</code>参数设置主题，之后就可以通过<code>Theme.of(context)</code>获取到当前的<code>ThemeData</code>用于设置控件的颜色、字体等。</p>
+<p><code>ThemeData</code>的创建提供很多参数，这里主要说<code>primarySwatch</code>参数。<code>primarySwatch</code>是一个<code>MaterialColor</code>对象，内部由10个不同深浅的颜色组成，可以用来做主题的颜色。</p>
+<p>Flutter默认提供了很多主题颜色，同时也可以通过<code>MaterialColor</code>实现自定义的主题颜色：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> MaterialColor primarySwatch = <span class="keyword">const</span> MaterialColor(</span><br><span class="line">  primaryValue,</span><br><span class="line">  <span class="keyword">const</span> &lt;<span class="built_in">int</span>, Color&gt;&#123;</span><br><span class="line">    <span class="number">50</span>: <span class="keyword">const</span> Color(primaryLightValue),</span><br><span class="line">    <span class="number">100</span>: <span class="keyword">const</span> Color(primaryLightValue),</span><br><span class="line">    <span class="number">200</span>: <span class="keyword">const</span> Color(primaryLightValue),</span><br><span class="line">    <span class="number">300</span>: <span class="keyword">const</span> Color(primaryLightValue),</span><br><span class="line">    <span class="number">400</span>: <span class="keyword">const</span> Color(primaryLightValue),</span><br><span class="line">    <span class="number">500</span>: <span class="keyword">const</span> Color(primaryValue),</span><br><span class="line">    <span class="number">600</span>: <span class="keyword">const</span> Color(primaryDarkValue),</span><br><span class="line">    <span class="number">700</span>: <span class="keyword">const</span> Color(primaryDarkValue),</span><br><span class="line">    <span class="number">800</span>: <span class="keyword">const</span> Color(primaryDarkValue),</span><br><span class="line">    <span class="number">900</span>: <span class="keyword">const</span> Color(primaryDarkValue),</span><br><span class="line">  &#125;,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>就可以通过Redux实现主题切换。</p>
+<p>前面已经在<code>TylerState</code>中创建了<code>themeData</code>，此时将它设置给<code>MaterialApp</code>的<code>theme</code>参数，之后通过<code>dispatch()</code>改变<code>themeData</code>，即实现主题切换。</p>
+<p><code>MaterialApp</code>也是一个<code>StatefulWidget</code>，如下，需要利用<code>StoreBuilder</code>包裹起来，之后就可以通过<code>dispatch()</code>修改主题，通过<code>Theme.of(context).primaryColor</code>获取主题颜色。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@override</span></span><br><span class="line">Widget build(BuildContext context) &#123;</span><br><span class="line">  <span class="comment">// 通过 StoreProvider 应用 store</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> StoreProvider(</span><br><span class="line">    store: store,</span><br><span class="line">    child: <span class="keyword">new</span> StoreBuilder&lt;GSYState&gt;(builder: (context, store) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> MaterialApp(</span><br><span class="line">          theme: store.state.themeData);</span><br><span class="line">    &#125;),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">......</span><br><span class="line"></span><br><span class="line">ThemeData  themeData = <span class="keyword">new</span> ThemeData(primarySwatch: colors[index]);</span><br><span class="line">store.dispatch(<span class="keyword">new</span> RefreshThemeDataAction(themeData));</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-国际化"><a href="#3-国际化" class="headerlink" title="3. 国际化"></a>3. 国际化</h1><p>中文官网上有介绍，<a href="https://flutterchina.club/tutorials/internationalization/" target="_blank" rel="noopener">国际化Flutter App</a>，但是实现起来较为复杂，这里使用Redux可以很简便的实现。</p>
+<img src="/2019/09/19/四、Redux、主题、国际化/1568876501.jpg">
+
+<p>通过默认的<code>MaterialApp</code>设置，自定义的多语言要实现<code>LocalizationsDelegate</code>和<code>Localizations</code>。最终流程会通过<code>Localizations</code>使用<code>Locale</code>加载<code>delegate</code>。</p>
+<p>流程：</p>
+<ul>
+<li>实现<code>LocalizationsDelegate</code></li>
+<li>实现<code>Localizations</code></li>
+<li>通过<code>Store</code>的<code>Locale</code>切换语言</li>
+</ul>
+<p>代码如下，创建自定义<code>delegate</code>需要继承<code>LocalizationsDelegate</code>，实现里面的<code>load()</code>。通过<code>locale</code>，判断需要加载的语言，返回自定义语言实现类<code>TylerLocalizations</code>，最后通过静态<code>delegate</code>对外提供<code>LocalizationsDelegate</code>。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 多语言代理</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TylerLocalizationsDelegate</span> <span class="keyword">extends</span> <span class="title">LocalizationsDelegate</span>&lt;<span class="title">TylerLocalizations</span>&gt; </span>&#123;</span><br><span class="line">  TylerLocalizationsDelegate();</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="built_in">bool</span> isSupported(Locale locale) &#123;</span><br><span class="line">    <span class="comment">// 支持中文和英文</span></span><br><span class="line">    <span class="keyword">return</span> [<span class="string">'en'</span>, <span class="string">'zh'</span>].contains(locale.languageCode);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 根据 locale，创建一个对象用于提供当前的 locale 下的文本显示</span></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Future&lt;TylerLocalizations&gt; load(Locale locale) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> SynchronousFuture&lt;TylerLocalizations&gt;(<span class="keyword">new</span> TylerLocalizations(locale));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="built_in">bool</span> shouldReload(LocalizationsDelegate&lt;TylerLocalizations&gt; old) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 全局静态代理</span></span><br><span class="line">  <span class="keyword">static</span> TylerLocalizationsDelegate delegate = <span class="keyword">new</span> TylerLocalizationsDelegate();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>TylerLocalizations</code>是一个自定义对象，代码如下，它会根据创建时的<code>Locale</code>，通过<code>locale.languageCode</code>判断返回对应的语言实体。</p>
+<p><code>TylerLocalizations</code>对象最后会通过<code>Localizations</code>加载，<code>Local</code>也是那时通过<code>delegate</code>赋予。同时，在该<code>context</code>下，可以通过<code>Loccalizations.of()</code>获取<code>TylerLocalizations</code>，比如：<code>TylerLocalizations.of(context).currentLocalized.app_name</code>。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自定义多语言实现</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TylerLocalizations</span> </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> Locale locale;</span><br><span class="line"></span><br><span class="line">  TylerLocalizations(<span class="keyword">this</span>.locale);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 根据 locale.languageCode 加载对应的语言</span></span><br><span class="line">  <span class="keyword">static</span> <span class="built_in">Map</span>&lt;<span class="built_in">String</span>, StringBase&gt; _localizedValues = &#123;</span><br><span class="line">    <span class="string">'en'</span>: <span class="keyword">new</span> StringEn(),</span><br><span class="line">    <span class="string">'zh'</span>: <span class="keyword">new</span> StringZh(),</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  StringBase <span class="keyword">get</span> currentLocalized &#123;</span><br><span class="line">    <span class="keyword">if</span> (_localizedValues.containsKey(locale.languageCode)) &#123;</span><br><span class="line">      <span class="keyword">return</span> _localizedValues[locale.languageCode];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _localizedValues[<span class="string">"en"</span>];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 通过 Localizations 加载当前的 TylerLocalizations，获取对应的 StringBase</span></span><br><span class="line">  <span class="keyword">static</span> TylerLocalizations of(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> Localizations.of(context, Localizations);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>介绍完<code>delegate</code>，接下来是<code>Localizations</code>。从流程图可以看出，<code>Localizations</code>提供一个<code>override</code>方法构建<code>Localizations</code>，这个方法可以设置<code>locale</code>，而需要的正式实时动态切换语言显示。</p>
+<p>代码如下，创建一个<code>TylerLocalizations</code>的<code>Widget</code>，通过<code>StoreBuilder</code>绑定<code>Store</code>，然后通过<code>Localizations.override</code>包裹需要构建的页面，将<code>Store</code>中的<code>locale</code>和<code>Localizations</code>的<code>locale</code>绑定起来。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TylerLocalizations</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span> </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> Widget child;</span><br><span class="line"></span><br><span class="line">  TylerLocalizations(&#123;Key key, <span class="keyword">this</span>.child&#125;) : <span class="keyword">super</span>(key: key);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  _TylerLocalizationsState createState() =&gt; _TylerLocalizationsState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_TylerLocalizationsState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">TylerLocalizations</span>&gt; </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StoreBuilder&lt;TylerState&gt;(builder: (context, store) &#123;</span><br><span class="line">      <span class="comment">// 通过 StoreBuilder 和 Localizations 实现实时多语言切换</span></span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> Localizations.override(</span><br><span class="line">        context: context,</span><br><span class="line">        locale: store.state.locale,</span><br><span class="line">        child: widget.child,</span><br><span class="line">      );</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后将<code>TylerLocalizations</code>使用到<code>MaterialApp</code>中。通过<code>store.dispatch</code>切换<code>Locale</code>即可。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FlutterReducerApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 创建Store，引用 TylerState 中的 appReducer() 创建的Reducer</span></span><br><span class="line">  <span class="keyword">final</span> store = <span class="keyword">new</span> Store&lt;TylerState&gt;(appReducer, initialState: <span class="keyword">new</span> TylerState(userInfo: User.empty()));</span><br><span class="line"></span><br><span class="line">  FlutterReducerApp(&#123;Key key&#125;) : <span class="keyword">super</span>(key: key);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="comment">// 通过 StoreProvider 应用 store</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StoreProvider(</span><br><span class="line">        store: store,</span><br><span class="line">        child: <span class="keyword">new</span> StoreBuilder&lt;TylerState&gt;(builder: (context, store) &#123;</span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">new</span> MaterialApp(</span><br><span class="line">            <span class="comment">// 多语言实现代理</span></span><br><span class="line">            localizationsDelegates: [</span><br><span class="line">              GlobalMaterialLocalizations.delegate,</span><br><span class="line">              GlobalWidgetsLocalizations.delegate,</span><br><span class="line">              TylerLocalizationsDelegate.delegate,</span><br><span class="line">            ],</span><br><span class="line">            locale: store.state.locale,</span><br><span class="line">            supportedLocales: [store.state.locale],</span><br><span class="line">            routes: &#123;</span><br><span class="line">              HomePage.sName: (context) &#123;</span><br><span class="line">                <span class="comment">// 通过 Localizations.override 包裹这一层</span></span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> TylerLocalizations(</span><br><span class="line">                  child: <span class="keyword">new</span> HomePage(),</span><br><span class="line">                );</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">          );</span><br><span class="line">        &#125;));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DemoUtils</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 切换主题</span></span><br><span class="line">  <span class="keyword">static</span> changeLocale(Store&lt;TylerState&gt; store, <span class="built_in">int</span> index) &#123;</span><br><span class="line">    Locale locale = store.state.platformLocale;</span><br><span class="line">    <span class="keyword">switch</span> (index) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">        locale = Locale(<span class="string">'zh'</span>, <span class="string">'CH'</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">        locale = Locale(<span class="string">'en'</span>, <span class="string">'US'</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    store.dispatch(RefreshLocaleAction(locale));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
     
@@ -501,6 +580,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/19/五、深入探究/" rel="prev" title="五、深入探究">
+                五、深入探究 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -552,8 +635,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -570,7 +662,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">64</span>
+                  <span class="site-state-item-count">65</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -653,6 +745,22 @@
       </section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Redux"><span class="nav-text">1. Redux</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-主题"><span class="nav-text">2. 主题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-国际化"><span class="nav-text">3. 国际化</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
       
 
@@ -681,7 +789,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">121.3k</span>
+    <span title="Site words total count">123.3k</span>
   
 -->
 </div>
@@ -696,7 +804,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共121.3k字</span>
+  <span class="post-count">博客全站共123.3k字</span>
 </div>
 
         
