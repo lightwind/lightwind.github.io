@@ -125,18 +125,21 @@
 
 
 
-<meta name="description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="description" content="1. 打包1.1 Andorid打包  Android上和一般Android开发类似，在andorid/app/build.gradle下可以配置applicationId、versionCode、versionName和签名信息等，最后通过flutter build apk完成编译，编译完成的包在build/app/outputs/apk/release下。（截图里面签名有个小错误，注意。） 1">
 <meta name="keywords" content="Flutter">
 <meta property="og:type" content="article">
 <meta property="og:title" content="三、打包及问题处理">
 <meta property="og:url" content="https://tylerLiu.top/2019/09/18/三、打包及问题处理/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta property="og:description" content="1. 打包1.1 Andorid打包  Android上和一般Android开发类似，在andorid/app/build.gradle下可以配置applicationId、versionCode、versionName和签名信息等，最后通过flutter build apk完成编译，编译完成的包在build/app/outputs/apk/release下。（截图里面签名有个小错误，注意。） 1">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-18T07:46:52.910Z">
+<meta property="og:image" content="https://tylerliu.top/2019/09/18/三、打包及问题处理/32132132132221.png">
+<meta property="og:image" content="https://tylerliu.top/2019/09/18/三、打包及问题处理/1568796679.jpg">
+<meta property="og:updated_time" content="2019-09-19T03:06:46.161Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="三、打包及问题处理">
-<meta name="twitter:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="twitter:description" content="1. 打包1.1 Andorid打包  Android上和一般Android开发类似，在andorid/app/build.gradle下可以配置applicationId、versionCode、versionName和签名信息等，最后通过flutter build apk完成编译，编译完成的包在build/app/outputs/apk/release下。（截图里面签名有个小错误，注意。） 1">
+<meta name="twitter:image" content="https://tylerliu.top/2019/09/18/三、打包及问题处理/32132132132221.png">
 
 
 
@@ -425,7 +428,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  0 字
+                  1.1k 字
                 </span>
               
 
@@ -441,7 +444,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1 分钟
+                  4 分钟
                 </span>
               
             </div>
@@ -462,7 +465,52 @@
       
 
       
-        
+        <h1 id="1-打包"><a href="#1-打包" class="headerlink" title="1. 打包"></a>1. 打包</h1><h2 id="1-1-Andorid打包"><a href="#1-1-Andorid打包" class="headerlink" title="1.1 Andorid打包"></a>1.1 Andorid打包</h2><img src="/2019/09/18/三、打包及问题处理/32132132132221.png">
+
+<p>Android上和一般Android开发类似，在<code>andorid/app/build.gradle</code>下可以配置<code>applicationId</code>、<code>versionCode</code>、<code>versionName</code>和签名信息等，最后通过<code>flutter build apk</code>完成编译，编译完成的包在<code>build/app/outputs/apk/release</code>下。（截图里面签名有个小错误，注意。）</p>
+<h2 id="1-2-IOS打包"><a href="#1-2-IOS打包" class="headerlink" title="1.2 IOS打包"></a>1.2 IOS打包</h2><p>关于IOS打包的部分暂时可以参考<a href="https://guoshuyu.cn/home/wx/Flutter-3.html" target="_blank" rel="noopener">https://guoshuyu.cn/home/wx/Flutter-3.html</a>。后面会实际操作看看里面可能出现的问题。</p>
+<p>也可以参考<a href="https://flutterchina.club/ios-release/" target="_blank" rel="noopener">发布的IOS版APP</a>。</p>
+<h1 id="2-细节点"><a href="#2-细节点" class="headerlink" title="2. 细节点"></a>2. 细节点</h1><h2 id="2-1-AppBar"><a href="#2-1-AppBar" class="headerlink" title="2.1 AppBar"></a>2.1 AppBar</h2><p>AppBar不仅可以作为标题栏，里面的<code>leading</code>和<code>bottom</code>也有相应的作用。</p>
+<ul>
+<li><code>bottom</code>：默认支持<code>TabBar</code>，即顶部Tab效果，因为<code>TabBar</code>实现了<code>PreferredSizeWidget</code>的<code>preferredSize</code>。所以自定义的控件只要实现了<code>preferredSize</code>，就可以放到<code>bottom</code>中。比如下面是的搜索栏。</li>
+</ul>
+<img src="/2019/09/18/三、打包及问题处理/1568796679.jpg">
+
+<ul>
+<li><code>leading</code>：通常是左侧按键，不设置时，一般是<code>Drawer</code>的图标或者返回按钮。</li>
+<li><code>flexibleSpace</code>：位于<code>bottom</code>和<code>leading</code>之间。</li>
+</ul>
+<h2 id="2-2-按键"><a href="#2-2-按键" class="headerlink" title="2.2 按键"></a>2.2 按键</h2><p>Flutter中的按键，如<code>Flatbutton</code>，默认是有边距和最小大小的。如果想取消这些默认设置，其中一种方式如下：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> RawMaterialButton(</span><br><span class="line">    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,</span><br><span class="line">    padding: padding ?? <span class="keyword">const</span> EdgeInsets.all(<span class="number">0.0</span>),</span><br><span class="line">    constraints: <span class="keyword">const</span> BoxConstraints(minWidth: <span class="number">0.0</span>, minHeight: <span class="number">0.0</span>),</span><br><span class="line">    child: child,</span><br><span class="line">    onPressed: onPressed);</span><br></pre></td></tr></table></figure>
+
+<p>如果在加上<code>Flex</code>，一个可控的填充按键就出来了：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> RawMaterialButton(</span><br><span class="line">    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,</span><br><span class="line">    padding: padding ?? <span class="keyword">const</span> EdgeInsets.all(<span class="number">0.0</span>),</span><br><span class="line">        constraints: <span class="keyword">const</span> BoxConstraints(minWidth: <span class="number">0.0</span>, minHeight: <span class="number">0.0</span>),</span><br><span class="line">    <span class="comment">// flex</span></span><br><span class="line">    child: <span class="keyword">new</span> Flex(</span><br><span class="line">        mainAxisAlignment: mainAxisAlignment,</span><br><span class="line">        direction: Axis.horizontal,</span><br><span class="line">        children: &lt;Widget&gt;[],</span><br><span class="line">    ),</span><br><span class="line">    onPressed: onPressed);</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-3-StatefulWidget赋值"><a href="#2-3-StatefulWidget赋值" class="headerlink" title="2.3 StatefulWidget赋值"></a>2.3 StatefulWidget赋值</h2><p>这里以给<code>TextField</code>赋值为例，在Flutter中，给有状态的<code>Widget</code>传递状态和数据，一般都是使用<code>controller</code>。示例：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'package:flutter/material.dart'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DemoController</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span> </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  _DemoControllerState createState() =&gt; _DemoControllerState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_DemoControllerState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">DemoController</span>&gt; </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> TextEditingController _controller = <span class="keyword">new</span> TextEditingController();</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="keyword">void</span> didChangeDependencies() &#123;</span><br><span class="line">    <span class="keyword">super</span>.didChangeDependencies();</span><br><span class="line">    <span class="comment">// 通过给 controller 的 value 新创建一个 TextEditingValue</span></span><br><span class="line">    _controller.value = <span class="keyword">new</span> TextEditingValue(text: <span class="string">"给输入框填入参数"</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> TextField(</span><br><span class="line">      <span class="comment">// controller</span></span><br><span class="line">      controller: _controller,</span><br><span class="line">      onChanged: onChanged,</span><br><span class="line">      obscureText: obscureText,</span><br><span class="line">      decoration: <span class="keyword">new</span> InputDecoration(</span><br><span class="line">          hintText: hintText,</span><br><span class="line">          icon: iconData == <span class="keyword">null</span> ? <span class="keyword">null</span> : <span class="keyword">new</span> Icon(iconData);</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>TextEditingValue</code>实际上是<code>ValueNotifier</code>，其中<code>Value</code>的<code>setter</code>方法被重载，一旦改变就触发<code>notifyListeners()</code>方法。而<code>TextEditingController</code>中，通过调用<code>addListener()</code>监听数据改变，从而让UI更新。</p>
+<p>赋值还有一个简单的方法：传递一个对象，如class A对象，在控件内部使用对象A.b 的变量绑定控件，外部通过<code>setState({A.b = b2})</code>进行更新。</p>
+<h2 id="2-4-GlobalKey"><a href="#2-4-GlobalKey" class="headerlink" title="2.4 GlobalKey"></a>2.4 GlobalKey</h2><p>在Flutter，要主动改变子控件的状态，还可以使用<code>GlobalKey</code>。比如需要主动调用<code>RefreshIndicator</code>显示刷新状态，代码如下：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">GlobalKey&lt;RefreshIndicatorState&gt; refreshIndicatorKey;</span><br><span class="line"></span><br><span class="line">showForRefresh() &#123;</span><br><span class="line">  <span class="comment">// 显示刷新</span></span><br><span class="line">  refreshIndicatorKey.currentState.show();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@override</span></span><br><span class="line">Widget build(BuildContext context) &#123;</span><br><span class="line">  refreshIndicatorKey =  <span class="keyword">new</span> GlobalKey&lt;RefreshIndicatorState&gt;();</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> RefreshIndicator(</span><br><span class="line">    key: refreshIndicatorKey,</span><br><span class="line">    onRefresh: onRefresh,</span><br><span class="line">    child: <span class="keyword">new</span> ListView.builder(</span><br><span class="line">      ......</span><br><span class="line">    ),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-5-Redux与主题"><a href="#2-5-Redux与主题" class="headerlink" title="2.5 Redux与主题"></a>2.5 Redux与主题</h2><p>Redux主要用作Flutter全局State的管理器，详细内容可以查看<a href="https://tylerliu.top/2019/09/16/二、快速开发实战/#more">二、快速开发实战</a>。这里主要是通过Redux来实现切换主题的效果。</p>
+<p>代码如下，通过<code>StoreProvider</code>加载<code>store</code>，再通过<code>StoreBuilder</code>将<code>store</code>中的<code>themeData</code>绑定到<code>MaterialApp</code>的<code>theme</code>下，之后，在其他<code>Widget</code>中通过<code>Theme.of(context)</code>调用需要的颜色，最终在任意位置调用<code>store.dispatch</code>实现主题颜色修改。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FlutterReduxApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> store = <span class="keyword">new</span> Store&lt;TylerState&gt;(appReducer,</span><br><span class="line">      initialState: <span class="keyword">new</span> TylerState(</span><br><span class="line">          themeData: <span class="keyword">new</span> ThemeData(</span><br><span class="line">        primarySwatch: TylerColor.primarySwatch,</span><br><span class="line">      )));</span><br><span class="line"></span><br><span class="line">  FlutterReduxApp(&#123;Key key&#125;) : <span class="keyword">super</span>(key: key);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="comment">// 通过 StoreProvider 应用 store</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StoreProvider(</span><br><span class="line">      store: store,</span><br><span class="line">      <span class="comment">// 通过 StoreBuilder 获取 themeData</span></span><br><span class="line">      child: <span class="keyword">new</span> StoreBuilder(builder: (context, store) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MaterialApp(</span><br><span class="line">          theme: store.state.themeData,</span><br><span class="line">          routes: &#123;</span><br><span class="line">            HomePage.sName: (context) &#123;</span><br><span class="line">              <span class="keyword">return</span> HomePage();</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;,</span><br><span class="line">        );</span><br><span class="line">      &#125;),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-6-Hotload与Package"><a href="#2-6-Hotload与Package" class="headerlink" title="2.6 Hotload与Package"></a>2.6 Hotload与Package</h2><p>Flutter的Debug和Release下分别是JIT和AOT模式，而在Debug下，支持Hotload。但需要注意：如果开发过程中，安装的新的第三方库，新的第三方库中包含了原生代码，就需要停止后重新运行。</p>
+<p><code>pubspec.yaml</code>文件就是包的依赖目录，其中<code>^</code>表示等于等于，一般<code>upgrade</code>和<code>get</code>都能达到下载包的作用。但是：<code>upgrade</code>会在包有更新的情况下，更新<code>pubspec.lock</code>文件下包的版本。</p>
+<h1 id="3-问题处理"><a href="#3-问题处理" class="headerlink" title="3. 问题处理"></a>3. 问题处理</h1><ul>
+<li><code>Waiting for another flutter command to release the startup lock</code>：<ol>
+<li>打开flutter安装目录 /bin/cache/</li>
+<li>删除 lockfile 文件</li>
+<li>重启 AndroidStudio</li>
+</ol>
+</li>
+<li>dialog下的黄色线<a href="https://stackoverflow.com/questions/47114639/yellow-lines-under-text-widgets-in-flutter" target="_blank" rel="noopener">yellow-lines-under-text-widgets-in-flutter</a>：<code>showDialog</code>中，默认是没使用<code>Scaffold</code>，这会导致文本有黄色溢出线提示，可以使用<code>Material</code>包一层处理。</li>
+<li><code>TabBar</code> + <code>TabView</code> + <code>KeepAlive</code> 的问题，可以通过<code>TabBar</code> + <code>PageView</code>解决。</li>
+</ul>
+
       
     </div>
     
@@ -501,6 +549,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/19/四、Redux、主题、国际化/" rel="prev" title="四、Redux、主题、国际化">
+                四、Redux、主题、国际化 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -552,8 +604,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -570,7 +631,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">63</span>
+                  <span class="site-state-item-count">64</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -653,6 +714,22 @@
       </section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-打包"><span class="nav-text">1. 打包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-Andorid打包"><span class="nav-text">1.1 Andorid打包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-IOS打包"><span class="nav-text">1.2 IOS打包</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-细节点"><span class="nav-text">2. 细节点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-AppBar"><span class="nav-text">2.1 AppBar</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-按键"><span class="nav-text">2.2 按键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-StatefulWidget赋值"><span class="nav-text">2.3 StatefulWidget赋值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-GlobalKey"><span class="nav-text">2.4 GlobalKey</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-Redux与主题"><span class="nav-text">2.5 Redux与主题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-Hotload与Package"><span class="nav-text">2.6 Hotload与Package</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-问题处理"><span class="nav-text">3. 问题处理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
       
 
@@ -681,7 +758,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">120.2k</span>
+    <span title="Site words total count">121.3k</span>
   
 -->
 </div>
@@ -696,7 +773,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共120.2k字</span>
+  <span class="post-count">博客全站共121.3k字</span>
 </div>
 
         
