@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[七、深入布局原理]]></title>
+    <url>%2F2019%2F09%2F24%2F%E4%B8%83%E3%80%81%E6%B7%B1%E5%85%A5%E5%B8%83%E5%B1%80%E5%8E%9F%E7%90%86%2F</url>
+    <content type="text"></content>
+      <categories>
+        <category>Flutter</category>
+        <category>学习</category>
+      </categories>
+      <tags>
+        <tag>Flutter</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[六、深入Widget原理]]></title>
     <url>%2F2019%2F09%2F24%2F%E5%85%AD%E3%80%81%E6%B7%B1%E5%85%A5Widget%E5%8E%9F%E7%90%86%2F</url>
-    <content type="text"></content>
+    <content type="text"><![CDATA[Widget：并不是真正渲染的对象。事实上，在Flutter渲染是经历了从Widget到Element再到RenderObject的过程。 Widget是不可变的，那么Widget是如何在不可变中去构建画面的？从前面知道，Widget是需要转换为Element去渲染的，从下面的注释可以知道，事实上Widget只是Element的一个配置描述，告诉Element这个实例如何去渲染。 123456789101112@immutableabstract class Widget extends DiagnosticableTree &#123; /// Inflates this configuration to a concrete instance. /// /// A given widget can be included in the tree zero or more times. In particular /// a given widget can be placed in the tree multiple times. Each time a widget /// is placed in the tree, it is inflated into an [Element], which means a /// widget that is incorporated into the tree multiple times will be inflated /// multiple times. @protected Element createElement();&#125; Widget和Element之间是怎样的对应关系呢？从上面的注释可以知道：Widget和Element之间是一对多的关系。实际上渲染树是由Element实例的节点构成的，而作为配置文件的Widget可能被复制到树的多个部分，对应产生多个Element对象。 RenderObject又是什么呢？它和Widget、Element有什么关系？源码注释写道：An object in the render tree，可以看出，RenderObject才是实际的渲染对象，通过Element的源码可以看到：Element持有RenderObject和Widget。 12345678910111213141516171819202122/// The configuration for this element.@overrideWidget get widget =&gt; _widget;Widget _widget;/// The render object at (or below) this location in the tree.////// If this object is a [RenderObjectElement], the render object is the one at/// this location in the tree. Otherwise, this getter will walk down the tree/// until it finds a [RenderObjectElement].RenderObject get renderObject &#123; RenderObject result; void visit(Element element) &#123; assert(result == null); // this verifies that there's only one child if (element is RenderObjectElement) result = element.renderObject; else element.visitChildren(visit); &#125; visit(this); return result;&#125; 再结合： 1234567891011/// Creates an instance of the [RenderObject] class that this/// [RenderObjectWidget] represents, using the configuration described by this/// [RenderObjectWidget].////// This method should not do anything with the children of the render object./// That should instead be handled by the method that overrides/// [RenderObjectElement.mount] in the object rendered by this object's/// [createElement] method. See, for example,/// [SingleChildRenderObjectElement.mount].@protectedRenderObject createRenderObject(BuildContext context); 可以得出三者的关系：配置文件Widget生成了Element，而后创建RenderObject关联到Element的内部renderObject对象上，最后Flutter通过RenderObject数据来布局和绘制。理论上可以认为RenderObject是最终给Flutter的渲染数据，它保存了大小和位置等信息，Flutter通过它去绘制画面。 说到RenderObject，就需要说说RenderBox：A render object in a 2D Cartesian coordinate system，从注释可以看出，它是在继承RenderObject基础的布局和绘制功能上，实现了“笛卡尔坐标系”：以Top、Left为基点，通过宽高两个轴实现布局和嵌套的。 RenderBox避免了直接使用RenderObject的麻烦场景，其中RenderBox的布局和计算大小是在performLayout()和performSize()两个方法中实现的，很多时候更多的是选择继承RenderBox去实现自定义。 综上情况： Widget只是显示数据配置，所以相对而言是轻量级的存在，而Flutter中对Widget也做了一定的优化，所以每次改变状态导致的Widget重构并不会有太大的问题。 RenderObject就不同了，RenderObject涉及到布局、计算、绘制等流程，要是每次都全部重新创建，开销就比较大。 所以对于是否每次都创建新的Element和RenderObject对象，Widget都做了对应的判断以便于复用，比如：在newWidget与oldWidget的runtimeType和key相等时，会选择使用newWidget去更新已经存在的Element对象，否则就选择重新创建新的Element。 由此可知：Widget重新创建，Element树和RenderObject树并不会完全重新创建。 如何获取布局的大小和位置呢？ 首先需要用到前面提过的GlobalKey，通过key获取控件对象的BuildContext，而BuildContext的实现其实是Element，而Element持有RenderObject，所以，RenderObject实际上获取的是RenderBox，那么通过RenderBox就能知道布局的大小和位置了。 123456789showSizes() &#123; RenderBox renderBoxRed = fileListKey.currentContext.findRenderObject(); print(renderBoxRed.size);&#125;showPositions() &#123; RenderBox renderBoxRed = fileListKey.currentContext.findRenderObject(); print(renderBoxRed.localToGlobal(Offset.zero));&#125;]]></content>
+      <categories>
+        <category>Flutter</category>
+        <category>学习</category>
+      </categories>
+      <tags>
+        <tag>Flutter</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[五、深入探究]]></title>
