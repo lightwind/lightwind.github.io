@@ -125,18 +125,20 @@
 
 
 
-<meta name="description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="description" content="通过前面知道了Widget、Element、RenderObject的关系，也知道Widget的布局逻辑，最终所有Widget都转化为RenderObject对象，它们堆叠出所需的画面。 所以在Flutter中，最终页面的Layout、Paint等都会发生在Widget所对应的RenderObject子类中，而RenderObject也是Flutter跨平台最大的特点之一：所有的控件都与平台无关。">
 <meta name="keywords" content="Flutter">
 <meta property="og:type" content="article">
 <meta property="og:title" content="九、深入理解绘制原理">
 <meta property="og:url" content="https://tylerLiu.top/2019/09/25/九、深入理解绘制原理/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta property="og:description" content="通过前面知道了Widget、Element、RenderObject的关系，也知道Widget的布局逻辑，最终所有Widget都转化为RenderObject对象，它们堆叠出所需的画面。 所以在Flutter中，最终页面的Layout、Paint等都会发生在Widget所对应的RenderObject子类中，而RenderObject也是Flutter跨平台最大的特点之一：所有的控件都与平台无关。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-25T07:34:06.583Z">
+<meta property="og:image" content="https://tylerliu.top/2019/09/25/九、深入理解绘制原理/1569401737(1).jpg">
+<meta property="og:updated_time" content="2019-09-25T09:12:54.525Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="九、深入理解绘制原理">
-<meta name="twitter:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="twitter:description" content="通过前面知道了Widget、Element、RenderObject的关系，也知道Widget的布局逻辑，最终所有Widget都转化为RenderObject对象，它们堆叠出所需的画面。 所以在Flutter中，最终页面的Layout、Paint等都会发生在Widget所对应的RenderObject子类中，而RenderObject也是Flutter跨平台最大的特点之一：所有的控件都与平台无关。">
+<meta name="twitter:image" content="https://tylerliu.top/2019/09/25/九、深入理解绘制原理/1569401737(1).jpg">
 
 
 
@@ -425,7 +427,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  0 字
+                  855 字
                 </span>
               
 
@@ -441,7 +443,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1 分钟
+                  3 分钟
                 </span>
               
             </div>
@@ -462,7 +464,30 @@
       
 
       
-        
+        <p>通过前面知道了<code>Widget</code>、<code>Element</code>、<code>RenderObject</code>的关系，也知道<code>Widget</code>的布局逻辑，最终所有<code>Widget</code>都转化为<code>RenderObject</code>对象，它们堆叠出所需的画面。</p>
+<p>所以在Flutter中，最终页面的<code>Layout</code>、<code>Paint</code>等都会发生在<code>Widget</code>所对应的<code>RenderObject</code>子类中，而<code>RenderObject</code>也是Flutter跨平台最大的特点之一：<strong>所有的控件都与平台无关</strong>。简而言之，<strong>Flutter只要求系统提供<code>Canvas</code>，然后开发者通过<code>Widget</code>生成<code>RenderObject</code>“直接”通过引擎绘制到屏幕上</strong>。</p>
+<h1 id="1-绘制过程"><a href="#1-绘制过程" class="headerlink" title="1. 绘制过程"></a>1. 绘制过程</h1><p><code>Widget</code>最终都会转化为<code>RenderObject</code>，所以要了解绘制过程，要先看<code>RenderObject</code>的<code>paint()</code>：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// Paint this render object into the given context at the given offset.</span></span><br><span class="line"><span class="comment">///</span></span><br><span class="line"><span class="comment">/// Subclasses should override this method to provide a visual appearance</span></span><br><span class="line"><span class="comment">/// for themselves. The render object's local coordinate system is</span></span><br><span class="line"><span class="comment">/// axis-aligned with the coordinate system of the context's canvas and the</span></span><br><span class="line"><span class="comment">/// render object's local origin (i.e, x=0 and y=0) is placed at the given</span></span><br><span class="line"><span class="comment">/// offset in the context's canvas.</span></span><br><span class="line"><span class="comment">///</span></span><br><span class="line"><span class="comment">/// Do not call this function directly. If you wish to paint yourself, call</span></span><br><span class="line"><span class="comment">/// [markNeedsPaint] instead to schedule a call to this function. If you wish</span></span><br><span class="line"><span class="comment">/// to paint one of your children, call [PaintingContext.paintChild] on the</span></span><br><span class="line"><span class="comment">/// given `context`.</span></span><br><span class="line"><span class="comment">///</span></span><br><span class="line"><span class="comment">/// When painting one of your children (via a paint child function on the</span></span><br><span class="line"><span class="comment">/// given context), the current canvas held by the context might change</span></span><br><span class="line"><span class="comment">/// because draw operations before and after painting children might need to</span></span><br><span class="line"><span class="comment">/// be recorded on separate compositing layers.</span></span><br><span class="line"><span class="keyword">void</span> paint(PaintingContext context, Offset offset) &#123; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>所有的<code>RenderObject</code>子类都必须实现<code>paint()</code>方法，并且该方法并不是给用户直接调用，需要更新绘制时，可以通过<code>markNeddsPaint()</code>方法去触发界面绘制。按照正常流程，在经历大小和布局等位置计算之后，最终<code>paint()</code>方法就会被调用，该方法有两个参数，它们是完成绘制的关键。</p>
+<ul>
+<li><code>PaintingContext</code>的关键是<strong>A place to paint</strong>，同时它在父类<code>ClipContext</code>是包含有<code>Canvas</code>，并且<code>PaintingContext</code>的构造方法是<code>@protected</code>，只在<code>PaintingContext.repaintCompositedChild</code>和<code>pushLayer</code>时自动创建。</li>
+<li><code>Offset</code>在<code>paint()</code>中主要是提供当前控件在屏幕的相对偏移值，提供绘制时确定绘制的坐标。</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// A place to paint.</span></span><br><span class="line"><span class="comment">///</span></span><br><span class="line"><span class="comment">/// Rather than holding a canvas directly, [RenderObject]s paint using a painting</span></span><br><span class="line"><span class="comment">/// context. The painting context has a [Canvas], which receives the</span></span><br><span class="line"><span class="comment">/// individual draw operations, and also has functions for painting child</span></span><br><span class="line"><span class="comment">/// render objects.</span></span><br><span class="line"><span class="comment">///</span></span><br><span class="line"><span class="comment">/// When painting a child render object, the canvas held by the painting context</span></span><br><span class="line"><span class="comment">/// can change because the draw operations issued before and after painting the</span></span><br><span class="line"><span class="comment">/// child might be recorded in separate compositing layers. For this reason, do</span></span><br><span class="line"><span class="comment">/// not hold a reference to the canvas across operations that might paint</span></span><br><span class="line"><span class="comment">/// child render objects.</span></span><br><span class="line"><span class="comment">///</span></span><br><span class="line"><span class="comment">/// New [PaintingContext] objects are created automatically when using</span></span><br><span class="line"><span class="comment">/// [PaintingContext.repaintCompositedChild] and [pushLayer].</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PaintingContext</span> <span class="keyword">extends</span> <span class="title">ClipContext</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/// Creates a painting context.</span></span><br><span class="line">  <span class="comment">///</span></span><br><span class="line">  <span class="comment">/// Typically only called by [PaintingContext.repaintCompositedChild]</span></span><br><span class="line">  <span class="comment">/// and [pushLayer].</span></span><br><span class="line">  <span class="meta">@protected</span></span><br><span class="line">  PaintingContext(<span class="keyword">this</span>._containerLayer, <span class="keyword">this</span>.estimatedBounds)</span><br><span class="line">    : <span class="keyword">assert</span>(_containerLayer != <span class="keyword">null</span>),</span><br><span class="line">      <span class="keyword">assert</span>(estimatedBounds != <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> ContainerLayer _containerLayer;</span><br></pre></td></tr></table></figure>
+
+<p><code>PaintingContext</code>，从字面上可以看出来它是存在上下文关系，它是在哪开始创建的呢？</p>
+<p>通过源码可以知道，项目在<code>runApp()</code>时，通过<code>WidgetsFlutterBinding</code>启动，而<code>WidgetsFlutterBinding</code>是一个“胶水类”，它会触发Mixins的<code>RenderBinding</code>，如下，创建根node的<code>PaintingContext</code>。</p>
+<img src="/2019/09/25/九、深入理解绘制原理/1569401737(1).jpg">
+
+<p>那么<code>Offset</code>呢？在<code>RenderBoxContainerDefaultsMixin</code>可以看到：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// Paints each child by walking the child list forwards.</span></span><br><span class="line"><span class="comment">///</span></span><br><span class="line"><span class="comment">/// See also:</span></span><br><span class="line"><span class="comment">///</span></span><br><span class="line"><span class="comment">///  * [defaultHitTestChildren], which implements hit-testing of the children</span></span><br><span class="line"><span class="comment">///    in a manner appropriate for this painting strategy.</span></span><br><span class="line"><span class="keyword">void</span> defaultPaint(PaintingContext context, Offset offset) &#123;</span><br><span class="line">  ChildType child = firstChild;</span><br><span class="line">  <span class="keyword">while</span> (child != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">final</span> ParentDataType childParentData = child.parentData;</span><br><span class="line">    context.paintChild(child, childParentData.offset + offset);</span><br><span class="line">    child = childParentData.nextSibling;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于<code>Offset</code>的传递，是通过父控件和子控件的<code>offset</code>相加之后，一级一级的将需要绘制的坐标结合去传递的。</p>
+<p>简单来说，<strong>通过<code>PaintingContext</code>和<code>Offset</code>，在布局之后九可以在屏幕上准确绘制绘制需要的画面</strong>。</p>
+<h2 id="1-1-测试绘制"><a href="#1-1-测试绘制" class="headerlink" title="1.1 测试绘制"></a>1.1 测试绘制</h2><p>来做一个简单测试。</p>
+<p>在屏幕上通过<code>Container</code>限制一个高为60的绿色容器，</p>
+
       
     </div>
     
@@ -552,8 +577,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -653,6 +687,22 @@
       </section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-绘制过程"><span class="nav-text">1. 绘制过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-测试绘制"><span class="nav-text">1.1 测试绘制</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
       
 
@@ -681,7 +731,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">129.5k</span>
+    <span title="Site words total count">130.4k</span>
   
 -->
 </div>
@@ -696,7 +746,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共129.5k字</span>
+  <span class="post-count">博客全站共130.4k字</span>
 </div>
 
         
