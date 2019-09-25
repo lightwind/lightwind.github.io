@@ -125,18 +125,18 @@
 
 
 
-<meta name="description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="description" content="1. Text的TextOverflow.ellipsis不生效设置没有生效，提示如下overflow的警告。大部分时候，这是Text内部的RenderParagraph在判断final bool didOverflowWidth = size.with &amp;lt; textSize.width;时，size.width和textSize.width相等导致。 这需要给Text设置一个Contain">
 <meta name="keywords" content="Flutter">
 <meta property="og:type" content="article">
 <meta property="og:title" content="八、实用技巧与填坑">
 <meta property="og:url" content="https://tylerLiu.top/2019/09/25/八、实用技巧与填坑/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta property="og:description" content="1. Text的TextOverflow.ellipsis不生效设置没有生效，提示如下overflow的警告。大部分时候，这是Text内部的RenderParagraph在判断final bool didOverflowWidth = size.with &amp;lt; textSize.width;时，size.width和textSize.width相等导致。 这需要给Text设置一个Contain">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-25T03:04:53.714Z">
+<meta property="og:updated_time" content="2019-09-25T07:32:31.725Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="八、实用技巧与填坑">
-<meta name="twitter:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="twitter:description" content="1. Text的TextOverflow.ellipsis不生效设置没有生效，提示如下overflow的警告。大部分时候，这是Text内部的RenderParagraph在判断final bool didOverflowWidth = size.with &amp;lt; textSize.width;时，size.width和textSize.width相等导致。 这需要给Text设置一个Contain">
 
 
 
@@ -425,7 +425,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  0 字
+                  1.4k 字
                 </span>
               
 
@@ -441,7 +441,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1 分钟
+                  5 分钟
                 </span>
               
             </div>
@@ -462,7 +462,46 @@
       
 
       
-        
+        <h1 id="1-Text的TextOverflow-ellipsis不生效"><a href="#1-Text的TextOverflow-ellipsis不生效" class="headerlink" title="1. Text的TextOverflow.ellipsis不生效"></a>1. Text的TextOverflow.ellipsis不生效</h1><p>设置没有生效，提示如下<code>overflow</code>的警告。大部分时候，这是<code>Text</code>内部的<code>RenderParagraph</code>在判断<code>final bool didOverflowWidth = size.with &lt; textSize.width;</code>时，<code>size.width</code>和<code>textSize.width</code>相等导致。</p>
+<p>这需要给<code>Text</code>设置一个<code>Container</code>之类的去约束它的大小，或者是<code>Row</code>中通过<code>Expanded</code> + <code>Container</code>去约束<code>Text</code>。</p>
+
+
+<h1 id="2-获取控件的大小和位置"><a href="#2-获取控件的大小和位置" class="headerlink" title="2. 获取控件的大小和位置"></a>2. 获取控件的大小和位置</h1><p>前面有介绍过，可以用<code>GlobalKey</code>，通过<code>key</code>去获取到控件对象的<code>buildContext</code>，而前面也说过<code>BuildContext</code>的实现其实是<code>Element</code>，而<code>Element</code>持有<code>RenderObject</code>。所以，<code>RenderObject</code>实际上就是<code>RenderBox</code>，那么通过<code>RenderBox</code>就可以获取控件的大小和位置了：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">showSizes() &#123;</span><br><span class="line">  RenderBox renderBoxRed = fileListKey.currentContext.findRenderObject();</span><br><span class="line">  <span class="built_in">print</span>(renderBoxRed.size);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">showPositions() &#123;</span><br><span class="line">  RenderBox renderBoxRed = fileListKey.currentContext.findRenderObject();</span><br><span class="line">  <span class="built_in">print</span>(renderBoxRed.localToGlobal(Offset.zero));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-获取状态栏高度和安全布局"><a href="#3-获取状态栏高度和安全布局" class="headerlink" title="3. 获取状态栏高度和安全布局"></a>3. 获取状态栏高度和安全布局</h1><p><code>MaterialApp</code>源码内部是一个<code>WidgetApp</code>，而<code>WidgetApp</code>内有一个<code>MediaQuery</code>，所以可以通过<code>MediaQuery.of(context).size</code>去获取屏幕的大小。</p>
+<p><code>MediaQuery</code>其实是一个<code>InheritedWidget</code>，里面有一个<code>MediaQueryData</code>参数，该参数是通过下面的代码设置的，在通过源码可以知道，一般情况下<code>MediaQueryData</code>的<code>padding</code>的<code>top</code>就是状态栏的高度。所以，可以通过<code>MediaQueryData.fromWindow(WidgetsBinding.instance.window).padding.top</code>获取到状态栏高度，有时可能需要考虑<code>viewInsets</code>参数。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DemoWindow</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> MediaQuery(</span><br><span class="line">      data: MediaQueryData.fromWindow(WidgetsBinding.instance.<span class="built_in">window</span>),</span><br><span class="line">      child: Localizations(locale: <span class="keyword">null</span>, delegates: <span class="keyword">null</span>),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>至于<code>AppBar</code>的高度，默认是<code>Size.fromHeight(kToolBarHeight + (bottom?.perferredSize?.height ?? 0.0)),</code>，<code>kToolBarHeight</code>是一个固定的数值，可以通过实现<code>PerferredSizeWidget</code>去自定义<code>AppBar</code>。</p>
+<p>有时布局位置是从状态栏开始计算的，这时需要用<code>SafeArea</code>嵌套下，原因是因为<code>MediaQueryData</code>的存在，具体需要查看源码。</p>
+<h1 id="4-设置状态栏颜色和图标颜色"><a href="#4-设置状态栏颜色和图标颜色" class="headerlink" title="4. 设置状态栏颜色和图标颜色"></a>4. 设置状态栏颜色和图标颜色</h1><p>可以通过<code>AppBar</code>的<code>brightness</code>或者<code>ThemeData</code>去设置状态栏颜色。</p>
+<p>如果不想用<code>AppBar</code>，可以嵌套<code>AnnotateRegion&lt;SystemUiOverlayStyle&gt;</code>去设置状态栏样式，通过<code>SystemUiOverlayStyle</code>就可以快速设置状态栏和底部导航栏的样式。</p>
+<p>同时还可以通过<code>SystemChrome.setSystemUIOverlayStyle</code>去设置，前提是，没有使用<code>AppBar</code>。<strong>注意，所有状态栏设置都是全局的</strong>。如果在A页面设置之后，在B页面没有手动设置或者使用<code>AppBar</code>，那么设置的状态栏就会显示在B页面。</p>
+<h1 id="5-系统字体缩放"><a href="#5-系统字体缩放" class="headerlink" title="5. 系统字体缩放"></a>5. 系统字体缩放</h1><p>现在一般手机都有字体缩放，大多时候，会选择禁止应用字体跟随系统字体缩放。</p>
+<p>Flutter中的字体缩放和<code>MediaQueryData</code>和<code>textScaleFactor</code>有关。可以在需要的页面，通过最外层嵌套如下代码设置，将字体设置为默认不允许缩放。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MediaQuery(</span><br><span class="line">    data: MediaQueryData.fromWindow(WidgetsBinding.instance.<span class="built_in">window</span>).copyWith(textScaleFactor: <span class="number">1</span>),</span><br><span class="line">    child: <span class="keyword">new</span> Container(),</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h1 id="6-Margin和Padding"><a href="#6-Margin和Padding" class="headerlink" title="6. Margin和Padding"></a>6. Margin和Padding</h1><p>在使用<code>Container</code>时，经常会使用<code>margin</code>和<code>padding</code>，<code>Container</code>其实只是对各种布局的封装，内部的<code>margin</code>和<code>padding</code>其实是通过<code>Padding</code>实现的，而<code>Padding</code>不支持负数，如果需要使用负数，可以使用<code>Transform</code>。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Transform(</span><br><span class="line">  transform: Matrix4.translationValues(<span class="number">10</span>, <span class="number">-10</span>, <span class="number">0</span>),</span><br><span class="line">  child: <span class="keyword">new</span> Container(),</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h1 id="7-控件圆角剪切"><a href="#7-控件圆角剪切" class="headerlink" title="7. 控件圆角剪切"></a>7. 控件圆角剪切</h1><p>日常开发中大致会用到两种圆角方案：</p>
+<ul>
+<li>通过<code>Decoration</code>的实现类<code>BoxDecoration</code>去实现。</li>
+<li>通过<code>ClipRRect</code>去实现。</li>
+</ul>
+<p>其中<code>BoxDecoration</code>一般用在<code>DecoratedBox</code>、<code>Container</code>等控件，这种实现一般都是直接<code>Canvas</code>绘制时，针对当前控件进行背景圆角化，并不会影响其child。意味着如果child也是图片或者也有背景色，圆角效果就有可能消失。</p>
+<p>而<code>ClipRRect</code>的效果就会影响child，如下<code>RenderObject</code>源码可知：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"><span class="markdown">/// Clip further painting using </span>a<span class="markdown"> rounded rectangle.</span></span></span><br><span class="line"><span class="comment"><span class="markdown">///</span></span></span><br><span class="line"><span class="comment"><span class="markdown">/// &#123;@macro flutter.rendering.object.needsCompositing&#125;</span></span></span><br><span class="line"><span class="comment"><span class="markdown">/// * <span class="code">`offset`</span> is </span>the<span class="markdown"> offset from </span>the<span class="markdown"> origin of </span>the<span class="markdown"> canvas' coordinate system</span></span></span><br><span class="line"><span class="comment"><span class="markdown">///   to </span>the<span class="markdown"> origin of </span>the<span class="markdown"> caller's coordinate system.</span></span></span><br><span class="line"><span class="comment"><span class="markdown">/// * <span class="code">`bounds`</span> is </span>the<span class="markdown"> region of </span>the<span class="markdown"> canvas (in </span>the<span class="markdown"> caller's coordinate system)</span></span></span><br><span class="line"><span class="comment"><span class="markdown">///   into which <span class="code">`painter`</span> </span>will<span class="markdown"> paint in.</span></span></span><br><span class="line"><span class="comment"><span class="markdown">/// * <span class="code">`clipRRect`</span> is </span>the<span class="markdown"> rounded-rectangle (in </span>the<span class="markdown"> caller's coordinate system)</span></span></span><br><span class="line"><span class="comment"><span class="markdown">///   to use to clip </span>the<span class="markdown"> painting done by <span class="code">`painter`</span>.</span></span></span><br><span class="line"><span class="comment"><span class="markdown">/// * <span class="code">`painter`</span> is </span>a<span class="markdown"> callback that </span>will<span class="markdown"> paint with </span>the<span class="markdown"> <span class="code">`clipRRect`</span> applied. This</span></span></span><br><span class="line"><span class="comment"><span class="markdown">///   function calls </span>the<span class="markdown"> <span class="code">`painter`</span> synchronously.</span></span></span><br><span class="line"><span class="comment"><span class="markdown">/// * <span class="code">`clipBehavior`</span> controls how </span>the<span class="markdown"> path is clipped.</span></span></span><br><span class="line"><span class="comment"><span class="markdown">/// &#123;@macro flutter.rendering.object.oldLayer&#125;</span></span></span><br><span class="line">ClipRRectLayer pushClipRRect(<span class="built_in">bool</span> needsCompositing, Offset offset, Rect bounds, RRect clipRRect, PaintingContextCallback painter, &#123; Clip clipBehavior = Clip.antiAlias, ClipRRectLayer oldLayer &#125;) &#123;</span><br><span class="line">  <span class="keyword">assert</span>(clipBehavior != <span class="keyword">null</span>);</span><br><span class="line">  <span class="keyword">final</span> Rect offsetBounds = bounds.shift(offset);</span><br><span class="line">  <span class="keyword">final</span> RRect offsetClipRRect = clipRRect.shift(offset);</span><br><span class="line">  <span class="keyword">if</span> (needsCompositing) &#123;</span><br><span class="line">    <span class="keyword">final</span> ClipRRectLayer layer = oldLayer ?? ClipRRectLayer();</span><br><span class="line">    layer</span><br><span class="line">      ..clipRRect = offsetClipRRect</span><br><span class="line">      ..clipBehavior = clipBehavior;</span><br><span class="line">    pushLayer(layer, painter, offset, childPaintBounds: offsetBounds);</span><br><span class="line">    <span class="keyword">return</span> layer;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    clipRRectAndPaint(offsetClipRRect, clipBehavior, offsetBounds, () =&gt; painter(<span class="keyword">this</span>, offset));</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="8-PageView"><a href="#8-PageView" class="headerlink" title="8. PageView"></a>8. PageView</h1><p>如果在使用<code>TarBarView</code>，并且使用<code>KeepAlive</code>的话，推荐使用<code>PageView</code>。因为在1.2版本中，在<code>KeepAlive</code>的状态下，跨两个页面以上的Tab直接切换，<code>TabBarView</code>会导致页面的<code>dispose()</code>，再重新<code>initState()</code>。尽管<code>TarBarView</code>内部封装了<code>PageView</code> + <code>TabBar</code>。</p>
+<p>可以直接使用<code>PageView</code> + <code>TabBar</code>去实现，在tab切换时，使用<code>_pageController.jumpTo(MediaQuery.of(context).size.with * index);</code>可以避免一些问题。当然，这时损失的就是动画效果。事实上，<code>TarBarView</code>只是针对<code>PageView</code> + <code>TabBar</code>进行了封装。</p>
+<p>除了这个，还有第二个方法，使用如下<code>PageStorageKey</code>保持页面数状态，因为它是<strong>save and restore values</strong>，所以页面的<code>dispose()</code>再重新<code>initState()</code>方法，每次都会被调用。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> Scaffold(</span><br><span class="line">  key: <span class="keyword">new</span> PageStorageKey&lt;your value type&gt;(your value)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h1 id="9-懒加载"><a href="#9-懒加载" class="headerlink" title="9. 懒加载"></a>9. 懒加载</h1><p>Flutter中通过<code>FutureBuilder</code>或者<code>StreamBuilder</code>可以简单的实现懒加载，通过<code>future</code>或者<code>stream</code>“异步”获取数据，之后通过<code>AsyncSnapshot</code>的<code>data</code>再去加载数据，至于流和异步的概念，后面再展开讲解。</p>
+<h1 id="10-Android返回键回到桌面"><a href="#10-Android返回键回到桌面" class="headerlink" title="10. Android返回键回到桌面"></a>10. Android返回键回到桌面</h1><p>Flutter官方提供了<a href="https://pub.flutter-io.cn/packages/android_intent" target="_blank" rel="noopener">android_intent</a>插件，实现回到桌面可以按照如下实现：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">  Future&lt;<span class="built_in">bool</span>&gt; _dialogExitApp(BuildContext context) <span class="keyword">async</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (Platform.isAndroid) &#123;</span><br><span class="line">      AndroidIntent intent = AndroidIntent(</span><br><span class="line">        action: <span class="string">'android.intent.action.MAIN'</span>,</span><br><span class="line">        category: <span class="string">"android.intent.category.HOME"</span>,</span><br><span class="line">      );</span><br><span class="line">      <span class="keyword">await</span> intent.launch();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> Future.value(<span class="keyword">false</span>);</span><br><span class="line">  &#125;</span><br><span class="line">·····</span><br><span class="line"> <span class="keyword">return</span> WillPopScope(</span><br><span class="line">      onWillPop: () &#123;</span><br><span class="line">        <span class="keyword">return</span> _dialogExitApp(context);</span><br><span class="line">      &#125;,</span><br><span class="line">      child:xxx);</span><br></pre></td></tr></table></figure>
       
     </div>
     
@@ -501,6 +540,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/25/九、深入理解绘制原理/" rel="prev" title="九、深入理解绘制原理">
+                九、深入理解绘制原理 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -552,8 +595,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -570,7 +622,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">68</span>
+                  <span class="site-state-item-count">69</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -653,6 +705,22 @@
       </section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Text的TextOverflow-ellipsis不生效"><span class="nav-text">1. Text的TextOverflow.ellipsis不生效</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-获取控件的大小和位置"><span class="nav-text">2. 获取控件的大小和位置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-获取状态栏高度和安全布局"><span class="nav-text">3. 获取状态栏高度和安全布局</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-设置状态栏颜色和图标颜色"><span class="nav-text">4. 设置状态栏颜色和图标颜色</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-系统字体缩放"><span class="nav-text">5. 系统字体缩放</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-Margin和Padding"><span class="nav-text">6. Margin和Padding</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-控件圆角剪切"><span class="nav-text">7. 控件圆角剪切</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-PageView"><span class="nav-text">8. PageView</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#9-懒加载"><span class="nav-text">9. 懒加载</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10-Android返回键回到桌面"><span class="nav-text">10. Android返回键回到桌面</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
       
 
@@ -681,7 +749,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">128.2k</span>
+    <span title="Site words total count">129.5k</span>
   
 -->
 </div>
@@ -696,7 +764,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共128.2k字</span>
+  <span class="post-count">博客全站共129.5k字</span>
 </div>
 
         
