@@ -125,18 +125,21 @@
 
 
 
-<meta name="description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="description" content="1. Window、WindowManager和WMSWindow，一个抽象类，其具体的实现是PhoneWindow，它对View进行管理。WindowManager是一个接口类，继承自接口ViewManager，用来管理Window，其实现类是WindowManagerImpl。如果要对Window进行添加和删除就可以使用WindowManager，具体的工作会由WMS来完成，WindowMan">
 <meta name="keywords" content="WindowManager">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android解析WindowManager 01：WindowManager体系">
 <meta property="og:url" content="https://tylerLiu.top/2019/10/18/Android解析WindowManager-01：WindowManager体系/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta property="og:description" content="1. Window、WindowManager和WMSWindow，一个抽象类，其具体的实现是PhoneWindow，它对View进行管理。WindowManager是一个接口类，继承自接口ViewManager，用来管理Window，其实现类是WindowManagerImpl。如果要对Window进行添加和删除就可以使用WindowManager，具体的工作会由WMS来完成，WindowMan">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-18T03:01:10.648Z">
+<meta property="og:image" content="https://tylerliu.top/2019/10/18/Android解析WindowManager-01：WindowManager体系/1571368891.jpg">
+<meta property="og:image" content="https://tylerliu.top/2019/10/18/Android解析WindowManager-01：WindowManager体系/1571878481.jpg">
+<meta property="og:updated_time" content="2019-10-24T01:01:44.047Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android解析WindowManager 01：WindowManager体系">
-<meta name="twitter:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="twitter:description" content="1. Window、WindowManager和WMSWindow，一个抽象类，其具体的实现是PhoneWindow，它对View进行管理。WindowManager是一个接口类，继承自接口ViewManager，用来管理Window，其实现类是WindowManagerImpl。如果要对Window进行添加和删除就可以使用WindowManager，具体的工作会由WMS来完成，WindowMan">
+<meta name="twitter:image" content="https://tylerliu.top/2019/10/18/Android解析WindowManager-01：WindowManager体系/1571368891.jpg">
 
 
 
@@ -436,7 +439,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  0 字
+                  1.3k 字
                 </span>
               
 
@@ -452,7 +455,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1 分钟
+                  6 分钟
                 </span>
               
             </div>
@@ -473,7 +476,52 @@
       
 
       
-        
+        <h1 id="1-Window、WindowManager和WMS"><a href="#1-Window、WindowManager和WMS" class="headerlink" title="1. Window、WindowManager和WMS"></a>1. Window、WindowManager和WMS</h1><p><code>Window</code>，一个抽象类，其具体的实现是<code>PhoneWindow</code>，它对<code>View</code>进行管理。<code>WindowManager</code>是一个接口类，继承自接口<code>ViewManager</code>，用来管理<code>Window</code>，其实现类是<code>WindowManagerImpl</code>。如果要对<code>Window</code>进行添加和删除就可以使用<code>WindowManager</code>，具体的工作会由WMS来完成，<code>WindowManager</code>和WMS通过<code>Binder</code>进行跨进程通信，WMS作为系统服务，有很多API是不会暴露给<code>WindowManager</code>的，这点与AMS和<code>ActivityManager</code>类似。</p>
+<p>这里主要介绍<code>Window</code>管理和输入系统。</p>
+<img src="/2019/10/18/Android解析WindowManager-01：WindowManager体系/1571368891.jpg">
+
+<p><code>Window</code>包含了<code>View</code>，并对<code>View</code>进行管理，<code>Window</code>是一个抽象的概念，并不是真实存在的，<code>Window</code>的实体就是<code>View</code>。<code>WindowManager</code>用来管理<code>Window</code>，而<code>WindowManager</code>所提供的功能最终会由WMS进行处理。</p>
+<h1 id="2-WindowManager体系"><a href="#2-WindowManager体系" class="headerlink" title="2. WindowManager体系"></a>2. WindowManager体系</h1><p><code>WindowManager</code>是一个接口，继承<code>ViewManager</code>，<code>ViewManager</code>中定义了三个方法，分别用来添加、更新和删除<code>View</code>：frameworks/base/core/java/android/view/ViewManager.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Interface to let you add and remove child views to an Activity. To get an instance</span></span><br><span class="line"><span class="comment">  * of this class, call &#123;<span class="doctag">@link</span> android.content.Context#getSystemService(java.lang.String) Context.getSystemService()&#125;.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ViewManager</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Assign the passed LayoutParams to the passed View and add the view to the window.</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;Throws &#123;<span class="doctag">@link</span> android.view.WindowManager.BadTokenException&#125; for certain programming</span></span><br><span class="line"><span class="comment">     * errors, such as adding a second view to a window without removing the first view.</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;Throws &#123;<span class="doctag">@link</span> android.view.WindowManager.InvalidDisplayException&#125; if the window is on a</span></span><br><span class="line"><span class="comment">     * secondary &#123;<span class="doctag">@link</span> Display&#125; and the specified display can't be found</span></span><br><span class="line"><span class="comment">     * (see &#123;<span class="doctag">@link</span> android.app.Presentation&#125;).</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> view The view to be added to this window.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> params The LayoutParams to assign to view.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addView</span><span class="params">(View view, ViewGroup.LayoutParams params)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateViewLayout</span><span class="params">(View view, ViewGroup.LayoutParams params)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeView</span><span class="params">(View view)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>WindowManager</code>也继承了这些方法。可以看到里面传入的参数都是<code>View</code>，说明<code>WindowManager</code>具体管理的是以<code>View</code>形式存在的<code>Window</code>。<code>WindowManager</code>在继承<code>ViewManager</code>的同时，加入了其他功能，包括<code>Window</code>的类型和层级相关的常量、内部类以及一些方法，其中有两个方法是根据<code>Window</code>的特性加入的，如下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Display <span class="title">getDefaultDisplay</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeViewImmediate</span><span class="params">(View view)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>getDefaultDisplay()</code>：获取<code>WindowManager</code>实例将<code>Window</code>添加到哪个屏幕上，即得到<code>WindowManager</code>所管理的屏幕（Display）。</li>
+<li><code>removeViewImmediate()</code>：规定在这个方法返回前要立即执行<code>View.onDetachedFromWindow()</code>，来完成传入的<code>View</code>相关的销毁工作。</li>
+</ul>
+<p><code>Window</code>是一个抽象类，其具体实现是<code>PhoneWindow</code>。在Activity启动过程中会调用<code>ActivityThread</code>的<code>performLaunchActivity()</code>，<code>performLaunchActivity()</code>中又会调用<code>Activity</code>的<code>attach()</code>：frameworks/base/core/java/android/app/Activity.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">attach</span><span class="params">(Context context, ActivityThread aThread,</span></span></span><br><span class="line"><span class="function"><span class="params">        Instrumentation instr, IBinder token, <span class="keyword">int</span> ident,</span></span></span><br><span class="line"><span class="function"><span class="params">        Application application, Intent intent, ActivityInfo info,</span></span></span><br><span class="line"><span class="function"><span class="params">        CharSequence title, Activity parent, String id,</span></span></span><br><span class="line"><span class="function"><span class="params">        NonConfigurationInstances lastNonConfigurationInstances,</span></span></span><br><span class="line"><span class="function"><span class="params">        Configuration config, String referrer, IVoiceInteractor voiceInteractor,</span></span></span><br><span class="line"><span class="function"><span class="params">        Window window, ActivityConfigCallback activityConfigCallback)</span> </span>&#123;</span><br><span class="line">    attachBaseContext(context);</span><br><span class="line"></span><br><span class="line">    mFragments.attachHost(<span class="keyword">null</span> <span class="comment">/*parent*/</span>);</span><br><span class="line"></span><br><span class="line">    mWindow = <span class="keyword">new</span> PhoneWindow(<span class="keyword">this</span>, window, activityConfigCallback); <span class="comment">// 1</span></span><br><span class="line"></span><br><span class="line">    ......</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2</span></span><br><span class="line">    mWindow.setWindowManager(</span><br><span class="line">            (WindowManager)context.getSystemService(Context.WINDOW_SERVICE),</span><br><span class="line">            mToken, mComponent.flattenToString(),</span><br><span class="line">            (info.flags &amp; ActivityInfo.FLAG_HARDWARE_ACCELERATED) != <span class="number">0</span>);</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，创建<code>PhoneWindow</code>；注释2，调用<code>PhoneWindow</code>的<code>setWindowManager()</code>，它的具体实现在<code>PhoneWindow</code>的父类<code>Window</code>中。frameworks/base/core/java/android/view/Window.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setWindowManager</span><span class="params">(WindowManager wm, IBinder appToken, String appName, <span class="keyword">boolean</span> hardwareAccelerated)</span> </span>&#123;</span><br><span class="line">    mAppToken = appToken;</span><br><span class="line">    mAppName = appName;</span><br><span class="line">    mHardwareAccelerated = hardwareAccelerated || SystemProperties.getBoolean(PROPERTY_HARDWARE_UI, <span class="keyword">false</span>);</span><br><span class="line">    <span class="keyword">if</span> (wm == <span class="keyword">null</span>) &#123;</span><br><span class="line">        wm = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE); <span class="comment">// 1</span></span><br><span class="line">    &#125;</span><br><span class="line">    mWindowManager = ((WindowManagerImpl)wm).createLocalWindowManager(<span class="keyword">this</span>); <span class="comment">// 2</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果传入的<code>WindowManager</code>为空，就会在注释1调用<code>context</code>的<code>getSystemService()</code>并传入服务的名称<code>Context.WINDOW_SERVER</code>，具体的实现在<code>ContextImpl</code>中，如下。frameworks/base/core/java/android/app/ContextImpl.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">getSystemService</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> SystemServiceRegistry.getSystemService(<span class="keyword">this</span>, name);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getSystemServiceName</span><span class="params">(Class&lt;?&gt; serviceClass)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> SystemServiceRegistry.getSystemServiceName(serviceClass);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最终会调用<code>SystemServiceRegistry</code>的<code>getSystemSeviceName()</code>。frameworks/base/core/java/android/app/SystemServiceRegistry.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getSystemServiceName</span><span class="params">(Class&lt;?&gt; serviceClass)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> SYSTEM_SERVICE_NAMES.get(serviceClass);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>SYSTEM_SERVICE_NAMES</code>是一个<code>HashMap</code>，用来存储服务的名称。传入<code>Context.WINDOW_SERVER</code>对应的是什么呢？frameworks/base/core/java/android/app/SystemServiceRegistry.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">SystemServiceRegistry</span> </span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">SystemServiceRegistry</span><span class="params">()</span> </span>&#123; &#125;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">    ......</span><br><span class="line">    registerService(Context.WINDOW_SERVICE, WindowManager.class, <span class="keyword">new</span> CachedServiceFetcher&lt;WindowManager&gt;() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> WindowManager <span class="title">createService</span><span class="params">(ContextImpl ctx)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> WindowManagerImpl(ctx);</span><br><span class="line">        &#125;&#125;);</span><br><span class="line">    ......</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>SystemServiceRegistry</code>的静态代码块中会调用多个<code>registerService()</code>方法，这里只看<code>Context.WINDOW_SERVICE</code>。<code>registerService()</code>会将传入的服务的名称存入到<code>SYSTEM_SERVICE_NAMES</code>中。从上面的代码可以看出，传入的<code>Context.WINDOW_SERVICE</code>对应的就是<code>WindowManagerImpl</code>的实例，因此<code>Context</code>的<code>getSystemService()</code>得到的是<code>WindowManagerImpl</code>实例。再回到<code>Window</code>的<code>setWindowManager()</code>中，得到<code>WindowManagerImpl</code>实例后转为<code>WindowManger</code>类型，在注释2处调用<code>WindowManagerImpl</code>的<code>createLocalWindowManager()</code>：frameworks/base/core/java/android/view/WindowManagerImpl</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> WindowManagerImpl <span class="title">createLocalWindowManager</span><span class="params">(Window parentWindow)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> WindowManagerImpl(mContext, parentWindow);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在里面也创建了<code>WindowManagerImpl</code>，不过在创建的同时，将创建它的<code>Window</code>作为参数传了进来，这样<code>WindowManagerImpl</code>就持有<code>Window</code>的引用了，就可以对<code>Window</code>进行操作，比如，在<code>Window</code>中添加<code>View</code>，来看看<code>WindowManagerImpl</code>的<code>addView()</code>：frameworks/base/core/java/android/view/WindowManagerImpl</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addView</span><span class="params">(@NonNull View view, @NonNull ViewGroup.LayoutParams params)</span> </span>&#123;</span><br><span class="line">    applyDefaultToken(params);</span><br><span class="line">    mGlobal.addView(view, params, mContext.getDisplay(), mParentWindow); <span class="comment">// 1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释1，调用了<code>WindowManagerGlobal</code>的<code>addView()</code>方法，其中最后一个参数<code>mParentWindow</code>就是<code>Window</code>，<code>WindowManagerImpl</code>虽然是<code>WindowManager</code>的实现类，但是没有实现任何功能，而是将功能的实现委托给了<code>WindowManagerGlobal</code>，这是桥接模式。</p>
+<p>再来看看<code>WindowManagerImpl</code>中是如何定义<code>WindowManagerGlobal</code>的：frameworks/base/core/java/android/view/WindowManagerImpl</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">WindowManagerImpl</span> <span class="keyword">implements</span> <span class="title">WindowManager</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> WindowManagerGlobal mGlobal = WindowManagerGlobal.getInstance();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Context mContext;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Window mParentWindow; <span class="comment">// 1</span></span><br><span class="line">    ......</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">WindowManagerImpl</span><span class="params">(Context context, Window parentWindow)</span> </span>&#123;</span><br><span class="line">        mContext = context;</span><br><span class="line">        mParentWindow = parentWindow;</span><br><span class="line">    &#125;</span><br><span class="line">    ......   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>WindowManagerGlobal</code>是一个单例，说明在一个进程中只有一个<code>WindowManagerGlobal</code>实例。注释1，说明一个<code>WindowManagerImpl</code>可能会实现多个<code>Window</code>，即一个进程中可能会有多个<code>WindowManagerImpl</code>实例。 </p>
+<p>Window和WindowManager关系图：</p>
+<img src="/2019/10/18/Android解析WindowManager-01：WindowManager体系/1571878481.jpg">
+
+<p><code>PhoneWindow</code>继承自<code>Window</code>，<code>Window</code>通过<code>setWindowManager()</code>方法与<code>WindowManager</code>发生联系。<code>WindowManager</code>继承自接口<code>ViewManager</code>，<code>WindowManagerImpl</code>是<code>WindowManager</code>接口的实现类，但是具体的功能都会委托给<code>WindowManagerGlobal</code>来实现。</p>
+
       
     </div>
     
@@ -563,8 +611,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -668,6 +725,22 @@
       </section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Window、WindowManager和WMS"><span class="nav-text">1. Window、WindowManager和WMS</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-WindowManager体系"><span class="nav-text">2. WindowManager体系</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
       
 
@@ -696,7 +769,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">130.4k</span>
+    <span title="Site words total count">131.7k</span>
   
 -->
 </div>
@@ -711,7 +784,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共130.4k字</span>
+  <span class="post-count">博客全站共131.7k字</span>
 </div>
 
         
