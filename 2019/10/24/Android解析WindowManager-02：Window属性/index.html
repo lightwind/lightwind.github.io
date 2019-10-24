@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="WindowManager,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Tyler的博客" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="1. 概述前面讲过了Window、WindowManager、WMS之间的关系，WMS是Window的最终管理者，Window如果是员工， WMS就是老板，为了方便老板管理员工，会定义一些“协议”，这些“协议”就是Window属性，被定义在WindowManager的内部类LayoutParams中。 Window的属性有很多种，最常用的有三种，Type（Window的类型）、Flag（Windo">
+<meta name="keywords" content="WindowManager">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android解析WindowManager 02：Window属性">
+<meta property="og:url" content="https://tylerLiu.top/2019/10/24/Android解析WindowManager-02：Window属性/index.html">
+<meta property="og:site_name" content="Tyler的博客">
+<meta property="og:description" content="1. 概述前面讲过了Window、WindowManager、WMS之间的关系，WMS是Window的最终管理者，Window如果是员工， WMS就是老板，为了方便老板管理员工，会定义一些“协议”，这些“协议”就是Window属性，被定义在WindowManager的内部类LayoutParams中。 Window的属性有很多种，最常用的有三种，Type（Window的类型）、Flag（Windo">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-10-24T08:49:36.272Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android解析WindowManager 02：Window属性">
+<meta name="twitter:description" content="1. 概述前面讲过了Window、WindowManager、WMS之间的关系，WMS是Window的最终管理者，Window如果是员工， WMS就是老板，为了方便老板管理员工，会定义一些“协议”，这些“协议”就是Window属性，被定义在WindowManager的内部类LayoutParams中。 Window的属性有很多种，最常用的有三种，Type（Window的类型）、Flag（Windo">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://tylerLiu.top/2019/10/24/Android解析WindowManager-02：Window属性/">
+
+
+
+
+
+  <title>Android解析WindowManager 02：Window属性 | Tyler的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tyler的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://tylerLiu.top/2019/10/24/Android解析WindowManager-02：Window属性/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tyler Liu">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tyler的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android解析WindowManager 02：Window属性</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-24T09:04:25+08:00">
+                2019-10-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android进阶/" itemprop="url" rel="index">
+                    <span itemprop="name">Android进阶</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android进阶/框架层/" itemprop="url" rel="index">
+                    <span itemprop="name">框架层</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android进阶/框架层/解析WindowManager/" itemprop="url" rel="index">
+                    <span itemprop="name">解析WindowManager</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.3k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  5 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>前面讲过了<code>Window</code>、<code>WindowManager</code>、WMS之间的关系，WMS是<code>Window</code>的最终管理者，<code>Window</code>如果是员工， WMS就是老板，为了方便老板管理员工，会定义一些“协议”，这些“协议”就是<code>Window</code>属性，被定义在<code>WindowManager</code>的内部类<code>LayoutParams</code>中。</p>
+<p><code>Window</code>的属性有很多种，最常用的有三种，<code>Type</code>（<code>Window</code>的类型）、<code>Flag</code>（<code>Window</code>的标志）、<code>SoftInputMode</code>（软键盘相关模式）。</p>
+<h1 id="2-Window的类型和显示次序"><a href="#2-Window的类型和显示次序" class="headerlink" title="2. Window的类型和显示次序"></a>2. Window的类型和显示次序</h1><p><code>Window</code>的类型有很多种，如应用程序窗口、系统错误窗口、输入法窗口、<code>PopupWindow</code>、<code>Toast</code>、<code>Dialog</code>等。总的来说分成三大类：Application Window（应用程序窗口）、Sub Window（子窗口）、Syste Window（系统窗口），每个大类下面有很多种类型，它们都定义在<code>WindowManager</code>的静态内部类<code>LayoutParams</code>中。</p>
+<h2 id="2-1-应用程序窗口"><a href="#2-1-应用程序窗口" class="headerlink" title="2.1 应用程序窗口"></a>2.1 应用程序窗口</h2><p>Activity就是一个典型的应用程序窗口，应用程序窗口包含的类型如下：frameworks/base/core/java/android/view/WindowManager.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> FIRST_APPLICATION_WINDOW = <span class="number">1</span>; <span class="comment">// 1</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_BASE_APPLICATION   = <span class="number">1</span>; <span class="comment">// 窗口的基础值，其他的窗口值要大于这个值</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_APPLICATION        = <span class="number">2</span>; <span class="comment">// 普通的应用程序窗口类型</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_APPLICATION_STARTING = <span class="number">3</span>; <span class="comment">// 应用程序启动窗口类型，用于系统在应用程序窗口启动前显示的窗口</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_DRAWN_APPLICATION = <span class="number">4</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> LAST_APPLICATION_WINDOW = <span class="number">99</span>; <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+
+<p>注释1，表示应用程序类型初始值，注释2，表示应用程序窗口结束值，即应用程序窗口的Type值范围是1-99，这个数值的大小涉及到窗口的层级。</p>
+<h2 id="2-2-子窗口"><a href="#2-2-子窗口" class="headerlink" title="2.2 子窗口"></a>2.2 子窗口</h2><p>不能独立存在，需要依附在其他窗口之上，<code>PopupWindow</code>就是子窗口，子窗口的类型如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> FIRST_SUB_WINDOW = <span class="number">1000</span>; <span class="comment">// 子窗口类型初始值</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_APPLICATION_PANEL = FIRST_SUB_WINDOW;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_APPLICATION_MEDIA = FIRST_SUB_WINDOW + <span class="number">1</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_APPLICATION_SUB_PANEL = FIRST_SUB_WINDOW + <span class="number">2</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_APPLICATION_ATTACHED_DIALOG = FIRST_SUB_WINDOW + <span class="number">3</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_APPLICATION_MEDIA_OVERLAY  = FIRST_SUB_WINDOW + <span class="number">4</span>; </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_APPLICATION_ABOVE_SUB_PANEL = FIRST_SUB_WINDOW + <span class="number">5</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> LAST_SUB_WINDOW = <span class="number">1999</span>; <span class="comment">// 子窗口类型结束值</span></span><br></pre></td></tr></table></figure>
+
+<p>子窗口的<code>Type</code>值为1000-1999。</p>
+<h2 id="2-3-系统窗口"><a href="#2-3-系统窗口" class="headerlink" title="2.3 系统窗口"></a>2.3 系统窗口</h2><p><code>Toast</code>、输入法窗口、系统音量条窗口、系统错误窗口都属于系统窗口。系统窗口的类型定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> FIRST_SYSTEM_WINDOW     = <span class="number">2000</span>; <span class="comment">// 系统窗口类型初始值</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_STATUS_BAR         = FIRST_SYSTEM_WINDOW; <span class="comment">// 系统状态栏窗口</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_SEARCH_BAR         = FIRST_SYSTEM_WINDOW+<span class="number">1</span>; <span class="comment">// 搜索条窗口</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_PHONE              = FIRST_SYSTEM_WINDOW+<span class="number">2</span>; <span class="comment">// 通话窗口</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_SYSTEM_ALERT       = FIRST_SYSTEM_WINDOW+<span class="number">3</span>; <span class="comment">// 系统ALERT窗口</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_KEYGUARD           = FIRST_SYSTEM_WINDOW+<span class="number">4</span>; <span class="comment">// 锁屏窗口</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TYPE_TOAST              = FIRST_SYSTEM_WINDOW+<span class="number">5</span>; <span class="comment">// TOAST窗口</span></span><br><span class="line">......</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> LAST_SYSTEM_WINDOW      = <span class="number">2999</span>; <span class="comment">// 系统窗口类型结束值</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-4-窗口显示次序"><a href="#2-4-窗口显示次序" class="headerlink" title="2.4 窗口显示次序"></a>2.4 窗口显示次序</h2><p>当一个进程向WMS申请一个窗口时，WMS会为窗口确定显示次序。为了方便窗口显示次序的管理，手机屏幕可以虚拟的用x、y、z轴来表示，其中z轴垂直于屏幕，从屏幕内指向屏幕外，这样确定窗口显示次序就是确定窗口在z轴上的次序，这个次序称为Z-Oder。Type值是Z-Oder排序的依据。一般情况下，Type值越大，Z-Oder排序越靠前，就越靠近用户。</p>
+<h1 id="3-Window标志"><a href="#3-Window标志" class="headerlink" title="3. Window标志"></a>3. Window标志</h1><p>即<code>Flag</code>，用于控制<code>Window</code>的显示，也是被定义在<code>WindowManager</code>的内部类<code>LayoutParams</code>中，下面是常用的<code>Flag</code>：</p>
+<table>
+<thead>
+<tr>
+<th align="left">Flag</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">FLAG_ALLOW_LOCK_WHILE_SCREEN_ON</td>
+<td align="left">只要窗口可见，就允许在开启状态的屏幕上锁屏</td>
+</tr>
+<tr>
+<td align="left">FLAG_NOT_FOCUSABLE</td>
+<td align="left">窗口不能获得输入焦点，设置该标志的同时，FLAG_NOT_TOUCH_MODAL也会被设置</td>
+</tr>
+<tr>
+<td align="left">FLAG_NOT_TOUCHABLE</td>
+<td align="left">窗口不接收任何触摸事件</td>
+</tr>
+<tr>
+<td align="left">FLAG_NOT_TOUCH_MODAL</td>
+<td align="left">在该窗口区域外的触摸事件会传递给其他的Window，而自己只会处理窗口区域内的触摸事件</td>
+</tr>
+<tr>
+<td align="left">FLAG_KEEP_SCREEN_ON</td>
+<td align="left">只要窗口可见，屏幕就一直亮着</td>
+</tr>
+<tr>
+<td align="left">FLAG_LAYOUT_NO_LIMITS</td>
+<td align="left">允许窗口超过屏幕外</td>
+</tr>
+<tr>
+<td align="left">FLAG_FULLSCREEN</td>
+<td align="left">隐藏所有的屏幕装饰窗口，比如在游戏、播放器中全屏显示</td>
+</tr>
+<tr>
+<td align="left">FLAG_SHOW_WHEN_LOCKED</td>
+<td align="left">窗口可以在锁屏的窗口之上显示</td>
+</tr>
+<tr>
+<td align="left">FLAG_IGNORE_CHEEK_PRESSES</td>
+<td align="left">当用户的脸贴近屏幕时（如打电话），不会去响应此事件</td>
+</tr>
+<tr>
+<td align="left">FLAG_TURN_SCREEN_ON</td>
+<td align="left">窗口显示时将屏幕点亮</td>
+</tr>
+</tbody></table>
+<p>设置<code>Window</code>的<code>Flag</code>有三种方式，一是通过<code>Window</code>的<code>addFlag()</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Window mWindow = getWindow(); </span><br><span class="line">mWindow.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);</span><br></pre></td></tr></table></figure>
+
+<p>二是通过<code>Window</code>的<code>setFlag()</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Window mWindow =getWindow();</span><br><span class="line">mWindow.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN , WindowManager.LayoutParams.FLAG_FULLSCREEN);</span><br></pre></td></tr></table></figure>
+
+<p><code>addFlag()</code>内部会调用<code>setFlag()</code>，因此二者区别不大。</p>
+<p>第三种是给<code>LayoutParams</code>设置<code>Flag</code>，并通过<code>WindowManager</code>的<code>addView()</code>方法进行添加。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">WindowManager.LayoutParams mWindowLayoutParams = <span class="keyword">new</span> WindowManager.LayoutParams();</span><br><span class="line">mWindowLayoutParams.flags=WindowManager.LayoutParams.FLAG_FULLSCREEN;</span><br><span class="line">WindowManager mWindowManager =(WindowManager) getSystemService(Context.WINDOW_SERVICE);  </span><br><span class="line">TextView mTextView=<span class="keyword">new</span> TextView(<span class="keyword">this</span>);</span><br><span class="line">mWindowManager.addView(mTextView,mWindowLayoutParams);</span><br></pre></td></tr></table></figure>
+
+<h1 id="4-软键盘相关模式"><a href="#4-软键盘相关模式" class="headerlink" title="4. 软键盘相关模式"></a>4. 软键盘相关模式</h1><p>一般默认情况下，弹出的软键盘窗口可能会盖住输入框下面的按钮，这样用户体验不好。</p>
+<p>为了使软键盘窗口能按照期望来显示，<code>WindowManager</code>的静态内部类<code>LayoutParams</code>中定义了软键盘相关模式，这里列举常用的几个：</p>
+<table>
+<thead>
+<tr>
+<th align="left">SoftInputMode</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">SOFT_INPUT_STATE_UNSPECIFIED</td>
+<td align="left">没有指定状态，系统会选择一个合适的状态或依赖于主题的设置</td>
+</tr>
+<tr>
+<td align="left">SOFT_INPUT_STATE_UNCHANGED</td>
+<td align="left">不会改变软甲盘的状态</td>
+</tr>
+<tr>
+<td align="left">SOFT_INPUT_STATE_HIDDEN</td>
+<td align="left">当用户进入该窗口时，软键盘默认隐藏</td>
+</tr>
+<tr>
+<td align="left">SOFT_INPUT_STATE_ALWAYS_HIDDEN</td>
+<td align="left">当窗口获取焦点时，软键盘总是被隐藏</td>
+</tr>
+<tr>
+<td align="left">SOFT_INPUT_ADJUST_RESIZE</td>
+<td align="left">当软键盘弹出时，窗口会调整大小</td>
+</tr>
+<tr>
+<td align="left">SOFT_INPUT_ADJUST_PAN</td>
+<td align="left">当软键盘弹出时，窗口不需要调整大小，要确保输入焦点是可见的</td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/WindowManager/" rel="tag"># WindowManager</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/18/Android解析WindowManager-01：WindowManager体系/" rel="next" title="Android解析WindowManager 01：WindowManager体系">
+                <i class="fa fa-chevron-left"></i> Android解析WindowManager 01：WindowManager体系
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Tyler Liu">
+            
+              <p class="site-author-name" itemprop="name">Tyler Liu</p>
+              <p class="site-description motion-element" itemprop="description">人生是一场难得的修行，不要轻易交白卷</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://juejin.im/timeline" title="掘金" target="_blank">掘金</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://account.aliyun.com/" title="阿里云" target="_blank">阿里云</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.wanandroid.com/" title="玩Android" target="_blank">玩Android</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://gitee.com/QingFengBaiYu" title="码云个人主页" target="_blank">码云个人主页</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://any86.github.io/any-rule/" title="正则" target="_blank">正则</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.gaoding.com/koutu" title="抠图" target="_blank">抠图</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Window的类型和显示次序"><span class="nav-text">2. Window的类型和显示次序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-应用程序窗口"><span class="nav-text">2.1 应用程序窗口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-子窗口"><span class="nav-text">2.2 子窗口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-系统窗口"><span class="nav-text">2.3 系统窗口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-窗口显示次序"><span class="nav-text">2.4 窗口显示次序</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Window标志"><span class="nav-text">3. Window标志</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-软键盘相关模式"><span class="nav-text">4. 软键盘相关模式</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tyler Liu</span>
+
+<!--
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">133k</span>
+  
+-->
+</div>
+
+
+
+
+
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共133k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
