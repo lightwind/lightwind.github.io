@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|Consolas:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="WindowManagerService,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Tyler的博客" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="前言WMS在创建之后，它的重要成员有哪些？Window添加过程的WMS部分做了什么？ 1. WMS的重要成员即WMS的重要成员变量，如下：frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java 12345678910111213141516171819202122final WindowM">
+<meta name="keywords" content="WindowManagerService">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android解析WindowManagerService 02：WMS的重要成员和Window的添加过程（基于Android 8.0）">
+<meta property="og:url" content="https://tylerLiu.top/2019/10/29/Android解析WindowManagerService-02：WMS的重要成员和Window的添加过程/index.html">
+<meta property="og:site_name" content="Tyler的博客">
+<meta property="og:description" content="前言WMS在创建之后，它的重要成员有哪些？Window添加过程的WMS部分做了什么？ 1. WMS的重要成员即WMS的重要成员变量，如下：frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java 12345678910111213141516171819202122final WindowM">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-04T02:09:21.346Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android解析WindowManagerService 02：WMS的重要成员和Window的添加过程（基于Android 8.0）">
+<meta name="twitter:description" content="前言WMS在创建之后，它的重要成员有哪些？Window添加过程的WMS部分做了什么？ 1. WMS的重要成员即WMS的重要成员变量，如下：frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java 12345678910111213141516171819202122final WindowM">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://tylerLiu.top/2019/10/29/Android解析WindowManagerService-02：WMS的重要成员和Window的添加过程/">
+
+
+
+
+
+  <title>Android解析WindowManagerService 02：WMS的重要成员和Window的添加过程（基于Android 8.0） | Tyler的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Tyler的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://tylerLiu.top/2019/10/29/Android解析WindowManagerService-02：WMS的重要成员和Window的添加过程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tyler Liu">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tyler的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android解析WindowManagerService 02：WMS的重要成员和Window的添加过程（基于Android 8.0）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-29T13:35:02+08:00">
+                2019-10-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android进阶/" itemprop="url" rel="index">
+                    <span itemprop="name">Android进阶</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android进阶/框架层/" itemprop="url" rel="index">
+                    <span itemprop="name">框架层</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android进阶/框架层/解析WindowManagerService/" itemprop="url" rel="index">
+                    <span itemprop="name">解析WindowManagerService</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.3k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>WMS在创建之后，它的重要成员有哪些？Window添加过程的WMS部分做了什么？</p>
+<h1 id="1-WMS的重要成员"><a href="#1-WMS的重要成员" class="headerlink" title="1. WMS的重要成员"></a>1. WMS的重要成员</h1><p>即WMS的重要成员变量，如下：frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> WindowManagerPolicy mPolicy;</span><br><span class="line"><span class="keyword">final</span> IActivityManager mActivityManager;</span><br><span class="line"><span class="keyword">final</span> ActivityManagerInternal mAmInternal;</span><br><span class="line"><span class="keyword">final</span> AppOpsManager mAppOps;</span><br><span class="line"><span class="keyword">final</span> DisplaySettings mDisplaySettings;</span><br><span class="line">......</span><br><span class="line"><span class="keyword">final</span> ArraySet&lt;Session&gt; mSessions = <span class="keyword">new</span> ArraySet&lt;&gt;();</span><br><span class="line"><span class="keyword">final</span> WindowHashMap mWindowMap = <span class="keyword">new</span> WindowHashMap();</span><br><span class="line"><span class="keyword">final</span> ArrayList&lt;AppWindowToken&gt; mFinishedStarting = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">final</span> ArrayList&lt;AppWindowToken&gt; mFinishedEarlyAnim = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">final</span> ArrayList&lt;AppWindowToken&gt; mWindowReplacementTimeouts = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">final</span> ArrayList&lt;WindowState&gt; mResizingWindows = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">final</span> ArrayList&lt;WindowState&gt; mPendingRemove = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">WindowState[] mPendingRemoveTmp = <span class="keyword">new</span> WindowState[<span class="number">20</span>];</span><br><span class="line"><span class="keyword">final</span> ArrayList&lt;WindowState&gt; mDestroySurface = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">final</span> ArrayList&lt;WindowState&gt; mDestroyPreservedSurface = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">......</span><br><span class="line"><span class="keyword">final</span> H mH = <span class="keyword">new</span> H();</span><br><span class="line">......</span><br><span class="line"><span class="keyword">final</span> WindowAnimator mAnimator;</span><br><span class="line">......</span><br><span class="line"><span class="keyword">final</span> InputManagerService mInputManager</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>WindowManagerPolicy mPolicy</code>：<code>WindowManagerPolicy</code>是窗口管理策略的接口类，用来定义一个窗口策略所要遵循的通用规范，并提供了<code>WindowManager</code>所有的特定的UI行为。其具体实现类为<code>PhoneWindowManager</code>，这个实现类在WMS创建时被创建。WMP允许定制窗口层级和特殊窗口类型以及关键的调度和布局。</p>
+</li>
+<li><p><code>ArraySet mSessions</code>：在<a href="https://tylerliu.top/2019/10/24/Android解析WindowManager-03%EF%BC%9AWindow的添加过程/">Android解析WindowManager 03：Window的添加过程</a>这篇文章中提到过<code>Session</code>，它主要用于进程间通信，其他的应用程序进程想要和WMS进程进行通信就需要经过<code>Session</code>，并且每个应用程序进程都会对应一个<code>Session</code>，WMS保存这些<code>Session</code>用来记录所有向WMS提出窗口管理服务的客户端。</p>
+</li>
+<li><p><code>WindowHashMap mWindowMap</code>：<code>WindowHashMap</code>继承了<code>HashMap</code>，它限制了<code>HashMap</code>的<code>key</code>值的类型为<code>IBinder</code>，<code>value</code>值的类型为<code>WindowState</code>。<code>WindowState</code>用户保存窗口的信息，在WMS中，它用来描述一个窗口。综上，<code>mWindowMap</code>就是用来保存WMS中各种窗口的集合。</p>
+</li>
+<li><p><code>ArrayList mFinishedStarting</code>：<code>AppWindowToken</code>的集合，<code>AppWindowToken</code>是<code>WindowToken</code>的子类。要想理解<code>mFinishedStarting</code>的意义，需要先理解<code>WindowToken</code>。<code>WindowToken</code>主要有两个作用：</p>
+<ul>
+<li><p>可以理解为窗口令牌，当应用程序想要向WMS申请新创建一个窗口，则需要向WMS出示有效的的<code>WindowToken</code>。<code>AppWindowToken</code>作为<code>WindowToken</code>的子类，主要用来描述应用程序的<code>WindowToken</code>结构。<br>应用程序中每个Activity都对应一个<code>AppWindowToken</code>。</p>
+</li>
+<li><p><code>WindowToken</code>会将相同组件（比如Activity）的窗口（<code>WindowState</code>）集合在一起，方便管理。</p>
+<p><code>mFinishedStarting</code>就是用于存储已经完成启动的应用程序窗口（比如Activity）的<code>AppWindowToken</code>的列表。<br>除了<code>mFinishedStarting</code>，还有类似的<code>mFinishedEarlyAnim</code>和<code>mWindowReplacementTimeouts</code>，其中<code>mFinishedEarlyAnim</code>用于存储已经完成绘制并且不需要任何已保存<code>surface</code>的应用程序窗口的<code>AppWindowToken</code>。<code>mWindowReplacementTimeouts</code>存储了等待更换的应用程序窗口的<code>AppWindowToken</code>，如果更换不及时，旧窗口就需要被处理。</p>
+</li>
+</ul>
+</li>
+<li><p><code>ArrayList mResizingWindows</code>：类型为<code>WindowState</code>。用来存储正在调整大小的窗口的列表。与<code>mResizingWindows</code>类似的还有<code>mPendingRemove</code>、<code>mDestoryPreservedSurface</code>等等。其中<code>mPendingRemove</code>是在内存耗尽时设置的，里面存着需要强制删除的窗口。<code>mDestorySurface</code>里面存有需要被<code>Destory</code>的<code>Surface</code>。<code>mDestoryPreservedSurface</code>里面存着窗口需要保存的等待销毁的<code>Surface</code>，因为当窗口经历<code>Surface</code>变化时，窗口需要一直保持旧<code>Surface</code>，直到新<code>Surface</code>的第一帧绘制完成。</p>
+</li>
+<li><p><code>WindowAnimator mAnimator</code>：用于管理窗口的动画以及特效动画。</p>
+</li>
+<li><p><code>H mH</code>：系统的<code>Handler</code>类，用于将任务加入到主线程的消息队列中，这样代码逻辑就会在主线程中执行。</p>
+</li>
+<li><p><code>InputManagerService mInputManager</code>：输入系统管理者。IMS会对触摸事件进行处理，它会寻找一个最合适的窗口来处理触摸反馈信息，WMS是窗口管理者，因此WMS就是输入系统的中转站，WMS包含IMS的引用。</p>
+</li>
+</ul>
+<h1 id="2-Window的添加过程（WMS部分）"><a href="#2-Window的添加过程（WMS部分）" class="headerlink" title="2. Window的添加过程（WMS部分）"></a>2. Window的添加过程（WMS部分）</h1><p>Window的操作分为两大部分，WindowManager处理部分和WMS处理部分。</p>
+<p>在<a href="https://tylerliu.top/2019/10/24/Android解析WindowManager-03%EF%BC%9AWindow的添加过程/">Android解析WindowManager 03：Window的添加过程</a>中，讲解了<code>Window</code>的添加过程的<code>WindowManager</code>处理部分，这里再来看看WMS部分。<br>无论是系统窗口还是Activity，它们的<code>Window</code>的添加过程都会调用WMS的<code>addWindow()</code>方法。frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java这段代码分成三个部分来看。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">addWindow</span><span class="params">(Session session, IWindow client, <span class="keyword">int</span> seq,</span></span></span><br><span class="line"><span class="function"><span class="params">        WindowManager.LayoutParams attrs, <span class="keyword">int</span> viewVisibility, <span class="keyword">int</span> displayId,</span></span></span><br><span class="line"><span class="function"><span class="params">        Rect outContentInsets, Rect outStableInsets, Rect outOutsets,</span></span></span><br><span class="line"><span class="function"><span class="params">        InputChannel outInputChannel)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span>[] appOp = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">int</span> res = mPolicy.checkAddPermission(attrs, appOp); <span class="comment">// 1</span></span><br><span class="line">    <span class="keyword">if</span> (res != WindowManagerGlobal.ADD_OKAY) &#123;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">synchronized</span>(mWindowMap) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!mDisplayReady) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Display has not been initialialized"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">final</span> DisplayContent displayContent = mRoot.getDisplayContentOrCreate(displayId); <span class="comment">// 2</span></span><br><span class="line">        <span class="keyword">if</span> (displayContent == <span class="keyword">null</span>) &#123;</span><br><span class="line">            ......</span><br><span class="line">            <span class="keyword">return</span> WindowManagerGlobal.ADD_INVALID_DISPLAY;</span><br><span class="line">        &#125;</span><br><span class="line">        ......</span><br><span class="line">        <span class="keyword">if</span> (type &gt;= FIRST_SUB_WINDOW &amp;&amp; type &lt;= LAST_SUB_WINDOW) &#123; <span class="comment">// 3</span></span><br><span class="line">            parentWindow = windowForClientLocked(<span class="keyword">null</span>, attrs.token, <span class="keyword">false</span>); <span class="comment">// 4</span></span><br><span class="line">            <span class="keyword">if</span> (parentWindow == <span class="keyword">null</span>) &#123;</span><br><span class="line">               ......</span><br><span class="line">                <span class="keyword">return</span> WindowManagerGlobal.ADD_BAD_SUBWINDOW_TOKEN;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (parentWindow.mAttrs.type &gt;= FIRST_SUB_WINDOW &amp;&amp; parentWindow.mAttrs.type &lt;= LAST_SUB_WINDOW) &#123;</span><br><span class="line">                ......</span><br><span class="line">                <span class="keyword">return</span> WindowManagerGlobal.ADD_BAD_SUBWINDOW_TOKEN;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ......</span><br><span class="line">    &#125;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>WMS的<code>addWindow()</code>方法返回的是各种状态值，比如，添加<code>Window</code>成功，无效的<code>display</code>等，这些状态被定义在<code>WindowManagerGlobal</code>中。<br>注释1，根据<code>Window</code>的属性，调用WMP的<code>checkAddPermission()</code>方法来检查权限，具体的实现在<code>PhoneWindowManager</code>的<code>checkAddPermission()</code>中，如果没有权限则不会执行后面的代码。<br>注释2，通过<code>display</code>来获得窗口要添加到哪个<code>DisplayContent</code>上，如果没没有找到<code>DisplayContent</code>，则返回<code>WindowManagerGlobal.ADD_INVALID_DISPLAY</code>状态，其中<code>DisplayContent</code>是用来描述一块屏幕的。<br>注释3，<code>type</code>表示窗口的类型，其数值介于<code>FIRST_SUB_WINDOW</code>和<code>LAST_SUB_WINDOW</code>（1000-1999），该数值定义在<code>WindowManager</code>中，说明这个窗口是一个子窗口。<br>注释4，<code>attrs.token</code>是<code>IBinder</code>类型的对象，<code>windowForClientLocked()</code>方法内部会根据<code>attrs.token</code>作为key值，从<code>mWindowMap</code>中得到该子窗口的父窗口。接着对父窗口进行判断，如果父窗口为空或者<code>type</code>的取值范围不正确，就返回错误的状态。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line">AppWindowToken atoken = <span class="keyword">null</span>;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">boolean</span> hasParent = parentWindow != <span class="keyword">null</span>;</span><br><span class="line">WindowToken token = displayContent.getWindowToken(hasParent ? parentWindow.mAttrs.token : attrs.token); <span class="comment">// 1</span></span><br><span class="line"><span class="keyword">final</span> <span class="keyword">int</span> rootType = hasParent ? parentWindow.mAttrs.type : type; <span class="comment">// 2</span></span><br><span class="line"><span class="keyword">boolean</span> addToastWindowRequiresToken = <span class="keyword">false</span>;</span><br><span class="line"><span class="keyword">if</span> (token == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (rootType &gt;= FIRST_APPLICATION_WINDOW &amp;&amp; rootType &lt;= LAST_APPLICATION_WINDOW) &#123;</span><br><span class="line">        ......</span><br><span class="line">        <span class="keyword">return</span> WindowManagerGlobal.ADD_BAD_APP_TOKEN;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (rootType == TYPE_INPUT_METHOD) &#123;</span><br><span class="line">        ......</span><br><span class="line">        <span class="keyword">return</span> WindowManagerGlobal.ADD_BAD_APP_TOKEN;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (rootType == TYPE_VOICE_INTERACTION) &#123;</span><br><span class="line">        ......</span><br><span class="line">        <span class="keyword">return</span> WindowManagerGlobal.ADD_BAD_APP_TOKEN;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (rootType == TYPE_WALLPAPER) &#123;</span><br><span class="line">        ......</span><br><span class="line">        <span class="keyword">return</span> WindowManagerGlobal.ADD_BAD_APP_TOKEN;</span><br><span class="line">    &#125;</span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">if</span> (type == TYPE_TOAST) &#123;</span><br><span class="line">        <span class="comment">// Apps targeting SDK above N MR1 cannot arbitrary add toast windows.</span></span><br><span class="line">        <span class="keyword">if</span> (doesAddToastWindowRequireToken(attrs.packageName, callingUid, parentWindow)) &#123;</span><br><span class="line">            ......</span><br><span class="line">            <span class="keyword">return</span> WindowManagerGlobal.ADD_BAD_APP_TOKEN;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">final</span> IBinder binder = attrs.token != <span class="keyword">null</span> ? attrs.token : client.asBinder();</span><br><span class="line">    token = <span class="keyword">new</span> WindowToken(<span class="keyword">this</span>, binder, type, <span class="keyword">false</span>, displayContent, session.mCanAddInternalSystemWindow); <span class="comment">// 3</span></span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (rootType &gt;= FIRST_APPLICATION_WINDOW &amp;&amp; rootType &lt;= LAST_APPLICATION_WINDOW) &#123; <span class="comment">// 4</span></span><br><span class="line">    atoken = token.asAppWindowToken(); <span class="comment">// 5</span></span><br><span class="line">    <span class="keyword">if</span> (atoken == <span class="keyword">null</span>) &#123;</span><br><span class="line">        ......</span><br><span class="line">        <span class="keyword">return</span> WindowManagerGlobal.ADD_NOT_APP_TOKEN;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (atoken.removed) &#123;</span><br><span class="line">        ......</span><br><span class="line">        <span class="keyword">return</span> WindowManagerGlobal.ADD_APP_EXITING;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (rootType == TYPE_INPUT_METHOD) &#123;</span><br><span class="line">    <span class="keyword">if</span> (token.windowType != TYPE_INPUT_METHOD) &#123;</span><br><span class="line">        ......</span><br><span class="line">        <span class="keyword">return</span> WindowManagerGlobal.ADD_BAD_APP_TOKEN;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<p>注释1，通过<code>displayContent</code>的<code>getWindowToken()</code>得到<code>WindowToken</code>。<br>注释2，如果有父窗口就将父窗口的<code>type</code>值赋值给<code>rootType</code>，如果没有就将当前窗口的<code>type</code>值赋值给<code>rootType</code>。如果<code>WindowToken</code>为空，则根据<code>rootType</code>或者<code>type</code>的值进行区分判断，如果<code>rootType</code>值等于<code>TYPE_INPUT_METHOD</code>、<code>TYPE_WALLPAPER</code>等值时，则返回状态值<code>WindowManagerGlobal.ADD_BAD_APP_TOKEN</code>，说明<code>rootType</code>值等于<code>TYPE_INPUT_METHOD</code>、<code>TYPE_WALLPAPER</code>等值时不允许<code>WindowToken</code>为空。<br>注释3，隐式创建<code>WindowToken</code>，说明当添加窗口时可以不向WMS提供<code>WindowToken</code>，前提是<code>rootTtpe</code>或<code>type</code>的值不为前面条件筛选的值。<code>WindowToken</code>隐式和显示的创建需要加以区分，注释3的第4个参数为<code>false</code>就表示是隐式创建。<br>下面就是<code>WindowToken</code>不为空的情况，根据<code>rootType</code>和<code>type</code>的值进行判断，如在注释4，如果窗口为应用程序窗口，在注释5会将<code>WindowToken</code>转换为专门针对应用程序窗口的<code>AppWindowToken</code>，然后根据<code>AppWindowToken</code>的值进行后续的判断。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line"><span class="keyword">final</span> WindowState win = <span class="keyword">new</span> WindowState(<span class="keyword">this</span>, session, client, token, parentWindow, appOp[<span class="number">0</span>], seq, attrs, viewVisibility, session.mUid, session.mCanAddInternalSystemWindow); <span class="comment">// 1</span></span><br><span class="line"><span class="keyword">if</span> (win.mDeathRecipient == <span class="keyword">null</span>) &#123; <span class="comment">// 2</span></span><br><span class="line">      ......</span><br><span class="line">      <span class="keyword">return</span> WindowManagerGlobal.ADD_APP_EXITING;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (win.getDisplayContent() == <span class="keyword">null</span>) &#123; <span class="comment">// 3</span></span><br><span class="line">      ......</span><br><span class="line">      <span class="keyword">return</span> WindowManagerGlobal.ADD_INVALID_DISPLAY;</span><br><span class="line">&#125;</span><br><span class="line">mPolicy.adjustWindowParamsLw(win.mAttrs); <span class="comment">// 4</span></span><br><span class="line">win.setShowToOwnerOnlyLocked(mPolicy.checkShowToOwnerOnly(attrs));</span><br><span class="line">res = mPolicy.prepareAddWindowLw(win, attrs); <span class="comment">// 5</span></span><br><span class="line">......</span><br><span class="line">win.attach();</span><br><span class="line">mWindowMap.put(client.asBinder(), win); <span class="comment">// 6</span></span><br><span class="line"><span class="keyword">if</span> (win.mAppOp != AppOpsManager.OP_NONE) &#123;</span><br><span class="line">    <span class="keyword">int</span> startOpResult = mAppOps.startOpNoThrow(win.mAppOp, win.getOwningUid(), win.getOwningPackage());</span><br><span class="line">    <span class="keyword">if</span> ((startOpResult != AppOpsManager.MODE_ALLOWED) &amp;&amp; (startOpResult != AppOpsManager.MODE_DEFAULT)) &#123;</span><br><span class="line">        win.setAppOpVisibilityLw(<span class="keyword">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">final</span> AppWindowToken aToken = token.asAppWindowToken();</span><br><span class="line"><span class="keyword">if</span> (type == TYPE_APPLICATION_STARTING &amp;&amp; aToken != <span class="keyword">null</span>) &#123;</span><br><span class="line">    aToken.startingWindow = win;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">boolean</span> imMayMove = <span class="keyword">true</span>;</span><br><span class="line">win.mToken.addWindow(win); <span class="comment">// 7</span></span><br><span class="line"><span class="keyword">if</span> (type == TYPE_INPUT_METHOD) &#123;</span><br><span class="line">    win.mGivenInsetsPending = <span class="keyword">true</span>;</span><br><span class="line">    setInputMethodWindowLocked(win);</span><br><span class="line">    imMayMove = <span class="keyword">false</span>;</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (type == TYPE_INPUT_METHOD_DIALOG) &#123;</span><br><span class="line">    displayContent.computeImeTarget(<span class="keyword">true</span> <span class="comment">/* updateImeTarget */</span>);</span><br><span class="line">    imMayMove = <span class="keyword">false</span>;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (type == TYPE_WALLPAPER) &#123;</span><br><span class="line">        displayContent.mWallpaperController.clearLastWallpaperTimeoutTime();</span><br><span class="line">        displayContent.pendingLayoutChanges |= FINISH_LAYOUT_REDO_WALLPAPER;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((attrs.flags&amp;FLAG_SHOW_WALLPAPER) != <span class="number">0</span>) &#123;</span><br><span class="line">        displayContent.pendingLayoutChanges |= FINISH_LAYOUT_REDO_WALLPAPER;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (displayContent.mWallpaperController.isBelowWallpaperTarget(win)) &#123;</span><br><span class="line">        displayContent.pendingLayoutChanges |= FINISH_LAYOUT_REDO_WALLPAPER;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<p>注释1，创建<code>WindowState</code>，它存有窗口的所有的状态信息，在WMS中它代表一个窗口。从<code>WindowState</code>传入的参数，可以发现<code>WindowState</code>中包含了WMS、<code>Session</code>、<code>WindowToken</code>、父类的<code>WindowState</code>、<code>LayoutParams</code>等信息。<br>注释2、3，分别判断请求添加窗口的客户端是否已经死亡、窗口的<code>DisplayContent</code>是否为空，如果是，则不会再执行后面的代码。<br>注释4，调用WMP的<code>adjustWindowParamsLw()</code>方法，该方法的实现在<code>PhoneWindowManager</code>中，会根据窗口的<code>type</code>对窗口的<code>LayoutParams</code>的一些成员变量进行修改。<br>注释5，调用WMP的<code>prepareAddWindowLw()</code>方法，用于准备将窗口添加到系统中。<br>注释6，将<code>WindowState</code>添加到<code>mWindowMap</code>中。<br>注释7，将<code>WindowState</code>添加到该<code>WindowState</code>对应的<code>WindowToken</code>中（实际是保存在<code>WindowToken</code>的父类<code>WindowContainer</code>中），这样<code>WindowToken</code>就包含了相同组件的<code>WindowToken</code>。</p>
+<p><strong><code>addWindow()</code>方法总结：</strong>主要做了下面4件事</p>
+<ol>
+<li>对所要添加的窗口进行检查，如果窗口不满足一些条件，就不会再执行后面的代码；</li>
+<li><code>WindowToken</code>相关的处理，比如有的窗口类型需要提供<code>WindowToken</code>，没有提供的话就不会执行后面的代码，有的窗口类型则需要由WMS隐式创建<code>WindowToken</code>；</li>
+<li><code>WindowState</code>的创建和相关处理，将<code>WindowToken</code>与<code>WindowState</code>相关联；</li>
+<li>创建和配置<code>DisplayContent</code>，完成窗口添加到系统前的准备工作。</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/WindowManagerService/" rel="tag"># WindowManagerService</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/26/Android解析WindowManagerService-01：WMS的概述/" rel="next" title="Android解析WindowManagerService 01：WMS的概述（基于Android 8.0）">
+                <i class="fa fa-chevron-left"></i> Android解析WindowManagerService 01：WMS的概述（基于Android 8.0）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Tyler Liu">
+            
+              <p class="site-author-name" itemprop="name">Tyler Liu</p>
+              <p class="site-description motion-element" itemprop="description">人生是一场难得的修行，不要轻易交白卷</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://juejin.im/timeline" title="掘金" target="_blank">掘金</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://account.aliyun.com/" title="阿里云" target="_blank">阿里云</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.wanandroid.com/" title="玩Android" target="_blank">玩Android</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://gitee.com/QingFengBaiYu" title="码云个人主页" target="_blank">码云个人主页</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://any86.github.io/any-rule/" title="正则" target="_blank">正则</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://www.gaoding.com/koutu" title="抠图" target="_blank">抠图</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-WMS的重要成员"><span class="nav-text">1. WMS的重要成员</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Window的添加过程（WMS部分）"><span class="nav-text">2. Window的添加过程（WMS部分）</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tyler Liu</span>
+
+<!--
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">139k</span>
+  
+-->
+</div>
+
+
+
+
+
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共139k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
