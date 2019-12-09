@@ -445,7 +445,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  30 分钟
+                  31 分钟
                 </span>
               
             </div>
@@ -689,7 +689,7 @@
 
 <p>上面这段代码会报错，因为涉及双向数据绑定，<code>@BindingConversion</code>只会在数据设置视图时生效，但是如果是视图设置数据则会走其他函数（如<code>get()</code>），如果该函数返回的类型和Model中的类型不匹配会报异常，除非将函数改为类型匹配，或者去掉<code>=</code>，不使用双向数据绑定。</p>
 <p><code>android:text</code>不能使用int转为String，因为它本身能正常接收int（作为<code>resouceId</code>），会报：</p>
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android.content.res.Resources<span class="variable">$NotFoundException</span>: String<span class="built_in"> resource </span>ID #0xa</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android.content.res.Resources$NotFoundException: String resource ID #0xa</span><br></pre></td></tr></table></figure>
 
 <h2 id="4-5-InverseMethod"><a href="#4-5-InverseMethod" class="headerlink" title="4.5 @InverseMethod"></a>4.5 @InverseMethod</h2><p>Android Studio 3.0提供了<strong>inverse系列</strong>新的注解，都是针对数据双向绑定的。</p>
 <p>在数据和视图的数据不统一时可以使用该注解<code>@InverseMethod</code>解决数据转换问题。</p>
@@ -775,7 +775,7 @@
 
 <p>上面的写法是错误的：Error:与元素类型 “variable” 相关联的 “type” 属性值不能包含 ‘&lt;’ 字符。<br>因为<code>&lt;</code>符号需要转义。</p>
 <p>常用的转义符：</p>
-<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">    空格   <span class="meta">&amp;nbsp    或 &amp;#160；</span></span><br><span class="line">&lt;	小于号	<span class="meta">&amp;lt;     或 &amp;#60;</span></span><br><span class="line">&gt;	大于号	<span class="meta">&amp;gt;     或 &amp;#62;</span></span><br><span class="line"><span class="meta">&amp;	与号	 &amp;amp;    或 &amp;#38;</span></span><br><span class="line"><span class="string">"	引号	 &amp;quot;   或 &amp;#34;</span></span><br><span class="line">‘	撇号	 <span class="meta">&amp;apos;   或 &amp;#39;</span></span><br><span class="line">×	乘号	 <span class="meta">&amp;times;  或 &amp;#215;</span></span><br><span class="line">÷	除号	 <span class="meta">&amp;divide; 或 &amp;#247;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">    空格   &amp;nbsp    或 &amp;#160；</span><br><span class="line">&lt;	小于号	&amp;lt;     或 &amp;#60;</span><br><span class="line">&gt;	大于号	&amp;gt;     或 &amp;#62;</span><br><span class="line">&amp;	与号	 &amp;amp;    或 &amp;#38;</span><br><span class="line">&quot;	引号	 &amp;quot;   或 &amp;#34;</span><br><span class="line">‘	撇号	 &amp;apos;   或 &amp;#39;</span><br><span class="line">×	乘号	 &amp;times;  或 &amp;#215;</span><br><span class="line">÷	除号	 &amp;divide; 或 &amp;#247;</span><br></pre></td></tr></table></figure>
 
 <p>正确写法：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">variable</span></span></span><br><span class="line"><span class="tag">    <span class="attr">name</span>=<span class="string">"list"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">type</span>=<span class="string">"java.util.List&amp;lt;String&amp;gt;"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">variable</span></span></span><br><span class="line"><span class="tag">    <span class="attr">name</span>=<span class="string">"map"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">type</span>=<span class="string">"java.util.Map&amp;lt;String, String&amp;gt;"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
@@ -971,7 +971,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">76</span>
+                  <span class="site-state-item-count">79</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1102,7 +1102,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">143.6k</span>
+    <span title="Site words total count">148k</span>
   
 -->
 </div>
@@ -1117,7 +1117,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共143.6k字</span>
+  <span class="post-count">博客全站共148k字</span>
 </div>
 
         

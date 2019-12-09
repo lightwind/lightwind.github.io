@@ -493,7 +493,7 @@
 <li>它会校验处理后的代码，只有针对Java 6及以上的版本和Java ME。</li>
 </ul>
 <h2 id="2-3-资源压缩"><a href="#2-3-资源压缩" class="headerlink" title="2.3 资源压缩"></a>2.3 资源压缩</h2><p>在Android中，编译提供了另一个功能：<strong>资源压缩</strong>。资源压缩能帮助移除项目和仓库中未使用到的资源，有效降低APK的大小，。由于资源压缩与代码混淆是协同工作，所以，<strong>如果要开启资源压缩，一定要先开启代码混淆</strong>，否则会报错：</p>
-<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ERROR: </span>Removing unused resources requires unused code shrinking to be turned on. See http://d.android.com/r/tools/shrink-resources.html for more information.</span><br><span class="line">Affected Modules: app</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ERROR: Removing unused resources requires unused code shrinking to be turned on. See http://d.android.com/r/tools/shrink-resources.html for more information.</span><br><span class="line">Affected Modules: app</span><br></pre></td></tr></table></figure>
 
 <h2 id="2-4-自定义要保留的资源"><a href="#2-4-自定义要保留的资源" class="headerlink" title="2.4 自定义要保留的资源"></a>2.4 自定义要保留的资源</h2><p>开启资源压缩后，系统默认会移除所有未使用的资源，如果要保留特定的资源，可以在项目中创建一个被<code>&lt;resources&gt;</code>标记的XML文件（如，<code>res/raw/keep.xml</code>），并在<code>tools:keep</code>属性中指定每个要保留的资源，在<code>tools:discard</code>属性中指定每个要舍弃的资源。这两个属性都接受逗号分隔的资源名称列表。同样，可以使用<code>*</code>作为通配符。如：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resources</span> <span class="attr">xmlns:tools</span>=<span class="string">"http://schemas.android.com/tools"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">tools:keep</span>=<span class="string">"@layout/activity_video*,@layout/dialog_update_v2"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">tools:discard</span>=<span class="string">"@layout/unused_layout,@drawable/unused_selector"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
@@ -558,7 +558,7 @@
 <li>usage.txt：罗列出从APK移除的代码。</li>
 </ul>
 <h2 id="5-2-恢复堆栈跟踪"><a href="#5-2-恢复堆栈跟踪" class="headerlink" title="5.2 恢复堆栈跟踪"></a>5.2 恢复堆栈跟踪</h2><p>前面的遗留问题：混淆处理后，StackTrace定位困难。如何恢复StackTrace的定位能力？系统提供了retrace工具，结合上面定义的<code>mapping.txt</code>文件，就可以将混淆后的<strong>崩溃堆栈追踪器信息</strong>还原成正常情况下的StackTrace信息。主要有两种方式来恢复SrackTrace，为了方便理解，以下面的崩溃信息为例，协助两种方式分别进行还原：</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">java<span class="selector-class">.lang</span><span class="selector-class">.RuntimeException</span>: Unable to start activity </span><br><span class="line">     Caused by: kotlin.KotlinNullPointerException</span><br><span class="line">        at com<span class="selector-class">.moos</span><span class="selector-class">.media</span><span class="selector-class">.ui</span><span class="selector-class">.ImageSelectActivity</span><span class="selector-class">.k</span>(ImageSelectActivity<span class="selector-class">.kt</span>:<span class="number">71</span>)</span><br><span class="line">        at com<span class="selector-class">.moos</span><span class="selector-class">.media</span><span class="selector-class">.ui</span><span class="selector-class">.ImageSelectActivity</span><span class="selector-class">.onCreate</span>(ImageSelectActivity<span class="selector-class">.kt</span>:<span class="number">58</span>)</span><br><span class="line">        at android<span class="selector-class">.app</span><span class="selector-class">.Activity</span><span class="selector-class">.performCreate</span>(Activity<span class="selector-class">.java</span>:<span class="number">6237</span>)</span><br><span class="line">        at android<span class="selector-class">.app</span><span class="selector-class">.Instrumentation</span><span class="selector-class">.callActivityOnCreate</span>(Instrumentation<span class="selector-class">.java</span>:<span class="number">1107</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">java.lang.RuntimeException: Unable to start activity </span><br><span class="line">     Caused by: kotlin.KotlinNullPointerException</span><br><span class="line">        at com.moos.media.ui.ImageSelectActivity.k(ImageSelectActivity.kt:71)</span><br><span class="line">        at com.moos.media.ui.ImageSelectActivity.onCreate(ImageSelectActivity.kt:58)</span><br><span class="line">        at android.app.Activity.performCreate(Activity.java:6237)</span><br><span class="line">        at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1107)</span><br></pre></td></tr></table></figure>
 
 <ol>
 <li><strong>通过retrace脚本工具</strong><br> 首先进入Android SDK路径的<code>tools/proguard/bin</code>中：</li>
@@ -570,7 +570,7 @@
 
 <p>选择Retrace栏，添加项目中混淆生成的<code>mapping.txt</code>文件所在位置，然后将混淆后的崩溃信息复制到Obfuscated stack trace一栏，点击Retrace，即可还原出崩溃日志信息。</p>
 <ol start="2">
-<li>通过retrace命令行<br>首先将崩溃信息复制到<code>.txt</code>文件中，然后执行下面命令：<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">retrace<span class="selector-class">.bat</span> -verbose mapping<span class="selector-class">.txt</span> proguard_stacktrace.txt</span><br></pre></td></tr></table></figure>
+<li>通过retrace命令行<br>首先将崩溃信息复制到<code>.txt</code>文件中，然后执行下面命令：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">retrace.bat -verbose mapping.txt proguard_stacktrace.txt</span><br></pre></td></tr></table></figure>
 
 </li>
 </ol>
@@ -709,7 +709,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">76</span>
+                  <span class="site-state-item-count">79</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -840,7 +840,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">143.6k</span>
+    <span title="Site words total count">148k</span>
   
 -->
 </div>
@@ -855,7 +855,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共143.6k字</span>
+  <span class="post-count">博客全站共148k字</span>
 </div>
 
         

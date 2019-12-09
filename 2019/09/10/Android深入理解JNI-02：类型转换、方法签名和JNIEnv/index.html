@@ -623,13 +623,13 @@
 
 <p><code>gMethods[]</code>数组中存储的是<code>MediaRecorder</code>的Native方法与JNI层方法的对应关系，其中<code>&quot;()V&quot;</code>和<code>&quot;(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;)V&quot;</code>就是方法签名。Java有重载方法，可以定义方法名相同，参数不同的方法，因此，在JNI中仅仅通过方法名是为u发找到对应Java的具体方法的，JNI为了解决这一问题，就将参数类型和返回值类型组合在一起作为方法签名。通过方法签名和方法名就可以找到对应的Java方法了。</p>
 <p>JNI方法签名的格式为：</p>
-<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">(参数签名格式...)</span>返回值签名格式</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(参数签名格式...)返回值签名格式</span><br></pre></td></tr></table></figure>
 
 <p>拿上面的<code>gMethods()</code>数组的<code>native_setup()</code>为例，在Java中的定义如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">native</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">native_setup</span><span class="params">(Object mediarecorder_this, String clientName, String opPackageName)</span> <span class="keyword">throws</span> IllegalStateException</span>;</span><br></pre></td></tr></table></figure>
 
 <p>它在JNI中的方法签名为：</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Ljava<span class="regexp">/lang/</span>Object;Ljava<span class="regexp">/lang/</span>String;Ljava<span class="regexp">/lang/</span>String;)V<span class="string">"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;)V&quot;</span><br></pre></td></tr></table></figure>
 
 <p>参照前面的类型转换表格，<code>native_setup()</code>方法的第一个参数的签名为<code>&quot;Ljava/lang/Obnject;&quot;</code>，后面两个参数签名为<code>&quot;Ljava/lang/String;&quot;</code>，返回值的类型<code>Void</code>的签名为<code>&quot;V&quot;</code>，组合起来就是上面的签名了。</p>
 <p>Java提供了<code>javap</code>命令来自动生成方法签名。</p>
@@ -637,13 +637,13 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MediaRecorder</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">"media_jni"</span>);</span><br><span class="line">        native_init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">native_init</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">native</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">native_setup</span><span class="params">(Object mediarecorder_this, String clientName, String opPackageName)</span> <span class="keyword">throws</span> IllegalStateException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>该文件的绝对路径为E:\Project\MyStudy\JNISample\media\src\main\java\com\example\MediaRecorder.java，接着执行如下命令：</p>
-<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javac E:<span class="symbol">\P</span>roject<span class="symbol">\M</span>yStudy<span class="symbol">\J</span>NISample<span class="symbol">\m</span>edia<span class="symbol">\s</span>rc<span class="symbol">\m</span>ain<span class="symbol">\j</span>ava<span class="symbol">\c</span>om<span class="symbol">\e</span>xample<span class="symbol">\M</span>ediaRecorder.java</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javac E:\Project\MyStudy\JNISample\media\src\main\java\com\example\MediaRecorder.java</span><br></pre></td></tr></table></figure>
 
 <p>执行后会生成MediaRecorder.class文件，然后执行如下命令：</p>
-<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javap -s -p E:<span class="symbol">\P</span>roject<span class="symbol">\M</span>yStudy<span class="symbol">\J</span>NISample<span class="symbol">\m</span>edia<span class="symbol">\s</span>rc<span class="symbol">\m</span>ain<span class="symbol">\j</span>ava<span class="symbol">\c</span>om<span class="symbol">\e</span>xample<span class="symbol">\M</span>ediaRecorder.class</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javap -s -p E:\Project\MyStudy\JNISample\media\src\main\java\com\example\MediaRecorder.class</span><br></pre></td></tr></table></figure>
 
 <p>其中<code>s</code>表示输出内部类型签名，<code>p</code>表示打印出所有的方法和成员（默认打印public成员），最终打印如下：</p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\AHXIUWU_RJ_LY&gt;javap -s -p E:\<span class="keyword">Project</span>\MyStudy\JNISample\media\src\main\java\com\example\MediaRecorder.<span class="keyword">class</span></span><br><span class="line">Compiled <span class="keyword">from</span> <span class="string">"MediaRecorder.java"</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> com.example.MediaRecorder &#123;</span><br><span class="line">  <span class="keyword">public</span> com.example.MediaRecorder();</span><br><span class="line">    descriptor: ()V</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">native</span> <span class="keyword">void</span> native_init();</span><br><span class="line">    descriptor: ()V</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">native</span> <span class="keyword">void</span> native_setup(java.lang.Object, java.lang.String, java.lang.String) <span class="keyword">throws</span> java.lang.IllegalStateException;</span><br><span class="line">    descriptor: (Ljava<span class="regexp">/lang/</span>Object;Ljava<span class="regexp">/lang/</span>String;Ljava<span class="regexp">/lang/</span>String;)V</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> &#123;&#125;;</span><br><span class="line">    descriptor: ()V</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\AHXIUWU_RJ_LY&gt;javap -s -p E:\Project\MyStudy\JNISample\media\src\main\java\com\example\MediaRecorder.class</span><br><span class="line">Compiled from &quot;MediaRecorder.java&quot;</span><br><span class="line">public class com.example.MediaRecorder &#123;</span><br><span class="line">  public com.example.MediaRecorder();</span><br><span class="line">    descriptor: ()V</span><br><span class="line"></span><br><span class="line">  private static final native void native_init();</span><br><span class="line">    descriptor: ()V</span><br><span class="line"></span><br><span class="line">  private final native void native_setup(java.lang.Object, java.lang.String, java.lang.String) throws java.lang.IllegalStateException;</span><br><span class="line">    descriptor: (Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;)V</span><br><span class="line"></span><br><span class="line">  static &#123;&#125;;</span><br><span class="line">    descriptor: ()V</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>可以看到输出的<code>native_setup</code>方法的签名和前面给出的一致。</p>
 <h1 id="3-JNIEnv"><a href="#3-JNIEnv" class="headerlink" title="3. JNIEnv"></a>3. JNIEnv</h1><p>JNIEnv是一个指向全部JNI方法的指针，该指针只在创建它的线程有效，不能跨线程传递，因此，不同线程的JNIEnv是独立的，JNIEnv的主要作用：</p>
@@ -800,7 +800,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">76</span>
+                  <span class="site-state-item-count">79</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -931,7 +931,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">143.6k</span>
+    <span title="Site words total count">148k</span>
   
 -->
 </div>
@@ -946,7 +946,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共143.6k字</span>
+  <span class="post-count">博客全站共148k字</span>
 </div>
 
         
