@@ -125,18 +125,20 @@
 
 
 
-<meta name="description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="description" content="使用ScrollView时，它的所有子View会一次性加载出来。RecyclerView可以做到按需加载、按需绑定，并实现复用。这里主要分析RecyclerView缓存复用的原理。 从缓存获取ViewHolder流程概览">
 <meta name="keywords" content="View">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android-RecyclerView的缓存机制">
 <meta property="og:url" content="https://tylerLiu.top/2020/05/15/Android-RecyclerView的缓存机制/index.html">
 <meta property="og:site_name" content="Tyler的博客">
-<meta property="og:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta property="og:description" content="使用ScrollView时，它的所有子View会一次性加载出来。RecyclerView可以做到按需加载、按需绑定，并实现复用。这里主要分析RecyclerView缓存复用的原理。 从缓存获取ViewHolder流程概览">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-05-15T01:44:30.126Z">
+<meta property="og:image" content="https://tylerliu.top/2020/05/15/Android-RecyclerView的缓存机制/微信图片_20200515103238.png">
+<meta property="og:updated_time" content="2020-05-15T02:34:05.173Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-RecyclerView的缓存机制">
-<meta name="twitter:description" content="人生是一场难得的修行，不要轻易交白卷">
+<meta name="twitter:description" content="使用ScrollView时，它的所有子View会一次性加载出来。RecyclerView可以做到按需加载、按需绑定，并实现复用。这里主要分析RecyclerView缓存复用的原理。 从缓存获取ViewHolder流程概览">
+<meta name="twitter:image" content="https://tylerliu.top/2020/05/15/Android-RecyclerView的缓存机制/微信图片_20200515103238.png">
 
 
 
@@ -425,7 +427,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  0 字
+                  60 字
                 </span>
               
 
@@ -462,7 +464,8 @@
       
 
       
-        
+        <p>使用ScrollView时，它的所有子View会一次性加载出来。RecyclerView可以做到按需加载、按需绑定，并实现复用。这里主要分析RecyclerView缓存复用的原理。</p>
+<h1 id="从缓存获取ViewHolder流程概览"><a href="#从缓存获取ViewHolder流程概览" class="headerlink" title="从缓存获取ViewHolder流程概览"></a>从缓存获取ViewHolder流程概览</h1><img src="/2020/05/15/Android-RecyclerView的缓存机制/微信图片_20200515103238.png">
       
     </div>
     
@@ -552,8 +555,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -660,6 +672,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#从缓存获取ViewHolder流程概览"><span class="nav-text">从缓存获取ViewHolder流程概览</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
