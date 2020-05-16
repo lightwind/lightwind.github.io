@@ -142,7 +142,7 @@
 <meta property="og:image" content="https://tylerliu.top/2020/05/15/Android-RecyclerView的缓存机制/微信图片_20200515174940.png">
 <meta property="og:image" content="https://tylerliu.top/2020/05/15/Android-RecyclerView的缓存机制/微信图片_20200515194333.png">
 <meta property="og:image" content="https://tylerliu.top/2020/05/15/Android-RecyclerView的缓存机制/微信图片_20200515194749.png">
-<meta property="og:updated_time" content="2020-05-15T11:57:18.151Z">
+<meta property="og:updated_time" content="2020-05-16T05:24:13.620Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-RecyclerView的缓存机制">
 <meta name="twitter:description" content="使用ScrollView时，它的所有子View会一次性加载出来。RecyclerView可以做到按需加载、按需绑定，并实现复用。这里主要分析RecyclerView缓存复用的原理。 从缓存获取ViewHolder流程概览  说明： 在创建ViewHolder之前，RecyclerView会先从缓存中尝试获取是否有符合要求的ViewHolder，详见RecyclerView#tryGetViewHo">
@@ -435,7 +435,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2.2k 字
+                  2.8k 字
                 </span>
               
 
@@ -451,7 +451,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  7 分钟
+                  10 分钟
                 </span>
               
             </div>
@@ -574,8 +574,31 @@
 <p><code>ViewHolder</code>会进入scrap而不是pool中。然后会通过特定的Id（<code>Adapter</code>中的<code>getItemId()</code>获取到的<code>id</code>），而不是<code>position</code>到scrap中查找<code>ViewHodler</code>。</p>
 <p>好处：</p>
 <ul>
-<li>1、不会导致<code>RecyclerViewPool</code>溢出，因此非必须情况下，不需要创建新的<code>ViewHoler</code>。之前的<code>ViewHolder</code>会重新绑定，</li>
+<li>1、不会导致<code>RecyclerViewPool</code>溢出，因此非必须情况下，不需要创建新的<code>ViewHoler</code>。之前的<code>ViewHolder</code>会重新绑定，因为Id没有变化不代表内容没有变化</li>
+<li>2、最大的好处是支持动画。上面移动item4到item6的位置。通常，需要调用<code>notifyItemMoved(4, 6)</code>才能得到一个移动动画。但是通过stable id，调用<code>notifyDataSetChanged()</code>也可以实现。因为<code>RecyclerView</code>可以看到特定id的view在新旧布局的位置。<ul>
+<li>注意，这里的动画只支持简单的动画，预测动画无法支持。如果在新布局中看到一些id，而旧布局中没有，那么如何知道它是新插入的item还是从某处移入的item，后一种情况item究竟是从哪来的？通常，这些问题的答案在预布局中可以找到，根据适配器的更改，该布局已经超出<code>RecyclerView</code>的范围，但现在这种情况下，不知道聚义更改了什么。</li>
 </ul>
+</li>
+</ul>
+<p>总之，stable id的使用场景比较有限，不过，还是有一个使用场景：如果是从<code>ListView</code>迁移到<code>RecyclerView</code>，将所有<code>notifyDataSetChanged()</code>调用，都转换为特定更改的通知可能会很麻烦，这时，stable id可以提供简单的<code>RecyclerView</code>动画。</p>
+<h1 id="缓存优化实践"><a href="#缓存优化实践" class="headerlink" title="缓存优化实践"></a>缓存优化实践</h1><ul>
+<li><p>尽量使用<code>notifyItemXxx</code>方法进行通知更新，而不是<code>notifyDataSetChanged()</code></p>
+<ul>
+<li>如果变更前后是两个数据集，无法确定具体哪一些数据项变化了，可以考虑使用<a href="https://developer.android.google.cn/reference/androidx/recyclerview/widget/DiffUtil" target="_blank" rel="noopener">DiffUtil</a></li>
+<li>如果数据集较大，建议结合使用<a href="https://developer.android.google.cn/reference/androidx/recyclerview/widget/AsyncListDiffer" target="_blank" rel="noopener">AsyncListDiffer</a>在子线程做diff运算。</li>
+</ul>
+</li>
+<li><p>如果特定viewType的item只有一个，可以通过<code>RecyclerView#getRecycledViewPool()#setMaxRecycledViews(viewType, 1);</code>来调整缓存区的大小，减少内存占用</p>
+</li>
+<li><p>如果特定viewType的item特别多，但是不得不通过<code>notifyDataSetChanged()</code>方法更新数据，可以通过下面这种方式，在变更前调大缓存，变更完成后，调小缓存。这样布局变化也可以最大程度地复用已有的<code>ViewHolder</code>。</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mRecyclerView.getRecycledViewPool().setMaxRecycledViews(<span class="number">0</span>, 屏幕显示的item总数 + <span class="number">7</span>);</span><br><span class="line">mAdapter.notifyDataSetChanged();</span><br><span class="line"><span class="keyword">new</span> Handler().post(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mRecyclerView.getRecycledViewPool().setMaxRecycledViews(<span class="number">0</span>, <span class="number">5</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果<code>RecyclerView</code>中每个item都是一个<code>RecycleyView</code>，并且子<code>RecyclerView</code>的item type相同可以通过<code>RecyclerView#setRecycledViewPool()</code>方法，实现缓存池复用。</p>
+</li>
+</ul>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="http://www.programmersought.com/article/4558924504/" target="_blank" rel="noopener">RecyclerView caching mechanism ( multiplexing?)</a></p>
+<p><a href="https://juejin.im/post/5b79a0b851882542b13d204b" target="_blank" rel="noopener">RecyclerView缓存原理，有图有真相</a></p>
+<p><a href="https://juejin.im/post/5c696ba9e51d457f136d24ff" target="_blank" rel="noopener">RecyclerView缓存机制（咋复用？）</a></p>
 
       
     </div>
@@ -793,7 +816,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#从缓存获取ViewHolder流程概览"><span class="nav-text">从缓存获取ViewHolder流程概览</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题"><span class="nav-text">问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#预布局、预测动画是什么？"><span class="nav-text">预布局、预测动画是什么？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于Scrap"><span class="nav-text">关于Scrap</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Attached-VS-Changed-scrap"><span class="nav-text">Attached VS Changed scrap</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hidden-View-是什么？"><span class="nav-text">Hidden View 是什么？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Stable-Id的作用？"><span class="nav-text">Stable Id的作用？</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#从缓存获取ViewHolder流程概览"><span class="nav-text">从缓存获取ViewHolder流程概览</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题"><span class="nav-text">问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#预布局、预测动画是什么？"><span class="nav-text">预布局、预测动画是什么？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于Scrap"><span class="nav-text">关于Scrap</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Attached-VS-Changed-scrap"><span class="nav-text">Attached VS Changed scrap</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hidden-View-是什么？"><span class="nav-text">Hidden View 是什么？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Stable-Id的作用？"><span class="nav-text">Stable Id的作用？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#缓存优化实践"><span class="nav-text">缓存优化实践</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-text">参考资料</span></a></li></ol></div>
             
 
           </div>
@@ -828,7 +851,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">151.8k</span>
+    <span title="Site words total count">152.4k</span>
   
 -->
 </div>
@@ -843,7 +866,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共151.8k字</span>
+  <span class="post-count">博客全站共152.4k字</span>
 </div>
 
         
