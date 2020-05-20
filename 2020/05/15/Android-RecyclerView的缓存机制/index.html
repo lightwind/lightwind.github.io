@@ -112,7 +112,7 @@
 
 
 
-  <meta name="keywords" content="View,">
+  <meta name="keywords" content="RecyclerView,">
 
 
 
@@ -126,7 +126,7 @@
 
 
 <meta name="description" content="使用ScrollView时，它的所有子View会一次性加载出来。RecyclerView可以做到按需加载、按需绑定，并实现复用。这里主要分析RecyclerView缓存复用的原理。 从缓存获取ViewHolder流程概览  说明： 在创建ViewHolder之前，RecyclerView会先从缓存中尝试获取是否有符合要求的ViewHolder，详见RecyclerView#tryGetViewHo">
-<meta name="keywords" content="View">
+<meta name="keywords" content="RecyclerView">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android-RecyclerView的缓存机制">
 <meta property="og:url" content="https://tylerLiu.top/2020/05/15/Android-RecyclerView的缓存机制/index.html">
@@ -142,7 +142,7 @@
 <meta property="og:image" content="https://tylerliu.top/2020/05/15/Android-RecyclerView的缓存机制/微信图片_20200515174940.png">
 <meta property="og:image" content="https://tylerliu.top/2020/05/15/Android-RecyclerView的缓存机制/微信图片_20200515194333.png">
 <meta property="og:image" content="https://tylerliu.top/2020/05/15/Android-RecyclerView的缓存机制/微信图片_20200515194749.png">
-<meta property="og:updated_time" content="2020-05-16T05:24:13.620Z">
+<meta property="og:updated_time" content="2020-05-16T05:54:24.150Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-RecyclerView的缓存机制">
 <meta name="twitter:description" content="使用ScrollView时，它的所有子View会一次性加载出来。RecyclerView可以做到按需加载、按需绑定，并实现复用。这里主要分析RecyclerView缓存复用的原理。 从缓存获取ViewHolder流程概览  说明： 在创建ViewHolder之前，RecyclerView会先从缓存中尝试获取是否有符合要求的ViewHolder，详见RecyclerView#tryGetViewHo">
@@ -616,7 +616,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/View/" rel="tag"># View</a>
+            <a href="/tags/RecyclerView/" rel="tag"># RecyclerView</a>
           
         </div>
       
@@ -638,6 +638,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/16/HashMap解析-01：HashMap源码解析/" rel="prev" title="HashMap解析-01：HashMap源码解析（基于JDK1.8）">
+                HashMap解析-01：HashMap源码解析（基于JDK1.8） <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -716,7 +720,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">80</span>
+                  <span class="site-state-item-count">81</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -727,7 +731,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -738,7 +742,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -851,7 +855,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">152.4k</span>
+    <span title="Site words total count">155k</span>
   
 -->
 </div>
@@ -866,7 +870,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共152.4k字</span>
+  <span class="post-count">博客全站共155k字</span>
 </div>
 
         
