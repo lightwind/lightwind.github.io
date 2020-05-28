@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    慕课网《编程必备基础 计算机组成原理+操作系统+计算机网络》-01 |  Tyler的博客
+    Android蓝牙串口SPP开发 |  Tyler的博客
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
@@ -38,7 +38,7 @@
   <div id="app">
     <main class="content on">
       <section class="outer">
-  <article id="post-慕课网《编程必备基础-计算机组成原理-操作系统-计算机网络》-01" class="article article-type-post" itemscope
+  <article id="post-Android蓝牙串口SPP开发" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
   <div class="article-inner">
@@ -46,7 +46,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  慕课网《编程必备基础 计算机组成原理+操作系统+计算机网络》-01
+  Android蓝牙串口SPP开发
 </h1>
  
 
@@ -55,12 +55,12 @@
 
     
     <div class="article-meta">
-      <a href="/2020/05/22/慕课网《编程必备基础-计算机组成原理-操作系统-计算机网络》-01/" class="article-date">
-  <time datetime="2020-05-22T02:03:00.000Z" itemprop="datePublished">2020-05-22</time>
+      <a href="/2020/05/28/Android蓝牙串口SPP开发/" class="article-date">
+  <time datetime="2020-05-28T00:41:11.000Z" itemprop="datePublished">2020-05-28</time>
 </a>
       
   <div class="article-category">
-    <a class="article-category-link" href="/categories/计算机基础/">计算机基础</a> / <a class="article-category-link" href="/categories/计算机基础/计算机组成原理/">计算机组成原理</a>
+    <a class="article-category-link" href="/categories/Android/">Android</a> / <a class="article-category-link" href="/categories/Android/蓝牙/">蓝牙</a>
   </div>
 
       
@@ -70,7 +70,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">0</span>
+            <span class="post-count">803</span>
         </span>
     </span>
 
@@ -79,7 +79,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">1 min</span>
+            <span class="post-count">3 min</span>
         </span>
     </span>
 </div>
@@ -90,6 +90,8 @@
 
     
     
+    <div class="tocbot"></div>
+
 
 
 
@@ -102,7 +104,64 @@
       
 
       
-      
+      <p>原文地址：<a href="https://blog.gtf35.top/bluetooth_spp/" target="_blank" rel="noopener">https://blog.gtf35.top/bluetooth_spp/</a></p>
+<p>【这里仅供学习】</p>
+<h1 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h1><p>物联网形势下，经常需要用到蓝牙串口来和单片机通讯。问题：</p>
+<ul>
+<li>蓝牙串口是什么？</li>
+<li>如何扫描蓝牙设备？</li>
+<li>如果连接蓝牙设备？</li>
+<li>如果收发串口数据？</li>
+</ul>
+<h1 id="1-蓝牙串口是什么？"><a href="#1-蓝牙串口是什么？" class="headerlink" title="1. 蓝牙串口是什么？"></a>1. 蓝牙串口是什么？</h1><p>先介绍一下串口，串行接口简称串口，就是一种通信的方式，类似于USB，只是比USB低级多。但是手机等设备没有外设这个串口，解决方案就是用手机蓝牙模块连接一个小硬件，小硬件有个串口，可以和单片机连接，来达到手机和单片机的串口连接，这种方式就是蓝牙串口。</p>
+<p>那个小硬件就是“蓝牙透传模块”，淘宝上有卖，有专用的上位机。</p>
+<img src="/2020/05/28/Android蓝牙串口SPP开发/微信图片_20200528100557.png" title="[蓝牙透传模块]">
+
+<p>这里要做的就是打开电脑上蓝牙模块的上位机的串口界面，能正常收发数据即可：</p>
+<img src="/2020/05/28/Android蓝牙串口SPP开发/微信图片_20200528100758.png" title="[蓝牙透传模块上位机图]">
+
+<h1 id="2-如何扫描蓝牙设备？"><a href="#2-如何扫描蓝牙设备？" class="headerlink" title="2. 如何扫描蓝牙设备？"></a>2. 如何扫描蓝牙设备？</h1><p>为什么不直接连接，而是扫描呢？</p>
+<p>因为连接需要使用<code>BluetoothDevice</code>，这个东西要么搜索到，要么使用“MAC”地址构造。“MAC”地址是每台设备独一无二的，所以必须要扫描设备，获取周围所有的设备列表，拿到<code>BluetoothDevice</code>来连接。同时取出里面的“MAC”地址，保存，用于下次连接。</p>
+<p>首先获取系统的蓝牙适配器，所有的搜索，连接，等操作都要靠它：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();</span><br></pre></td></tr></table></figure>
+
+<p>然后判断用户的蓝牙是否已开启：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 获取用户是否打开了蓝牙</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isBluetoothEnable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> mBluetoothAdapter.isEnabled();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>开启蓝牙：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 开启蓝牙</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">enableBluetooth</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    mBluetoothAdapter.enable();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>蓝牙开启之后，就可以搜索设备列表：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mBluetoothAdapter.startDiscovery();</span><br></pre></td></tr></table></figure>
+
+<p>搜索前，还需要判断是不是已经在搜索了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mBluetoothAdapter.isDiscovering();</span><br></pre></td></tr></table></figure>
+
+<p>如果正在搜索，就取消搜索：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mBluetoothAdapter.cancelDiscovery();</span><br></pre></td></tr></table></figure>
+
+<p>结合起来就是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 开始搜索</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">startDiscovery</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (mBluetoothAdapter.isDiscovering()) mBluetoothAdapter.cancelDiscovery();</span><br><span class="line">    mBluetoothAdapter.startDiscovery();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么，结果在哪获取？可以通过广播。</p>
+<p>先定义一个广播接收器，获取搜索结果的<code>Action</code>是<code>BluetoothDevice.ACTION_FOUND</code>，然后在里面取出<code>BluetoothDevice.EXTRA_DEVICE</code>，就可以获得<code>BluetoothDevice</code>了。</p>
+<p>自定义广播：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 搜索到新设备广播广播接收器</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> BroadcastReceiver mReceiver = <span class="keyword">new</span> BroadcastReceiver() &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</span><br><span class="line">        String action = intent.getAction();</span><br><span class="line">        <span class="keyword">if</span> (BluetoothDevice.ACTION_FOUND.equals(action)) &#123;</span><br><span class="line">            <span class="comment">// 这就是可爱的 BluetoothDevice 了</span></span><br><span class="line">            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>注册广播：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">IntentFilter foundFilter = <span class="keyword">new</span> IntentFilter(BluetoothDevice.ACTION_FOUND);</span><br><span class="line">mContext.registerReceiver(mReceiver, foundFilter);</span><br></pre></td></tr></table></figure>
+
+<p>添加权限：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--管理蓝牙需要--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.BLUETOOTH"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.BLUETOOTH_ADMIN"</span> /&gt;</span></span><br><span class="line"><span class="comment">&lt;!--搜索蓝牙需要，因为蓝牙可以被用来定位，所以需要定位权限--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.ACCESS_COARSE_LOCATION"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.ACCESS_FINE_LOCATION"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这样在触发搜索逻辑之后，每次找到一个新设备就会收到一个广播，拿到<code>BluetoothDevice</code>之后，就可以获取“MAC“地址：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bluetoothDevice.getAddress();</span><br></pre></td></tr></table></figure>
+
+<p>保存下来，下次使用的时候就可以用它二次获取<code>BluetoothDevice</code>了:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bluetoothDevice = bluetoothAdapter.getRemoteDevice(<span class="string">"之前保存过的蓝牙MAC地址"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>到这里，搜索部分结束。</p>
+<h1 id="3-如何连接蓝牙设备"><a href="#3-如何连接蓝牙设备" class="headerlink" title="3. 如何连接蓝牙设备"></a>3. 如何连接蓝牙设备</h1>
       
       <!-- reward -->
       
@@ -156,14 +215,14 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD6UlEQVR42u3aS27jQAwFwNz/0p5tMLHl98iWk0VpZchWq1UKwPDz9RUfj2/H9zPXn5Nrf/4yX/Pn+sldDhw4cODAgSN+1P3S11vPCVq4/MyrZ8SBAwcOHGc58lsmm75ec3a0gbkN7Thw4MCB43c5klStDcx5opjcFwcOHDhw/H2OvGiYh+TZmvk6OHDgwIHjtziS4mBbRkwSsKS01za3PlQrxYEDBw4ckwyrGDX4y59vme/AgQMHDhyHmkCbxK9N9vIA3P5b8OTuOHDgwIFjzdEGrbZEOGtKzQqRmxQRBw4cOHCc4miH3vbftmNw13yzdaK/Cxw4cODAseDIC2p5GG7PtNeebWLhwIEDB46zHG3ZLr99vpX27sm1eYr4JIXDgQMHDhxrjraRsyne5aXDTesrf9k4cODAgeMUxywxawt5UWGuTBrvGPXDgQMHDhx7jjb5aROw2chCEow36eXLF4kDBw4cOA5x5C3/ZIv5wyeDDpukMUkgXw404MCBAweOBUcSPmelvYRs0/rKA/+qLIgDBw4cOEqOPFzNBt3yhlCSOuZhu70WBw4cOHDsOWYbnYXkpKGVr9MO29VAOHDgwIFjwdFudDb6lid4+WqbQbqXZ3DgwIEDxyGOOskZPVK+WpsotgMZbwItDhw4cOAYcbSJUDvEsFn/k5Q4cODAgeMUR1LCy0tv7ajccOygbJ7ln3HgwIEDx54jCW/tCMIjODbrn/1HIXo/OHDgwIHjEEdeYps1nE496ibZKwItDhw4cOBI9z9MhPJrNyMLdxQxowYVDhw4cOD4YM7SDtLl72SfKOYBGwcOHDhw3MGRB7n7Gkv5RvN9ti/jSV6LAwcOHDhGHPkYwSeTt3bcYbarJ2dw4MCBA8eao0268mZPXqrbpFv7BPJNXosDBw4cOEYcm4GAlq9tbm2g889vCoU4cODAgWPEcX3j2bjA8J0EaVtbpkwGI3DgwIEDx57jVKnu7gCZDzccm+/AgQMHDhzr2bA23LblthY6R8xfSVRSxIEDBw4cC452iCFPpTYNrRloTvnyjjhw4MCB4xBHkhrlYw0JU5sctqE63wMOHDhw4DjLMRsjmz12eyRJYxv4i4opDhw4cOAYcTzKox13OJW2tYW/2cgFDhw4cODYc2zC3mYTm0c9mxziwIEDB447ONpkaTaOsPm2bSbNips4cODAgeMsRx6o2l+2sf2O9lJdK8WBAwcOHB/haMNb++31rvI1V20zHDhw4MDxQY5805vHbsPqpnl2OIXDgQMHDhyHioN56a1tL7Xtrk3SiAMHDhw4TnFshgOSotvskTavoQ3qw/kOHDhw4MDx//EPSaI0NkYQxiMAAAAASUVORK5CYII=" alt="微信分享二维码">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACNUlEQVR42u3aO3LcMBAFQN3/0utUVTa57w3MgEAzUklcLprBaH4/P/H1+XVd/fXq/r8/+wmunycuDAyM1zKSx139Jn9+Ar66P6JiYGAcwMi/vkXmYXrpsxgYGBi39+TX/fPzsI6BgYGRBNwVUn50DAwMjLaIzRttSUGbNPUeqcUxMDBeyFhpmT398yPzDQwMjFcxZiXofVGa3zkLsv84FQYGxtaMPMC1jbN8CSNf6fhyJwYGxqaMvPmVH/0+aLbD0ahUxsDA2JqRr2rNmmvtQdtFtC//NzAwMLZgtF+wMnScFajRmAEDA2NrRnvQvJSdjSdnUwAMDIzTGHlYzIvV9XFmFNAxMDAOYOS/WRkPPNe2w8DA2JtxH8iSBK4ta++f0yaIGBgY5zDyXGu2NLYSiFeKXgwMjJ0Ys7FiOwCYDUSLBTIMDIxNGXlRmjTFZuOEpKEW7YxgYGBsysgL1zbHnLXS6hwWAwNja0a7NtGGy1kLr1gFw8DAOIAxC4uzhLJN/moqBgbGMYzZkGBp/jAqmy9rcQwMjK0ZK5PPlVQvH45+ebkYGBgHM/5X2jd7QXURi4GBsR3jU15JAjcbTLYv6DLUYmBgbMeYDTXbiN6OKpOjD0tlDAyM1zLaIJvA2tZ/mzhiYGCcyZhtL+Thdb30/fL6MDAwMBYWwu4ZbXFbtxMxMDCOZLQDg5U0sRhwYmBgHMBoU7p2VJmnmI/X4hgYGC9ktCsO98h2XWMWcIeDTAwMjPcx/gCdJSLgIj+xCAAAAABJRU5ErkJggg==" alt="微信分享二维码">
     </div>
 </div>
 
 <div id="share-mask"></div>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/计算机组成原理/">计算机组成原理</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/蓝牙/">蓝牙</a></li></ul>
 
 
     </footer>
@@ -174,19 +233,10 @@
   
   <nav class="article-nav">
     
-      <a href="/2020/05/28/Android蓝牙串口SPP开发/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            Android蓝牙串口SPP开发
-          
-        </div>
-      </a>
     
-    
-      <a href="/2020/05/21/HashMap解析-02：手写HashMap/" class="article-nav-link">
+      <a href="/2020/05/22/慕课网《编程必备基础-计算机组成原理-操作系统-计算机网络》-01/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">HashMap解析-02：手写HashMap（基于JDK1.7，只写数组+链表）</div>
+        <div class="article-nav-title">慕课网《编程必备基础 计算机组成原理+操作系统+计算机网络》-01</div>
       </a>
     
   </nav>
