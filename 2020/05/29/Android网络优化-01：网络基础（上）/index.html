@@ -70,7 +70,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">732</span>
+            <span class="post-count">3k</span>
         </span>
     </span>
 
@@ -79,7 +79,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">2 min</span>
+            <span class="post-count">10 min</span>
         </span>
     </span>
 </div>
@@ -105,7 +105,7 @@
 
       
       <p>原文地址：<a href="https://juejin.im/post/5eba5a39e51d454de64e49b1" target="_blank" rel="noopener">https://juejin.im/post/5eba5a39e51d454de64e49b1</a></p>
-<h1 id="0-大纲"><a href="#0-大纲" class="headerlink" title="0. 大纲"></a>0. 大纲</h1>
+<h1 id="0-大纲"><a href="#0-大纲" class="headerlink" title="0. 大纲"></a>0. 大纲</h1><img src="/2020/05/29/Android网络优化-01：网络基础（上）/计算机基础思维导图.png">
 
 <h1 id="1-重识计算机网络"><a href="#1-重识计算机网络" class="headerlink" title="1. 重识计算机网络"></a>1. 重识计算机网络</h1><h2 id="1-1-计算机网络是什么？"><a href="#1-1-计算机网络是什么？" class="headerlink" title="1.1 计算机网络是什么？"></a>1.1 计算机网络是什么？</h2><ul>
 <li>1、主要由<strong>通用、可编程的硬件互连</strong>而成。</li>
@@ -159,7 +159,220 @@
 <li>1999年，马云创建阿里巴巴。</li>
 <li>2000年，李彦宏创建百度。</li>
 </ul>
-<h1 id="3-重识网络层次结构"><a href="#3-重识网络层次结构" class="headerlink" title="3. 重识网络层次结构"></a>3. 重识网络层次结构</h1><h2 id="3-1-网络为什么要分层"><a href="#3-1-网络为什么要分层" class="headerlink" title="3.1 网络为什么要分层"></a>3.1 网络为什么要分层</h2>
+<h1 id="3-重识网络层次结构"><a href="#3-重识网络层次结构" class="headerlink" title="3. 重识网络层次结构"></a>3. 重识网络层次结构</h1><h3 id="网络为什么要分层"><a href="#网络为什么要分层" class="headerlink" title="网络为什么要分层"></a>网络为什么要分层</h3><p>因为复杂的程序都要分层。这时一个架构设计的通用问题，不仅仅是网络协议的问题，<strong>只要涉及复杂的逻辑或软件需求需要经常变动的情况通常都会通过分层来解决</strong>。</p>
+<h3 id="思考：设计一个计算机网络需要解决哪些问题？"><a href="#思考：设计一个计算机网络需要解决哪些问题？" class="headerlink" title="思考：设计一个计算机网络需要解决哪些问题？"></a>思考：设计一个计算机网络需要解决哪些问题？</h3><ul>
+<li>1、传输数据时需要保证数据通路顺畅。</li>
+<li>2、需要识别目的计算机。</li>
+<li>3、需要了解目的计算机的状态。</li>
+<li>4、数据是否错误。</li>
+</ul>
+<p>因为计算机网络需要解决的问题繁多复杂，所以需要<strong>采用分层的设计分别去解决不同的问题，实现不同的功能</strong>。</p>
+<h2 id="3-1-层级结构设计的基本原则"><a href="#3-1-层级结构设计的基本原则" class="headerlink" title="3.1 层级结构设计的基本原则"></a>3.1 层级结构设计的基本原则</h2><ul>
+<li>相互独立：每一层仅仅实现一个相对独立的功能，并且需要确保层与层之间的耦合度非常低。</li>
+<li>灵活性：每一层的设计需要具备很好的灵活性、扩展性，以适应未来的网络变化。</li>
+<li>耦合度：各层之间是完全耦合的，层与层之间的变化互不影响。</li>
+</ul>
+<h2 id="3-2-OSI七层模型"><a href="#3-2-OSI七层模型" class="headerlink" title="3.2 OSI七层模型"></a>3.2 OSI七层模型</h2><table>
+<thead>
+<tr>
+<th align="center">OSI</th>
+<th align="center">功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">应用层</td>
+<td align="center">为计算机用户提供接口和服务</td>
+</tr>
+<tr>
+<td align="center">表示层</td>
+<td align="center">数据处理：编解码、加解密等等</td>
+</tr>
+<tr>
+<td align="center">会话层</td>
+<td align="center">管理（建立、维护、重连）通信会话</td>
+</tr>
+<tr>
+<td align="center">传输层</td>
+<td align="center">管理端到端的通信连接</td>
+</tr>
+<tr>
+<td align="center">网络层</td>
+<td align="center">数据路由：决定数据在网络中的路径</td>
+</tr>
+<tr>
+<td align="center">数据链路层</td>
+<td align="center">管理相邻节点之间的数据通信</td>
+</tr>
+<tr>
+<td align="center">物理层</td>
+<td align="center">数据通信的光电物理特性</td>
+</tr>
+</tbody></table>
+<h3 id="3-2-1-OSI的故事"><a href="#3-2-1-OSI的故事" class="headerlink" title="3.2.1 OSI的故事"></a>3.2.1 OSI的故事</h3><ul>
+<li>开始，OSI想要成为全球计算机都遵循的标准。</li>
+<li>但是，OSI在市场化的过程中困难重重，因为TCP/IP已经在全球范围成功运行。</li>
+<li>最终，OSI没有成为广为使用的标准模型。</li>
+</ul>
+<h3 id="3-2-2-OSI七层模型失败的原因"><a href="#3-2-2-OSI七层模型失败的原因" class="headerlink" title="3.2.2 OSI七层模型失败的原因"></a>3.2.2 OSI七层模型失败的原因</h3><ul>
+<li>1、OSI没有充分将理论和实际结合。</li>
+<li>2、OSI标准的制定周期长，按OSI标准生产的设备无法及时投入市场。</li>
+<li>3、OSI模型设计不合理，某些功能在多层重复出现。</li>
+</ul>
+<h2 id="3-3-TCP-IP四层模型"><a href="#3-3-TCP-IP四层模型" class="headerlink" title="3.3 TCP/IP四层模型"></a>3.3 TCP/IP四层模型</h2><img src="/2020/05/29/Android网络优化-01：网络基础（上）/微信图片_20200529145238.png">
+
+<p>需要理解数据通信过程中不同设备之间协议的转换。从下图可以看到<strong>路由器仅包括网络层和网络接口层</strong>。</p>
+<img src="/2020/05/29/Android网络优化-01：网络基础（上）/微信图片_20200529145947.png">
+
+<p>从协议的数量来看，TCP/IP四层模型构成了中间窄，两端大的沙漏模型，下图：</p>
+<img src="/2020/05/29/Android网络优化-01：网络基础（上）/微信图片_20200529150949.png">
+
+<h1 id="4-初始现代网络拓扑"><a href="#4-初始现代网络拓扑" class="headerlink" title="4. 初始现代网络拓扑"></a>4. 初始现代网络拓扑</h1><h2 id="4-1-为什么要了解网络拓扑？"><a href="#4-1-为什么要了解网络拓扑？" class="headerlink" title="4.1 为什么要了解网络拓扑？"></a>4.1 为什么要了解网络拓扑？</h2><p>有助于形成一个形象的计算机网络。</p>
+<h2 id="4-2-网络拓扑分类"><a href="#4-2-网络拓扑分类" class="headerlink" title="4.2 网络拓扑分类"></a>4.2 网络拓扑分类</h2><h3 id="4-2-1-边缘部分"><a href="#4-2-1-边缘部分" class="headerlink" title="4.2.1 边缘部分"></a>4.2.1 边缘部分</h3><ul>
+<li><p>家庭：由<strong>终端机器、路由器、网关、地区ISP</strong>组成。</p>
+  <img src="/2020/05/29/Android网络优化-01：网络基础（上）/171e4f3a5a49bcfe">
+</li>
+<li><p>企业：不同于家庭的网络拓扑，其<strong>网关细分为内部网关和统一网关</strong>。</p>
+  <img src="/2020/05/29/Android网络优化-01：网络基础（上）/171e4f3e31828128">
+
+</li>
+</ul>
+<h3 id="4-2-2-核心部分"><a href="#4-2-2-核心部分" class="headerlink" title="4.2.2 核心部分"></a>4.2.2 核心部分</h3><p>由<strong>地区ISP、主干ISP、路由器、海底电缆或跨地区电缆</strong>组成。其中<strong>通信设备（一般是华为）主要由移动、联通锁铺设的</strong>。</p>
+<img src="/2020/05/29/Android网络优化-01：网络基础（上）/171e4f40bf34946a">
+
+<p>现代互联网的网络拓扑形成了一个树形结构。</p>
+<img src="/2020/05/29/Android网络优化-01：网络基础（上）/171e4f42fa879e70">
+
+<h3 id="4-2-3-C-S模式"><a href="#4-2-3-C-S模式" class="headerlink" title="4.2.3 C/S模式"></a>4.2.3 C/S模式</h3><p>由客户端/服务端模式组成，并可以相互进行通信。</p>
+<img src="/2020/05/29/Android网络优化-01：网络基础（上）/171e4f476817dd10">
+
+<h3 id="4-2-4-P2P模式"><a href="#4-2-4-P2P模式" class="headerlink" title="4.2.4 P2P模式"></a>4.2.4 P2P模式</h3><p>不分客户端和服务端，它们之间<strong>对等地进行连接</strong>，优势在于可以使<strong>下载速度更快</strong>，如迅雷下载器中就是采用这种模式。</p>
+<img src="/2020/05/29/Android网络优化-01：网络基础（上）/171e4f4b5c0fcffb">
+
+<h1 id="5-网络性能指标"><a href="#5-网络性能指标" class="headerlink" title="5. 网络性能指标"></a>5. 网络性能指标</h1><h2 id="5-1-速率"><a href="#5-1-速率" class="headerlink" title="5.1 速率"></a>5.1 速率</h2><p><strong>即，bps &lt;==&gt; bit/s</strong></p>
+<p>网络数据传输的各种单位与之对应的常见设备<br>||bit|Byte|KB|MB|GB|TB|PB|EB|<br>|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|<br>|名字|比特位|字节|千字节|兆字节|吉字节|太字节|拍字节|艾字节|<br>|比例|-|8bits|1024B|1024KB|1024MB|1024GB|1024TB|1024PB|<br>|常见设备|门电路|-|寄存器|高速缓存|内存/硬盘|硬盘|云硬盘|数据仓库|</p>
+<p><strong>为什么100M的电信光纤，测试峰值速度只有12M/s呢？</strong></p>
+<p>网络常用的单位为Mbps，因此这里的100M指的是100Mbps。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">100 M/s = 100 Mbps = 100 Mbit/s</span><br><span class="line">100 Mbit/s = (100 / 8) MB/s = 12.5 MB/s</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-2-时延"><a href="#5-2-时延" class="headerlink" title="5.2 时延"></a>5.2 时延</h2><h3 id="5-2-1-发送时延"><a href="#5-2-1-发送时延" class="headerlink" title="5.2.1 发送时延"></a>5.2.1 发送时延</h3><p><strong>发送时延 = 数据长度(bit) / 发送速率(bit/s)</strong>。</p>
+<p>数据长度有用户决定，发送速率有计算机网卡决定。</p>
+<h3 id="5-2-2-传输时延"><a href="#5-2-2-传输时延" class="headerlink" title="5.2.2 传输时延"></a>5.2.2 传输时延</h3><p><strong>传输时延 = 传输路径距离 / 传播速率(bit/s)</strong>。</p>
+<p>传输路径距离由用户决定，传播速率受限于传输介质。</p>
+<h3 id="5-2-3-排队时延"><a href="#5-2-3-排队时延" class="headerlink" title="5.2.3 排队时延"></a>5.2.3 排队时延</h3><p>数据包在网络设备中等待被处理的时间，例如路由器需要一个一个处理完前面的数据包才能处理后面的。</p>
+<h3 id="5-2-4-处理时延"><a href="#5-2-4-处理时延" class="headerlink" title="5.2.4 处理时延"></a>5.2.4 处理时延</h3><p>数据包达到设备或目的机器被处理所需的时间。</p>
+<p><strong>总时延 = 发送时延 + 传输时延 + 排队时延 + 处理时延</strong>。</p>
+<h2 id="5-3-往返时间RTT-Route-Trip-Time"><a href="#5-3-往返时间RTT-Route-Trip-Time" class="headerlink" title="5.3 往返时间RTT(Route-Trip Time)"></a>5.3 往返时间RTT(Route-Trip Time)</h2><ul>
+<li>评估网络质量的一项重要指标。</li>
+<li>表示数据报文在端到端通信中来回一次的时间。</li>
+</ul>
+<p><strong>通常使用ping命令查看RRT</strong></p>
+<h1 id="6-应用层"><a href="#6-应用层" class="headerlink" title="6. 应用层"></a>6. 应用层</h1><p><strong>传输层与之下的层已经提供了完整的通信服务</strong>。而应用层是面向用于的一层。主要用来<strong>定义应用间通信的规则</strong>，例如应用进程的报文类型（请求报文、响应报文）、报文的语法、格式、应用进程发送数据的时机、规则等。</p>
+<h2 id="6-1-DNS（Domain-Name-System）域名系统服务"><a href="#6-1-DNS（Domain-Name-System）域名系统服务" class="headerlink" title="6.1 DNS（Domain Name System）域名系统服务"></a>6.1 DNS（Domain Name System）域名系统服务</h2><p>域即对应的网络号，名即对应的主机名字。</p>
+<h3 id="6-1-1-功能"><a href="#6-1-1-功能" class="headerlink" title="6.1.1 功能"></a>6.1.1 功能</h3><p>通过把没有规则的点分十进制IP地址转换为可以理解的一些域名。</p>
+<h3 id="6-1-2-域名"><a href="#6-1-2-域名" class="headerlink" title="6.1.2 域名"></a>6.1.2 域名</h3><ul>
+<li>使用域名可以帮助记忆。</li>
+<li>域名通过DNS服务可以被转换成IP地址。</li>
+<li>域名是由点、字母和数字组成。</li>
+<li>点分割不同的域。</li>
+<li>域名可以分为顶级域名、二级域、三级域…，如，<a href="http://www.taobao.com" target="_blank" rel="noopener">www.taobao.com</a> -&gt; 三级域.二级域.顶级域。</li>
+</ul>
+<p><strong>顶级域常见分类</strong></p>
+<ul>
+<li>国家<ul>
+<li>cn</li>
+<li>us</li>
+<li>uk</li>
+<li>ca</li>
+</ul>
+</li>
+<li>通用<ul>
+<li>com</li>
+<li>net</li>
+<li>gov</li>
+<li>org</li>
+</ul>
+</li>
+</ul>
+<p><strong>二级域</strong><br>例如：qq、aliyun、taobao、google、facebook等。</p>
+<p>顶级域、二级域、三级域组成了一个树状结构。且在顶级域名服务器上面还有一个根域名服务器。</p>
+<h3 id="6-1-3-域名服务器"><a href="#6-1-3-域名服务器" class="headerlink" title="6.1.3 域名服务器"></a>6.1.3 域名服务器</h3><p>只要有一个外网的服务器就可以搭建一个域名的服务器。</p>
+<h2 id="6-2-DHCP-Dynamic-Host-Configuration-Protocol-动态主机设置协议"><a href="#6-2-DHCP-Dynamic-Host-Configuration-Protocol-动态主机设置协议" class="headerlink" title="6.2 DHCP(Dynamic Host Configuration Protocol)动态主机设置协议"></a>6.2 DHCP(Dynamic Host Configuration Protocol)动态主机设置协议</h2><h3 id="6-2-1-是什么？"><a href="#6-2-1-是什么？" class="headerlink" title="6.2.1 是什么？"></a>6.2.1 是什么？</h3><p>网络管理员只需配置一段共享的IP地址，每一台新接入的机器都可以通过DHCP来这个共享的IP地址里面申请IP地址，就可以自动配置。等用完之后还回去，其他机器也能使用。</p>
+<p>特点如下：</p>
+<ul>
+<li>DHCP是一个局域网协议。</li>
+<li>DHCP是应用UDP协议的应用层协议。</li>
+</ul>
+<h3 id="6-2-2-功能"><a href="#6-2-2-功能" class="headerlink" title="6.2.2 功能"></a>6.2.2 功能</h3><ul>
+<li>即插即用联网。</li>
+<li>在IP配置界面中自动获得IP地址、自动获得DNS服务器地址即可启用DHCP协议去获取一个临时IP（通常是一个内网地址）。</li>
+<li>有一个租期，在租期过半时可以续租。</li>
+</ul>
+<h3 id="6-2-3-DHCP的过程"><a href="#6-2-3-DHCP的过程" class="headerlink" title="6.2.3 DHCP的过程"></a>6.2.3 DHCP的过程</h3><ul>
+<li>1、DHCP服务器监听默认端口：67</li>
+<li>2、主机使用UDP协议广播DHCP发现报文</li>
+<li>3、DHCP服务器发出DHCP提供报文</li>
+<li>4、主机向DHCP服务器发出DHCP请求报文</li>
+<li>5、DHCP服务器回应并提供IP地址</li>
+</ul>
+<h3 id="6-2-4-向DHCP租用的IP地址是有租期的，IP地址如何实现续租呢？"><a href="#6-2-4-向DHCP租用的IP地址是有租期的，IP地址如何实现续租呢？" class="headerlink" title="6.2.4 向DHCP租用的IP地址是有租期的，IP地址如何实现续租呢？"></a>6.2.4 向DHCP租用的IP地址是有租期的，IP地址如何实现续租呢？</h3><p>客户端会在租期过去50%的时候，直接向为其提供IP地址的DHCP服务器发送DHCP request消息报。客户端接收到服务器回应的DHCP ACK消息报后，会根据消息报中提供的新的租期以及其他已经更新的TCP/IP参数更新自己的配置。</p>
+<h2 id="6-3-HTTP（HyperText-Transfer-Protocol）超文本传输协议"><a href="#6-3-HTTP（HyperText-Transfer-Protocol）超文本传输协议" class="headerlink" title="6.3 HTTP（HyperText Transfer Protocol）超文本传输协议"></a>6.3 HTTP（HyperText Transfer Protocol）超文本传输协议</h2><h3 id="6-3-1-是什么？"><a href="#6-3-1-是什么？" class="headerlink" title="6.3.1 是什么？"></a>6.3.1 是什么？</h3><p>HyperText即超文本、超链接，Http是指在电脑中显示的、<strong>含有可以指向其他文本的链接文本</strong>。</p>
+<p>对于这些内容都有一个统一的路径，例如：http(s)://&lt;主机&gt;:&lt;端口&gt;/&lt;路径&gt;。</p>
+<p>HTP协议底层是TCP协议，因此它是可靠的数据传输协议。</p>
+<h3 id="6-3-2-Web服务器"><a href="#6-3-2-Web服务器" class="headerlink" title="6.3.2 Web服务器"></a>6.3.2 Web服务器</h3><p>分为硬件部分（计算机或云上的虚拟设备）和软件部分（Nginx、Apache）。</p>
+<p><strong>过程：</strong></p>
+<ul>
+<li>1、接受客户端连接</li>
+<li>2、接受请求报文</li>
+<li>3、处理请求</li>
+<li>4、访问Web资源</li>
+<li>5、构造应答</li>
+<li>6、发送应答</li>
+</ul>
+<h3 id="6-3-3-HTTP请求方法"><a href="#6-3-3-HTTP请求方法" class="headerlink" title="6.3.3 HTTP请求方法"></a>6.3.3 HTTP请求方法</h3><table>
+<thead>
+<tr>
+<th align="center">header1</th>
+<th align="center">header2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">GET</td>
+<td align="center">获取指定的服务端资源</td>
+</tr>
+<tr>
+<td align="center">POST</td>
+<td align="center">提交数据到服务端</td>
+</tr>
+<tr>
+<td align="center">DELETE</td>
+<td align="center">删除指定的服务端资源（很少用）</td>
+</tr>
+<tr>
+<td align="center">UPDATE</td>
+<td align="center">更新指定的服务端资源</td>
+</tr>
+<tr>
+<td align="center">PUT</td>
+<td align="center">修改数据</td>
+</tr>
+<tr>
+<td align="center">OPTIONS</td>
+<td align="center">列出可对资源实行的请求方法，用来跨域请求</td>
+</tr>
+<tr>
+<td align="center">CONNECT</td>
+<td align="center">建立连接隧道，用于代理服务器</td>
+</tr>
+<tr>
+<td align="center">HEAD</td>
+<td align="center">获取资源的元信息</td>
+</tr>
+<tr>
+<td align="center">TRACE</td>
+<td align="center">追踪请求-响应的传输路径</td>
+</tr>
+</tbody></table>
+
       
       <!-- reward -->
       
