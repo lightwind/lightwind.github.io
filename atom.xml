@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://tylerLiu.top/"/>
-  <updated>2020-05-29T01:53:27.517Z</updated>
+  <updated>2020-05-29T03:03:38.725Z</updated>
   <id>https://tylerLiu.top/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Android网络优化-01：网络基础（上）</title>
+    <link href="https://tylerLiu.top/2020/05/29/Android%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96-01%EF%BC%9A%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/"/>
+    <id>https://tylerLiu.top/2020/05/29/Android网络优化-01：网络基础（上）/</id>
+    <published>2020-05-29T02:01:12.000Z</published>
+    <updated>2020-05-29T03:03:38.725Z</updated>
+    
+    <content type="html"><![CDATA[<p>原文地址：<a href="https://juejin.im/post/5eba5a39e51d454de64e49b1" target="_blank" rel="noopener">https://juejin.im/post/5eba5a39e51d454de64e49b1</a></p><h1 id="0-大纲"><a href="#0-大纲" class="headerlink" title="0. 大纲"></a>0. 大纲</h1><img src="/2020/05/29/Android网络优化-01：网络基础（上）/1720b5afbc0b40a3"><h1 id="1-重识计算机网络"><a href="#1-重识计算机网络" class="headerlink" title="1. 重识计算机网络"></a>1. 重识计算机网络</h1><h2 id="1-1-计算机网络是什么？"><a href="#1-1-计算机网络是什么？" class="headerlink" title="1.1 计算机网络是什么？"></a>1.1 计算机网络是什么？</h2><ul><li>1、主要由<strong>通用、可编程的硬件互连</strong>而成。</li><li>2、通过这些硬件，可以<strong>传送不同类型的数据</strong>。</li><li>3、计算机网络不仅包含<strong>软件概念</strong>，还包含<strong>硬件设备</strong>。</li><li>4、计算机网络不仅包含<strong>信息通信</strong>，还可以<strong>支持广泛和日益增长的应用</strong>。</li></ul><h2 id="1-2-计算机网络的分类"><a href="#1-2-计算机网络的分类" class="headerlink" title="1.2 计算机网络的分类"></a>1.2 计算机网络的分类</h2><h3 id="1-2-1-按作用范围"><a href="#1-2-1-按作用范围" class="headerlink" title="1.2.1 按作用范围"></a>1.2.1 按作用范围</h3><ul><li>广域网（WAM）：几十KM ~ 几千 KM，跨省、跨国。</li><li>城域网（MAN）：5KM ~ 50KM，城市间、城市内。</li><li>局域网（LAN）：1KM内，地区内、家庭间、公司内。</li></ul><h3 id="1-2-2-按网络使用者"><a href="#1-2-2-按网络使用者" class="headerlink" title="1.2.2 按网络使用者"></a>1.2.2 按网络使用者</h3><ul><li>公用网络：所有可以通过付费方式就可以加入的网络。</li><li>专用网络：某些部队、组织或者某些人<strong>为了满足特殊业务需求而建立起来的特殊网络</strong>。如军队、铁路、银行都有自己的专用网络。</li></ul><h1 id="2-网络历史演进"><a href="#2-网络历史演进" class="headerlink" title="2. 网络历史演进"></a>2. 网络历史演进</h1><h2 id="2-1-世界历史互联网发展历史演进"><a href="#2-1-世界历史互联网发展历史演进" class="headerlink" title="2.1 世界历史互联网发展历史演进"></a>2.1 世界历史互联网发展历史演进</h2><h3 id="2-1-1-单个网络"><a href="#2-1-1-单个网络" class="headerlink" title="2.1.1 单个网络"></a>2.1.1 单个网络</h3><p><strong>ARPANET</strong>，1969年美国国防部创建的一个网络，可以连接周围的计算机。计算机直接通过交换机就可以进行信息交换。</p><img src="/2020/05/29/Android网络优化-01：网络基础（上）/171e4ef50b60e990"><h3 id="2-1-2-三级结构"><a href="#2-1-2-三级结构" class="headerlink" title="2.1.2 三级结构"></a>2.1.2 三级结构</h3><p>现代互联网的雏形，也称<strong>互联网络</strong>，可以把大学、实验室、研究所都连接起来。</p><p>从上至下，由<strong>主干网、地区网、校园网</strong>组成。</p><img src="/2020/05/29/Android网络优化-01：网络基础（上）/171e4f06d452539c">]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;原文地址：&lt;a href=&quot;https://juejin.im/post/5eba5a39e51d454de64e49b1&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://juejin.im/post/5eba5a39e51d454de64e
+      
+    
+    </summary>
+    
+      <category term="Android" scheme="https://tylerLiu.top/categories/Android/"/>
+    
+      <category term="网络" scheme="https://tylerLiu.top/categories/Android/%E7%BD%91%E7%BB%9C/"/>
+    
+    
+      <category term="网络" scheme="https://tylerLiu.top/tags/%E7%BD%91%E7%BB%9C/"/>
+    
+  </entry>
   
   <entry>
     <title>Android蓝牙串口SPP开发</title>
