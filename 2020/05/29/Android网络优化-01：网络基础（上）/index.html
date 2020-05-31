@@ -70,7 +70,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">4.5k</span>
+            <span class="post-count">6.8k</span>
         </span>
     </span>
 
@@ -79,7 +79,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">16 min</span>
+            <span class="post-count">25 min</span>
         </span>
     </span>
 </div>
@@ -535,7 +535,120 @@
 <img src="/2020/05/29/Android网络优化-01：网络基础（上）/微信图片_20200530172250.png">
 
 <p>HTTPS综合地运用了对称加密与非对称加密，在进行随机数校验的阶段使用了非对称加密来进行通信，然后等双方都确定了三个随机数之后，就可以使用相同的算法来生成对称秘钥进行加密通信。HTTPS的优势在于双端分别生成了秘钥，没有经过传输，减少了秘钥泄露的可能性。</p>
+<h2 id="6-5-HTTP2"><a href="#6-5-HTTP2" class="headerlink" title="6.5 HTTP2"></a>6.5 HTTP2</h2><p>特点：</p>
+<ul>
+<li>头部压缩</li>
+<li>多路复用：多路复用允许同时通过单一的HTTP/2连接发送多重请求-响应信息。改善了在HTTP1.1中，浏览器客户端在同一时间，针对同一域名下的请求有一定数量限制（连接数量），超过限制会被阻塞。</li>
+<li>提升访问速度：相比HTTP1.1请求资源所需时间更少，访问速度更快</li>
+<li>二进制分帧：HTTP2.0会将所有的传输信息分割成更小的信息或者帧，并对他们进行二进制编码。</li>
+<li>设置请求优先级</li>
+<li>服务端推送</li>
+</ul>
+<h2 id="6-6-Cookie"><a href="#6-6-Cookie" class="headerlink" title="6.6 Cookie"></a>6.6 Cookie</h2><p>HTTP是一个无状态协议，因此Cookie的最大作用就是存储sessionId用来唯一标识用户。并且，Cookie本质上就是浏览器里面存储的一个很小的文本文件，内部以键值对的方式来存储。</p>
+<h3 id="6-6-1-生命周期"><a href="#6-6-1-生命周期" class="headerlink" title="6.6.1 生命周期"></a>6.6.1 生命周期</h3><p>通过Expries和Max-Age两个属性来设置：</p>
+<ul>
+<li>Expries：过期时间</li>
+<li>Max-Age：表示一段时间间隔，单位是秒，从浏览器收到报文开始计算。</li>
+</ul>
+<h3 id="6-6-2-作用域"><a href="#6-6-2-作用域" class="headerlink" title="6.6.2 作用域"></a>6.6.2 作用域</h3><p>可以使用Domain和path属性给Cookie绑定域名和路径。如果在发送请求之前，发现域名或路径和这两个属性不匹配，那么就不会带上Cookie。需要注意，路径中含有<code>/</code>，表示域名下的任意路径都允许使用Cookie。</p>
+<h3 id="6-6-3-安全"><a href="#6-6-3-安全" class="headerlink" title="6.6.3 安全"></a>6.6.3 安全</h3><ul>
+<li>带上Secure：说明只能通过HTTPS传输Cookie。</li>
+<li>带上HttpOnly：说明只能通过HTTP协议传输。</li>
+<li>带上SameSite：预防CSRF攻击。</li>
+</ul>
+<h3 id="6-6-4-缺点"><a href="#6-6-4-缺点" class="headerlink" title="6.6.4 缺点"></a>6.6.4 缺点</h3><ul>
+<li>1、安全缺陷：Cookie容易被非法用户截获，然后进行一系列的篡改，最后在Cookie有效期内重新发送给服务器。</li>
+<li>2、容量缺陷：体积上限只有4KB，只能用来存储少量的信息。</li>
+<li>3、性能缺陷：Cookie紧跟域名，因此域名下的请求都会携带上完整的Cookie，这样随着请求数的增多，将会造成巨大的性能浪费，因此请求携带了很多不必要的内容。这里可以通过Domain和Path指定作用域去解决。</li>
+</ul>
+<h3 id="6-7-HTTP传输中常见的问题"><a href="#6-7-HTTP传输中常见的问题" class="headerlink" title="6.7 HTTP传输中常见的问题"></a>6.7 HTTP传输中常见的问题</h3><ul>
+<li>跨域问题</li>
+<li>数据传输</li>
+<li>队头阻塞</li>
+</ul>
+<h1 id="7-传输层"><a href="#7-传输层" class="headerlink" title="7. 传输层"></a>7. 传输层</h1><p>当设备A和设备B相互通信时，可以认为它们就是通过一个虚拟的互联网络进行连接的。<strong>在虚拟的网络世界里面已经解决了网络拓扑、数据路由的走向等问题。在传输层重点解决的是两个设备它们是如何直接进行通信的。</strong></p>
+<h2 id="7-1-传输层的主要功能"><a href="#7-1-传输层的主要功能" class="headerlink" title="7.1 传输层的主要功能"></a>7.1 传输层的主要功能</h2><h3 id="7-1-1-进程与进程的通信"><a href="#7-1-1-进程与进程的通信" class="headerlink" title="7.1.1 进程与进程的通信"></a>7.1.1 进程与进程的通信</h3><p>不同于在单个操作系统中使用的进程间通信（Unix域套接字、共享内存），网络通信可以跨设备、跨网络进行通信。</p>
+<h3 id="7-1-2-端口的概念"><a href="#7-1-2-端口的概念" class="headerlink" title="7.1.2 端口的概念"></a>7.1.2 端口的概念</h3><p>使用端口来标记不同的网络进程。</p>
+<p>端口使用16比特位表示（0~65535）。</p>
+<p>常见的协议端口有：<br>|协议|端口|<br>|:-:|:-:|<br>|FTP|21|<br>|HTTP|80|<br>|HTTPS|443|<br>|DNS|53|<br>|TELNET|23|</p>
+<h2 id="7-2-UDP（User-Datagram-Protocol）用户数据报协议"><a href="#7-2-UDP（User-Datagram-Protocol）用户数据报协议" class="headerlink" title="7.2 UDP（User Datagram Protocol）用户数据报协议"></a>7.2 UDP（User Datagram Protocol）用户数据报协议</h2><img src="/2020/05/29/Android网络优化-01：网络基础（上）/微信图片_20200531144749.png">
 
+<h3 id="7-2-1-功能"><a href="#7-2-1-功能" class="headerlink" title="7.2.1 功能"></a>7.2.1 功能</h3><p>UDP协议不会对数据进行任何处理，即不合并，也不拆分数据。</p>
+<h3 id="7-2-2-特点"><a href="#7-2-2-特点" class="headerlink" title="7.2.2 特点"></a>7.2.2 特点</h3><ul>
+<li>1、无连接：通信时并不需要提前建立连接。</li>
+<li>2、不保证可靠的数据交付：想发就发，无法保证数据在网络传输过程中是否丢失。</li>
+<li>3、面向报文传输：不对数据做任何处理，而是直接将应用层数据塞进报文里面。</li>
+<li>4、没有拥塞控制：不管网络是否拥塞，它都会把数据给交付出去。</li>
+<li>5、首部开销很小：首部仅占用8字节。</li>
+</ul>
+<h3 id="7-2-3-报文结构"><a href="#7-2-3-报文结构" class="headerlink" title="7.2.3 报文结构"></a>7.2.3 报文结构</h3><img src="/2020/05/29/Android网络优化-01：网络基础（上）/171e4f8a2e5c838f">
+
+<ul>
+<li>UDP长度最小为8，即仅包括UDP首部。</li>
+<li>校验和用来检测UDP的数据报在传输过程中是否出错。</li>
+</ul>
+<h3 id="7-2-4-基于UDP定制化的5个例子"><a href="#7-2-4-基于UDP定制化的5个例子" class="headerlink" title="7.2.4 基于UDP定制化的5个例子"></a>7.2.4 基于UDP定制化的5个例子</h3><p><strong>1、来自网页或者App的访问</strong></p>
+<p>目前，HTTP往往采用多个数据通道共享一个连接的策略，这样做本来是为了加快传输速度，但是TCP严格的顺序策略使得哪怕通道共享，前一个包不来，后面的包即使与前一个包没有关系，也要等着，这样就会使延时很大。</p>
+<p>而QUIC（Quick UDP Internet Connection，快速UDP互联网连接）协议是Google提供基于UDP改进的通信协议，其目的是降低网络通信的延迟，提供更好的用户体验。</p>
+<p>QUIP会在应用层上自己快速建立连接、减少重传延时、自适应拥塞控制，是应用层定制化的代表。</p>
+<p><strong>2、流媒体协议</strong></p>
+<p>直播通常都使用RTMP（Real Time Messaging Protocol，实时消息传输协议），基于TCP。但对于直播来说，实时性很重要，宁可丢包，也不要卡顿。</p>
+<p>对于视频直播来说，有的包可以丢，有的包不能丢，因为在视频的连续帧里，有的帧重要，有的不重要，如果一定要丢包，隔几个丢一个，看视频的人不会感知，但是如果连续丢帧，就能感知，因此网络条件不好的情况下，应用一般会选择性的丢帧。</p>
+<p>当网络不好的时候，TCP会主动降低发送速度，这对本来就卡的视频来说无疑是雪上加霜。TCP应该让应用层马上重传，而不是主动让步。因此，很多直播应用都是基于UDP实现了自己的视频传输协议。</p>
+<p><strong>3、实时游戏</strong></p>
+<p>维护TCP连接需要在内核维护一些数据结构，但是一台机器能够支撑的TCP连接数目有限。由于UDP是没有连接的，所以在异步I/O机制引入之前，UDP常常是应对海量客户端连接的策略。</p>
+<p>在游戏对实时要求比较严格的情况下，可以采用自定义的可靠UDP来传输数据包，通过使用自定义重传策略，能够使丢包产生的延时降到最低，尽量减少网络问题对游戏造成的影响。</p>
+<p><strong>4、物联网</strong><br>Google旗下的Nest建立了Thread Group，推出物联网通信协议Thread，该协议就是基于UDP的。</p>
+<p><strong>5、移动通信领域</strong><br>在4G网络里，通过移动通信传输数据面对的协议GTP-U就是基于UDP的。关于移动网络的知识下一篇会详细讲解。</p>
+<h2 id="7-3-TCP（Transmission-Control-Protocol）传输控制协议"><a href="#7-3-TCP（Transmission-Control-Protocol）传输控制协议" class="headerlink" title="7.3 TCP（Transmission Control Protocol）传输控制协议"></a>7.3 TCP（Transmission Control Protocol）传输控制协议</h2><img src="/2020/05/29/Android网络优化-01：网络基础（上）/微信图片_20200531144933.png">
+
+<h3 id="7-3-1-特点"><a href="#7-3-1-特点" class="headerlink" title="7.3.1 特点"></a>7.3.1 特点</h3><ul>
+<li>1、面向连接：就像打电话时，需要先拨通电话。</li>
+<li>2、点对点通信、</li>
+<li>3、可靠的传输服务。</li>
+<li>4、全双工通信：两个设备在连接时，它们可以同时发送数据与接收数据。</li>
+<li>5、面向字节的协议：TCP处理的是一个一个的字节，所以TCP很可能会取出数据中某一段进行输出，而剩下的数据会把它放到第二段以及之后的TCP报文中进行传输。因此TCP协议可能会对用户的数据进行合并和拆分。</li>
+</ul>
+<p>TCP的缺点在于<strong>传输效率慢，因为它需要建立连接、发送确认包等等</strong>。</p>
+<h3 id="7-3-2-报文首部字段"><a href="#7-3-2-报文首部字段" class="headerlink" title="7.3.2 报文首部字段"></a>7.3.2 报文首部字段</h3><img src="/2020/05/29/Android网络优化-01：网络基础（上）/171e4f8fd9c58bec">
+
+<p><strong>序号</strong></p>
+<ul>
+<li>表示范围为<code>0 ~ 2^32 - 1</code>。</li>
+<li>因为TCP是面向字节流的，所以每一字节都有一个与之对应的序号。</li>
+<li>TCP数据报的序号就是数据报中第一个字节的序号。</li>
+</ul>
+<p><strong>确认号</strong></p>
+<ul>
+<li>表示范围<code>0 ~ 2^32 - 1</code>。</li>
+<li>表示期望收到的数据的首字节序号，如果确认号为S，则表示 S - 1序号的数据都已经收到了。</li>
+</ul>
+<p><strong>数据偏移</strong></p>
+<ul>
+<li>占4位：0 ~ 15，单位为：32位字。 =&gt; 首部范围为20~60字节。</li>
+<li>TCP数据偏移首部的距离，因为TCP选项的大小是不确定的，所以需要此数据项。</li>
+</ul>
+<p><strong>TCP标记</strong><br>占6位，每位都有不同的含义。<br>|标记|含义|<br>|:-:|:-:|<br>|URG(Urgent)|紧急位，URG = 1，表示紧急数据|<br>|ACK(Acknowledgement)|确认位，ACK = 1，确认号才生效|<br>|PSH(Push)|推送位，PSH = 1，表示需要尽快地把数据交付给应用层|<br>|RST(Rest)|重置位，RST = 1，表示重新建立连接|<br>|SYN(Synchronizeation)|同步位，SYN = 1，表示连接请求报文|<br>|FIN(Finish)|终止位，FIN = 1，表示释放连接|</p>
+<p><strong>窗口</strong></p>
+<ul>
+<li>占位16位：<code>0 ~ 2^16 - 1</code>.</li>
+<li>窗口指明允许对方发送的数据量。例如，确认号为201，窗口号为300，那么可以接收序号的范围是201~500。</li>
+</ul>
+<p><strong>校验和</strong></p>
+<ul>
+<li>与UDP类似，用来检测TCP的数据在传输过程中是否出错。</li>
+</ul>
+<p><strong>紧急指针</strong></p>
+<ul>
+<li>紧急数据（URG = 1）</li>
+<li>指定紧急数据在报文中的位置</li>
+</ul>
+<p><strong>TCP选项</strong></p>
+<ul>
+<li>最多40字节</li>
+<li>支持未来的扩展</li>
+</ul>
+<h2 id="7-4-可靠传输的基本原理"><a href="#7-4-可靠传输的基本原理" class="headerlink" title="7.4 可靠传输的基本原理"></a>7.4 可靠传输的基本原理</h2><h3 id="7-4-1-停止等待协议"><a href="#7-4-1-停止等待协议" class="headerlink" title="7.4.1 停止等待协议"></a>7.4.1 停止等待协议</h3>
       
       <!-- reward -->
       
