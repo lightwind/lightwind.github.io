@@ -70,7 +70,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">6.8k</span>
+            <span class="post-count">9.8k</span>
         </span>
     </span>
 
@@ -79,7 +79,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">25 min</span>
+            <span class="post-count">36 min</span>
         </span>
     </span>
 </div>
@@ -648,7 +648,170 @@
 <li>最多40字节</li>
 <li>支持未来的扩展</li>
 </ul>
-<h2 id="7-4-可靠传输的基本原理"><a href="#7-4-可靠传输的基本原理" class="headerlink" title="7.4 可靠传输的基本原理"></a>7.4 可靠传输的基本原理</h2><h3 id="7-4-1-停止等待协议"><a href="#7-4-1-停止等待协议" class="headerlink" title="7.4.1 停止等待协议"></a>7.4.1 停止等待协议</h3>
+<h2 id="7-4-可靠传输的基本原理"><a href="#7-4-可靠传输的基本原理" class="headerlink" title="7.4 可靠传输的基本原理"></a>7.4 可靠传输的基本原理</h2><h3 id="7-4-1-停止等待协议"><a href="#7-4-1-停止等待协议" class="headerlink" title="7.4.1 停止等待协议"></a>7.4.1 停止等待协议</h3><p>当发送方发送一个消息时，接收方接收到了并将消息发给发送方，这个过程中<strong>发送方需要停止等待接收方的确认信息</strong>。</p>
+<p><strong>超时重传</strong></p>
+<p>当消息发送出去后，发送方没有在超时时间内接收到接收方的确认消息或者超时之后才接收到消息，此时会向发送方重新发送该消息。超时重传<strong>通常都会处理三种异常情况</strong>，如下：</p>
+<ul>
+<li>发送的消息在路上丢失了</li>
+<li>确认的消息在路上丢失了</li>
+<li>确认的消息超时了才收到</li>
+</ul>
+<p><strong>超时定时器（超时重传定时器）</strong></p>
+<ul>
+<li>1、每发送一个消息，都需要设置一个超时定时器。</li>
+<li>2、主要应用在TCP的可靠传输协议里面，它是为了控制可能发生丢失的报文而设计的定时器，当TCP协议发送端发送一个报文时，就会为该报文设置一个超时定时器。</li>
+<li>3、如果超时定时器在结束之前收到了来自接收端对该报文段的确认，则撤销这个定时器。</li>
+<li>4、如果在超时定时器结束之前仍然没有收到接收端的报文段的确认（超时），则认为这个报文可能已经丢弃，发送端会重新发送该报文，并设置一个超时定时器。</li>
+<li>5、需要注意，发送端在超时定时器撤销之前，必须继续缓存已发送未确认的报文，直到发送端接收到来自接收端的确认。</li>
+</ul>
+<p><strong>特点</strong></p>
+<ul>
+<li>停止等待协议是最简单的可靠传输协议</li>
+<li>对信道的利用率不高</li>
+</ul>
+<h3 id="7-4-2-连续ARQ-Automatic-Repeat-Request-自动重传请求协议"><a href="#7-4-2-连续ARQ-Automatic-Repeat-Request-自动重传请求协议" class="headerlink" title="7.4.2 连续ARQ(Automatic Repeat Request)自动重传请求协议"></a>7.4.2 连续ARQ(Automatic Repeat Request)自动重传请求协议</h3><p>前面说到单个发送和确认效率低，那么是否可以批量发送和确认？</p>
+<p>ARQ是对停止等待协议的改进，可以<strong>大幅提高信道利用率</strong>的一个协议。</p>
+<p><strong>滑动窗口</strong></p>
+<ul>
+<li>1、窗口中的数据都可以发送。</li>
+<li>2、通过移动窗口的方式来标识没有接收到确认的消息。</li>
+<li>3、采用了累积确认的方式，并不需要对每一个消息都进行确认。</li>
+</ul>
+<p><strong>累积确认</strong></p>
+<ul>
+<li>只要收到第5个消息的确认，就表示1~5的消息接收方都收到了。</li>
+</ul>
+<h2 id="7-5-TCP协议的可靠传输"><a href="#7-5-TCP协议的可靠传输" class="headerlink" title="7.5 TCP协议的可靠传输"></a>7.5 TCP协议的可靠传输</h2><p>TCP的可靠传输是基于ARQ协议。</p>
+<ul>
+<li>1、滑动窗口</li>
+<li>2、累积确认</li>
+<li>3、选择重连</li>
+</ul>
+<p><strong>选择重传</strong></p>
+<ul>
+<li>1、选择重传需要制定需要重传的字节。</li>
+<li>2、每一个字节都有唯一的32位序号（4字节）。</li>
+<li>3、要重传的数据是存储在TCP选项中，其中最多只能存储10个序号，即5个范围段的信息。</li>
+<li>4、选择重传的是一个信息边界，即一段字节流，例如：传送1000<del>1200，2000</del>3000这个范围内的信息。</li>
+</ul>
+<h2 id="7-6-TCP协议的流量控制"><a href="#7-6-TCP协议的流量控制" class="headerlink" title="7.6 TCP协议的流量控制"></a>7.6 TCP协议的流量控制</h2><p>流量控制是指<strong>让发送方效率不要太快，TCP使用了滑动窗口来实现流量控制</strong>。</p>
+<h3 id="7-6-1-滑动窗口"><a href="#7-6-1-滑动窗口" class="headerlink" title="7.6.1 滑动窗口"></a>7.6.1 滑动窗口</h3><p>rwnd = 300，表示窗口大小为300。</p>
+<ul>
+<li>占16位，<code>0 ~ 2 ^ 16 - 1</code></li>
+<li>窗口指明允许对方发送的数据量。例如：确认号为201，窗口为300，那么可以接收序号的范围是201 ~ 500</li>
+<li>接收方可以调整滑动窗口的大小来控制发送方发送数据的效率。</li>
+<li>当接收方将rwnd从0调整为1000并将这个信息发送给发送方时，消息丢失了，这就会导致发送方和接收方都会等待，形成一个死锁局面。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">如何解决这种死锁局面？</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-6-2-坚持定时器"><a href="#7-6-2-坚持定时器" class="headerlink" title="7.6.2 坚持定时器"></a>7.6.2 坚持定时器</h3><p>坚持定时器是使用了滑动窗口进行流量控制的时候设置的。</p>
+<ul>
+<li>1、当接收到窗口为0的消息，则启动坚持定时器。</li>
+<li>2、坚持定时器每隔一段时间发送一个窗口探测报文。</li>
+</ul>
+<h2 id="7-7-TCP协议的拥塞控制"><a href="#7-7-TCP协议的拥塞控制" class="headerlink" title="7.7 TCP协议的拥塞控制"></a>7.7 TCP协议的拥塞控制</h2><h3 id="7-7-1-问题"><a href="#7-7-1-问题" class="headerlink" title="7.7.1 问题"></a>7.7.1 问题</h3><ul>
+<li>一条数据链路经常经过非常多的设备。</li>
+<li>数据链路中各个部分都有可能成为网络传输的瓶颈。</li>
+</ul>
+<h3 id="7-7-2-流量控制和拥塞控制的区别"><a href="#7-7-2-流量控制和拥塞控制的区别" class="headerlink" title="7.7.2 流量控制和拥塞控制的区别"></a>7.7.2 流量控制和拥塞控制的区别</h3><p>不同于流量控制的点对点的通信量的控制，拥塞控制考虑的是整个网络，是一个全局性的考虑。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">如何判断是否拥塞？</span><br></pre></td></tr></table></figure>
+
+<p><strong>简单的认为报文超时就发生了拥塞</strong>。</p>
+<p><strong>TCP的拥塞控制</strong></p>
+<ul>
+<li>1、慢启动算法<ul>
+<li>有小到大逐渐增加发送数据量（呈指数增长，例如，1、2、4、8、16）</li>
+<li>每收到一个报文确认，就加1</li>
+<li>超过慢启动阈值(ssthresh)，就不再增长</li>
+</ul>
+</li>
+<li>2、拥塞避免算法<ul>
+<li>维护一个拥塞窗口的变量</li>
+<li>只要网络不拥塞，就试探着将拥塞窗口调大</li>
+</ul>
+</li>
+</ul>
+<p><strong>TCP的拥塞控制在前期使用了慢启动算法对窗口大小进行指数增长，直到超过慢启动阈值（ssthresh）则不再增长，后续则启动拥塞避免算法对窗口进行线性增长</strong>。</p>
+<h2 id="7-8-TCP链接的建立-三次握手"><a href="#7-8-TCP链接的建立-三次握手" class="headerlink" title="7.8 TCP链接的建立-三次握手"></a>7.8 TCP链接的建立-三次握手</h2><img src="/2020/05/29/Android网络优化-01：网络基础（上）/微信图片_20200601161619.png">
+
+<p><strong>为什么发送方要发出第三个确认报文呢？</strong></p>
+<ul>
+<li>1、已经失效的链接请求报文传送到对方，引出错误：假设两次握手就可以，失效的链接请求报文就会被接收并建立了重复的连接。当使用第三次握手时，比较慢到达接收方的报文也会发送一次确认给发送方，但是发送方已经进行了第三次握手了，因此发送方会忽略掉第二的确认，不会进行任何操作。</li>
+<li>2、因为信道不可靠，而TCP想在不可靠的信道上建立可靠的传输，那么三次通信是理论上的最小值。（而UDP则不需要建立可靠传输，因此UDP不需要三次握手）。</li>
+<li>3、因为双方都需要确认对方收到了自己发送的序号，确认过程最少要进行三次通信。</li>
+</ul>
+<h2 id="7-9-TCP链接的释放-四次挥手"><a href="#7-9-TCP链接的释放-四次挥手" class="headerlink" title="7.9 TCP链接的释放-四次挥手"></a>7.9 TCP链接的释放-四次挥手</h2><img src="/2020/05/29/Android网络优化-01：网络基础（上）/微信图片_20200601163343.png">
+
+<h3 id="7-9-1-等待计时器"><a href="#7-9-1-等待计时器" class="headerlink" title="7.9.1 等待计时器"></a>7.9.1 等待计时器</h3><ul>
+<li>会等待2MSL时间 =&gt; 4分钟</li>
+<li>时间等待定时器是由在四次挥手时由主动关闭TCP连接的一方设置的，它主要是为了<strong>保证主动关闭方在对最后一个FIN报文（第三次挥手）发送确认的报文可以到达接收方</strong>。</li>
+<li>MSL（Max Segment Lifetime）：最长报文段寿命。MSL建议设置为2分钟。</li>
+</ul>
+<h3 id="7-9-2-为什么要等待2MSL？"><a href="#7-9-2-为什么要等待2MSL？" class="headerlink" title="7.9.2 为什么要等待2MSL？"></a>7.9.2 为什么要等待2MSL？</h3><ul>
+<li>1、因为最后一个报文没有确认，需要确保发送方的ACK可以到达接收方，如果2MSL时间内没有收到，则接收方会重发。</li>
+<li>2、2MSL时间可以保证当发送方没有收到确认时，接收方可以再次发送FIN报文，并且接收方可以再次收到并重新发送确认，所以2MSL的时间可以保证连接正常结束。</li>
+<li>3、确保当前连接的所有报文都已经过期。</li>
+</ul>
+<h2 id="7-10-TCP与UDP的区别"><a href="#7-10-TCP与UDP的区别" class="headerlink" title="7.10 TCP与UDP的区别"></a>7.10 TCP与UDP的区别</h2><ul>
+<li>1、 UD常用于多媒体信息分发，即视频、语音、实时信息等。而TCP常用于可靠的信息传输，如金融交易、可靠通信、MQ等。</li>
+<li>2、TCP面向连接，UDP是无连接的。</li>
+<li>3、TCP提供可靠的服务，即，通过TCP连接传送的数据，无差错、不丢失、不重复，且按序达到；UDP尽最大的努力交付，但不保证可靠交付。</li>
+<li>4、TCP的逻辑通信信道是全双工的可靠信道；UDP则是不可靠信道。</li>
+<li>5、每一条TCP连接只能是点到点的；UDP支持一对一，一对多，多对一，多对多的交互通信。</li>
+<li>6、TCP面向字节流（可能出现黏包问题），实际上是TCP把数据看成一连串无结构的字节流；UDP是面向报文的（不会出现黏包问题）。</li>
+<li>7、UDP没有拥塞控制，因此网络出现拥塞不会使源主机的发送速率降低（对实时应用很有用，如IP电话，实时视频会议等）。</li>
+<li>8、TCP首部开销20字节；UDP的首部开销小，只有8字节。</li>
+</ul>
+<h2 id="7-11-套接字（Socket）"><a href="#7-11-套接字（Socket）" class="headerlink" title="7.11 套接字（Socket）"></a>7.11 套接字（Socket）</h2><p>可以使用端口（Port）来标记不同的网络进程，而端口使用了16比特表示（0~65535）。</p>
+<h3 id="7-11-1-Socket概念"><a href="#7-11-1-Socket概念" class="headerlink" title="7.11.1 Socket概念"></a>7.11.1 Socket概念</h3><ul>
+<li>套接字是一个抽象的概念，表示TCP连接的一端。</li>
+<li>通过套接字可以进行数据的发送或接收。</li>
+<li>TCP = {Socket1:Socket2} = {{IP:Port}{IP:Port}}，可以看到，TCP由两个套接字组成。
+
+</li>
+</ul>
+<h3 id="7-11-2-Socket编程"><a href="#7-11-2-Socket编程" class="headerlink" title="7.11.2 Socket编程"></a>7.11.2 Socket编程</h3><p><strong>服务端编程</strong></p>
+<ul>
+<li>1、创建Socket</li>
+<li>2、绑定Socket</li>
+<li>3、监听Socket</li>
+<li>4、接收和处理消息</li>
+</ul>
+<p>其代码如下：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">server</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 1、创建 Socket</span></span><br><span class="line">    s = socket.socket()</span><br><span class="line">    host = <span class="string">"127.0.0.1"</span></span><br><span class="line">    port = <span class="number">5678</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 2、绑定 Socket</span></span><br><span class="line">    s.bind(host, port)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 3、监听</span></span><br><span class="line">    s.listen()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 4、发送数据</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        c, addr = s.accept()</span><br><span class="line">        print(<span class="string">"connect addr"</span>, addr)</span><br><span class="line">        c.send(<span class="string">b'Socket Study.'</span>)</span><br><span class="line">        c.close()</span><br></pre></td></tr></table></figure>
+
+<p><strong>客户端编程</strong></p>
+<ul>
+<li>1、创建Socket</li>
+<li>2、连接Socket</li>
+<li>3、发送消息</li>
+</ul>
+<p>其代码如下：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">client</span><span class="params">(i)</span>:</span></span><br><span class="line">    <span class="comment"># 1、创建 Socket</span></span><br><span class="line">    s = socket.socket()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 2、连接 Socket</span></span><br><span class="line">    s.connect((<span class="string">'127.0.0.1'</span>, <span class="number">5678</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 3、接收消息</span></span><br><span class="line">    print(<span class="string">"Received message:%s, client Id:%d"</span> % (s.recv(<span class="number">1024</span>), i))</span><br><span class="line">    s.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">        client(i)</span><br></pre></td></tr></table></figure>
+
+<p>单机通信更推荐使用域Socket，相比网络通信数据需要在整个协议栈走一轮，域Socket它的处理流程更加简单，系统消耗更小。此外，如果对Socket IO实现机制有兴趣的可以查看<a href="https://github.com/CyC2018/CS-Notes/blob/master/notes/Socket.md" target="_blank" rel="noopener">CS-Notes</a>。</p>
+<h2 id="7-12-TCP协议细节之TCP协议的四个定时器"><a href="#7-12-TCP协议细节之TCP协议的四个定时器" class="headerlink" title="7.12 TCP协议细节之TCP协议的四个定时器"></a>7.12 TCP协议细节之TCP协议的四个定时器</h2><ul>
+<li>1、超时定时器</li>
+<li>2、坚持定时器</li>
+<li>3、时间等待定时器</li>
+<li>4、保活定时器：服务端一般都会设置一个保活定时器，为了保活TCP连接而设计的，可以防止TCP连接的两端出现长时间的空闲，当一方出现变化或者故障时，另一方没有察觉的情况。当服务端每次收到对方的数据则重置这个定时器，如果定时器超时，则发送弹出报文段，以此探测客户端是否在线，如果没有收到响应的话，那么则认为客户端已经断开连接，因此服务端也会终止这个连接。如今，很多的分布式系统都会使用保活计时器来检测其他节点是否在线还是已经故障，或者其他节点也会每个一段时间向主节点上报心跳信息以证明在线。</li>
+</ul>
+<h2 id="7-13-TCP在三次握手的时候，IP层和MAC（Medium-Access-Control）层在做什么？"><a href="#7-13-TCP在三次握手的时候，IP层和MAC（Medium-Access-Control）层在做什么？" class="headerlink" title="7.13 TCP在三次握手的时候，IP层和MAC（Medium Access Control）层在做什么？"></a>7.13 TCP在三次握手的时候，IP层和MAC（Medium Access Control）层在做什么？</h2><p>TCP每发送一条消息，都会带着IP层和MAC层。因为TCP每发送一个消息，IP层和MAC层的所有机制都要运行一遍。</p>
+<p>注意，<strong>只要是网络上跑的包，都是完整的。可以有下层没有上层，绝对不会有上层没有下层。所以，对TCP来说，无论是三次握手还是重试，只要想将网络包发送出去，就要有IP层和MAC层，不然发不出去</strong>。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ul>
+<li>1、慕课网之《编程必备基础 计算机组成原理+操作系统+计算机网络》网络部分 9 - 13章</li>
+<li>2、《趣谈网络协议》1 - 5章</li>
+<li>3、《计算机网络 自顶向下方法》前 6 章</li>
+<li>4、<a href="https://juejin.im/post/5e76bd516fb9a07cce750746" target="_blank" rel="noopener">(建议精读)HTTP灵魂之问，巩固你的HTTP知识体系</a></li>
+<li>5、<a href="https://juejin.im/post/5e527c58e51d4526c654bf41" target="_blank" rel="noopener">(建议收藏)TCP协议灵魂之问，巩固你的网路底层基础</a></li>
+<li>6、<a href="https://juejin.im/post/5e91b01651882573716a9b23#heading-90" target="_blank" rel="noopener">一位前端小姐姐的五万字面试宝典</a></li>
+<li>7、<a href="https://juejin.im/post/5ad7e6c35188252ebd06acfa#heading-2" target="_blank" rel="noopener">面试带你飞：这是一份全面的计算机网络基础总结攻略</a></li>
+<li>8、<a href="https://github.com/Snailclimb/JavaGuide#%E7%BD%91%E7%BB%9C" target="_blank" rel="noopener">JavaGuide-网络</a></li>
+<li>9、<a href="https://github.com/huihut/interview#%EF%B8%8F-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C" target="_blank" rel="noopener">interview-网络</a></li>
+<li>10、<a href="https://juejin.im/post/5b44a485e51d4519945fb6b7#heading-38" target="_blank" rel="noopener">总结了17年初到18年初百场前端面试的面试经验(含答案)</a></li>
+<li>11、<a href="https://github.com/CyC2018/CS-Notes#cloud-%E7%BD%91%E7%BB%9C" target="_blank" rel="noopener">CS-Notes-网络</a></li>
+</ul>
+
       
       <!-- reward -->
       
