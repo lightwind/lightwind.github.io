@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-Hans">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="description" content="人生是一场难得的修行，不要轻易交白卷" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Android网络优化-02：网络基础（下） |  Tyler的博客
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  <link rel="stylesheet" href="/dist/main.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+  <link rel="stylesheet" href="/css/custom.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+  
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  
+  <canvas width="1777" height="841" style="position: fixed; left: 0px; top: 0px; z-index: 999; pointer-events: none;"></canvas>
+  
+  <div id="app">
+    <main class="content on">
+      <section class="outer">
+  <article id="post-Android网络优化-02：网络基础（下）" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Android网络优化-02：网络基础（下）
+</h1>
+ 
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/06/02/Android网络优化-02：网络基础（下）/" class="article-date">
+  <time datetime="2020-06-02T01:26:23.000Z" itemprop="datePublished">2020-06-02</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a> / <a class="article-category-link" href="/categories/Android/网络/">网络</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">2.6k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">10 min</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+
+      
+      <p>原文地址：<a href="https://juejin.im/post/5ebb3db16fb9a0438e2396af" target="_blank" rel="noopener">https://juejin.im/post/5ebb3db16fb9a0438e2396af</a></p>
+<h1 id="8-网络层"><a href="#8-网络层" class="headerlink" title="8. 网络层"></a>8. 网络层</h1><h2 id="8-1-网络层主要功能"><a href="#8-1-网络层主要功能" class="headerlink" title="8.1 网络层主要功能"></a>8.1 网络层主要功能</h2><p>数据路由。</p>
+<h2 id="8-2-IP协议"><a href="#8-2-IP协议" class="headerlink" title="8.2 IP协议"></a>8.2 IP协议</h2><h3 id="8-2-1-IP协议拆解"><a href="#8-2-1-IP协议拆解" class="headerlink" title="8.2.1 IP协议拆解"></a>8.2.1 IP协议拆解</h3><p><strong>虚拟互联网络</strong></p>
+<ul>
+<li>1、实际的计算机网络是错综复杂的。</li>
+<li>2、物理设备通过使用IP协议，屏蔽了物理网络之间的差异。</li>
+<li>3、当网络中的主机IP协议连接时，则无需关心网络细节，</li>
+</ul>
+<p>计算机A与B之间的数据通信可以认为是通过一个虚拟的互联网络进行传输的。</p>
+<p><strong>IP协议的作用</strong></p>
+<ul>
+<li>1、IP协议使得复杂的实际网络变成一个虚拟的互联网络。</li>
+<li>2、IP协议使得网络层可以屏蔽底层细节而专注网络层的数据转发。</li>
+<li>3、IP协议解决了在虚拟网络中数据报传输路径的问题。</li>
+</ul>
+<p><strong>IP地址</strong></p>
+<p>每一个唯一的网络设备都有一个唯一的IP地址。不同于MAC地址是不可改变的，IP地址会根据当前设备所连接的网络环境的变化而变化。</p>
+<p><strong>特点</strong></p>
+<ul>
+<li>IP地址长度为32位，常分为4个8位。</li>
+<li>IP地址常使用点分十进制来表示，即0<del>255.0</del>255.0~255。</li>
+<li>IP地址最多有2 ^ 32 = 4294961296 =&gt; 42 亿</li>
+</ul>
+<p>IP数据报 = IP首部 + IP数据报的数据，IP数据报的报文格式如下：</p>
+<img src="/2020/06/02/Android网络优化-02：网络基础（下）/171e4f9a359e3d1e">
+
+<p><strong>版本</strong></p>
+<p>占4位，指的是IP协议的版本，通信双方的版本必须一致，当前主流版本是4和6，即IPv4，也有IPv6。</p>
+<p><strong>首部位长度</strong></p>
+<p>占4位，最大数值为15，表示的是IP首部的长度，单位是32位字（4个字节）。所以IP首部的<strong>最大长度为 15 * 4 = 60 字节</strong>。</p>
+<p><strong>服务类型（TOS）</strong></p>
+<p>表示当前的数据包是高优先级的，还是低优先级的。数据包是按照TOS被分配到三个波段（band0、band1、band2）里面的。</p>
+<p><strong>总长度</strong></p>
+<p>占16位，最大数值为65535，表示的是IP数据报的总长度（IP首部 + IP数据）。</p>
+<p>注意，<strong>数据在数据链路层中的传输受最大传输单元MTU的限制，而MTU一般为1500个字节，如果IP数据报的长度高于MTU，数据链路层会把IP数据报进行分片，即拆分成多个数据帧进行传输</strong>。</p>
+<p><strong>标识</strong></p>
+<p>协议内部自身使用，不需关注。</p>
+<p><strong>标志</strong></p>
+<p>占3位，目前只有两位有意思，<strong>标识是否进行分片</strong>。</p>
+<p><strong>片偏移</strong></p>
+<p>占13位，<strong>如果发生了分片，这里将会记录当前的数据帧保存的是第几个偏移的IP数据</strong>。</p>
+<p><strong>TTL</strong></p>
+<ul>
+<li>占8位，表名IP数据报文在网络中的寿命，每经过一个设备，TTL减1，当TTL = 0时，网络设备必须丢弃该报文。</li>
+<li>当IP报文在网络中找不到终点的时候，避免IP数据在网络中无限进行传输，消耗带宽。</li>
+</ul>
+<p><strong>协议</strong></p>
+<p>占8位，<strong>表明IP数据所携带的具体数据是什么协议的。</strong>。如：TCP、UDP等。</p>
+<table>
+<thead>
+<tr>
+<th align="center">协议</th>
+<th align="center">值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">ICMP(Internet Control Message Protocol)Internet控制报文协议</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">IGMP(Internet Group Management Protocol)Internet组管理协议</td>
+<td align="center">2</td>
+</tr>
+<tr>
+<td align="center">IP(Internet Protocol)网络互连协议</td>
+<td align="center">4</td>
+</tr>
+<tr>
+<td align="center">TCP(Transmission Control Protocol)传输控制协议</td>
+<td align="center">6</td>
+</tr>
+<tr>
+<td align="center">UDP(User Datagram Protocol)用户数据报协议</td>
+<td align="center">17</td>
+</tr>
+<tr>
+<td align="center">OSPF(Open Shortest Path First)开放式最短路径优先，是一个内部网关协议(Interior Gateway Protocol)</td>
+<td align="center">89</td>
+</tr>
+</tbody></table>
+<p><strong>首部校验和</strong></p>
+<p>占16位，校验IP首部是否有错，接收方在接收了IP数据报文之后会进行头部的校验，如果出错会进行丢弃。</p>
+<p><strong>源IP地址</strong></p>
+<p>发送IP数据报文的IP地址。</p>
+<p><strong>目的IP地址</strong></p>
+<p>数据报到达的IP的地址。</p>
+<h3 id="8-2-2-IP协议的转发流程"><a href="#8-2-2-IP协议的转发流程" class="headerlink" title="8.2.2 IP协议的转发流程"></a>8.2.2 IP协议的转发流程</h3><p><strong>逐跳(hop-by-hop)</strong></p>
+<p>数据是从目的设备传输到下一个网络1， 又从下一个网络1传输到路由器的，又从路由器跳到下一个网络2，所以是一跳一跳的，即hop-by-hop。</p>
+<p><strong>路由表</strong></p>
+<ul>
+<li>1、不同于MAC地址表是由一组一组的MAC地址与硬件接口组成的，路由表是由一组一组的目的IP地址与吓一跳的IP地址组成。</li>
+<li>2、计算机或者路由器都拥有路由表。</li>
+</ul>
+<p><strong>转发流程</strong></p>
+<img src="/2020/06/02/Android网络优化-02：网络基础（下）/171e4f9d7cbc0feb">
+
+<ul>
+<li>1、A发出的目的为C的IP数据报，查询路由表发现吓一跳为E。</li>
+<li>2、A将IP数据报交给数据链路层，并告知目的MAC地址为E。</li>
+<li>3、数据链路层填充源MAC地址A和目的MAC地址E。</li>
+<li>4、数据链路层通过物理层将数据发送给E。</li>
+<li>5、E的数据链路层接收到数据帧，把数据帧交给网络层。</li>
+<li>6、E查询路由表，发现吓一跳为F。</li>
+<li>7、E把数据报交给数据链路层，并告知目的MAC地址为F。</li>
+<li>8、E的数据链路层封装数据帧并发送。</li>
+<li>9、F的数据链路层收到数据帧，把数据帧交给网络层。</li>
+<li>10、F查询路由表，发现吓一跳为C。</li>
+<li>11、F把数据报交给路由链路层，并告知目的MAC地址为C。</li>
+<li>12、F的数据链路层封装数据帧并发送。</li>
+</ul>
+<p><strong>MAC地址与IP地址的最大区别</strong></p>
+<ul>
+<li>1、数据帧每一跳的MAC地址都在变化，而IP数据报的每一跳的IP地址始终不变。</li>
+<li>2、IP地址具有远程定位功能，而MAC地址更像是身份证号，它的唯一性是为了组网时可以不用担心不同的网卡在一个网络里会产生冲突，从硬件角度保证不同的网卡有不同的标识。</li>
+<li>3、相比于IP地址，MAC地址的通信范围比较小，局限在一个子网内。如：从192.168.0.1/24访问192.168.0.9/24是可以用MAC地址的。</li>
+</ul>
+<h3 id="8-2-3-IP地址的子网划分"><a href="#8-2-3-IP地址的子网划分" class="headerlink" title="8.2.3 IP地址的子网划分"></a>8.2.3 IP地址的子网划分</h3><p><strong>为什么要对IP地址进行划分？</strong></p>
+<p>因为规划和分配IP地址非常麻烦。</p>
+<p><strong>分类的IP地址</strong></p>
+<p>组成形式：网络号 + 主机号</p>
+<p>通常有如下三种类型的IP地址：</p>
+<ul>
+<li>A类：首位为0，网络号为8位，主机号为24位。</li>
+<li>B类：首位为10，网络号为16位，主机号为16位。</li>
+<li>C类：首位为110，网络号为24位，主机号为8位。</li>
+</ul>
+<img src="/2020/06/02/Android网络优化-02：网络基础（下）/171e4fa0328300b2">
+
+<p><strong>特殊的网络号</strong></p>
+<ul>
+<li>A类地址网络段全0（00000000），表示特殊网络</li>
+<li>A类地址网络后7位全1（01111111:127），表示回环地址</li>
+<li>B类地址网络段（10000000.00000000:128.0），是不可使用的</li>
+<li>C类地址网络段（192.0.0），是不可用的</li>
+</ul>
+<p><strong>特殊的主机号</strong></p>
+<ul>
+<li>主机号全0，表示当前网络段不可分配特定的主机。例如：1.0.0.0。</li>
+<li>主机号全1，表示广播地址向当前网络段所有主机发消息。例如：0.1.11.111。</li>
+</ul>
+<img src="/2020/06/02/Android网络优化-02：网络基础（下）/171e4fa357b9529e">
+
+<p>本地回环地址（Loopback Address）：127.0.0.1，不属于任何一个有类别地址类。它代表设备的本地虚拟接口，所有默认被看作是永久不会废弃的接口。在Windows操作系统中也有相似的定义，所有一般在安装网卡前就可以ping通这个本地回环地址。一般都会用来检查本地网络协议、基本数据接口等是否正常。</p>
+<p>代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\AHXIUWU_RJ_LY&gt;ping 127.0.0.1</span><br><span class="line"></span><br><span class="line">正在 Ping 127.0.0.1 具有 32 字节的数据:</span><br><span class="line">来自 127.0.0.1 的回复: 字节=32 时间&lt;1ms TTL=128</span><br><span class="line">来自 127.0.0.1 的回复: 字节=32 时间&lt;1ms TTL=128</span><br><span class="line">来自 127.0.0.1 的回复: 字节=32 时间&lt;1ms TTL=128</span><br><span class="line">来自 127.0.0.1 的回复: 字节=32 时间&lt;1ms TTL=128</span><br><span class="line"></span><br><span class="line">127.0.0.1 的 Ping 统计信息:</span><br><span class="line">    数据包: 已发送 = 4，已接收 = 4，丢失 = 0 (0% 丢失)，</span><br><span class="line">往返行程的估计时间(以毫秒为单位):</span><br><span class="line">    最短 = 0ms，最长 = 0ms，平均 = 0ms</span><br></pre></td></tr></table></figure>
+
+<p><strong>分类地址的补充</strong></p>
+<ul>
+<li>D类地址：1110……</li>
+<li>E类地址：1111……</li>
+</ul>
+<p>他们仅做特殊用途。</p>
+<p><strong>划分子网</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">某公司有256台计算机，该申请哪种网路段？</span><br></pre></td></tr></table></figure>
+
+<p>分配B类地址，但是一个B类地址所能容纳的主机数量为2^16-2，这会造成极大的浪费。为了解决这个问题，需要划分子网。</p>
+<p>例如：将193.10.10.0这个IP划分为193.10.10.0<del>193.10.10.127与193.10.10.128</del>193.10.10.255。</p>
+<p><strong>子网掩码</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">子网这么多，如何判断某个IP的网络号？</span><br></pre></td></tr></table></figure>
+
+<p>快速的判断某个IP属于哪一个子网号，通过IP &amp; 子网掩码 = 该IP对应的子网号。子网掩码的组成特点如下：</p>
+<ul>
+<li>与IP地址一样，都是32位。</li>
+<li>由连续的1和连续的0组成。</li>
+<li>某一个子网掩码具备网络号位数个连续的1。</li>
+</ul>
+<p>例如，A、B、C类的子网掩码：</p>
+<ul>
+<li>A类：255.0.0.0</li>
+<li>B类：255.255.0.0</li>
+<li>B类：255.255.255.0</li>
+</ul>
+<p><strong>无分类编址CIDR（Classless Inter-Domain Routing，无类别域间路由）</strong></p>
+<ul>
+<li>1、CIDR中没有A、B、C类网络号和子网划分的概念</li>
+<li>2、CIDR将网络前缀相同的IP地址称为一个CIDR地址块</li>
+<li>3、网络前缀是任意位数的</li>
+<li>4、相比原来子网划分更加灵活</li>
+</ul>
+<p>CIDR使用了斜线记法，例如：193.10.10.129/25 表示网络号为25位，主机号为7位。一般家里都是使用 /24 的CIDR，此时整个网络里面的一个地址为192.168.0.1，往往就是私网的出口地址。例如：家里面的电脑连接WIFI，WIFI路由器的地址就是192.168.0.1，而192.168.0.255就是广播的地址。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">loopback是什么？</span><br></pre></td></tr></table></figure>
+
+<p>回环接口，通常会被分配到127.0.0.1这个地址，它用于本机内部通信，经过内核处理后直接返回，不会再任何网络中出现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">某公司有200台电脑，需要拆分成两个部分，每个部分使用一个小型网络，如何进行CIDR进行划分？</span><br></pre></td></tr></table></figure>
+
+<p>可以使用一个 /24 作为一个中型网络（在CIDR中被称为超网），旗下有两个 /25 作为一个小型网络（在CIDR中被称为子网）。</p>
+<h2 id="8-3-ARP协议与RARP协议"><a href="#8-3-ARP协议与RARP协议" class="headerlink" title="8.3 ARP协议与RARP协议"></a>8.3 ARP协议与RARP协议</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在IP数据的转发过程中，A将IP数据报交给了数据链路层，并告知其目的MAC地址是E。这里A是如何知道目的MAC地址是E呢？</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-3-1-ARP-Address-Resolution-Protocol-地址解析协议"><a href="#8-3-1-ARP-Address-Resolution-Protocol-地址解析协议" class="headerlink" title="8.3.1 ARP(Address Resolution Protocol)地址解析协议"></a>8.3.1 ARP(Address Resolution Protocol)地址解析协议</h3><p>ARP协议网络层IP</p>
+
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACnUlEQVR42u3aQW7jMBAEwPz/095rDquke4Y0HKB0MmxEYjEAh+rh11d8vb5dT998/372+enXp2cdu/Dw8PAWQ3+6XY7JGZs7JGPGw8PDu81LHpws1smknOL9fDc8PDy8T+P9TE0GmpSiZDx4eHh4f4v3c2CRZwV5/IGHh4f3ObzZMt2y9/e5mLXg4eHhxbx2+f6Ez1f6e3h4eHjrrnpeJPLIYLaIv0YXHh4e3g1evuDmW9gkzM2/aacDDw8P7zYvWfrzxb2IVuMYYsbGw8PDu8drD1RtotVfBpHXsWAiiiHi4eHhlby2AOTtq3y532/fH5+Fh4eHd4GXD7FdstvNcX5AYdi7w8PDwzvEaxmzg1ntQDfxBB4eHt57eC01n4J2455slPMx4OHh4d3mbfalm032/p3gcTrw8PDwrvHaktAeotrEH6uigoeHh3eBt1m427i2bY9tJhQPDw/vnbz8tX+zOZ4NvQ2R8fDw8O7xbgx6E9Fu4olf/od4eHh4h3hte2kWQ5w9dJWXFjw8PLz38G4EtftfhwcU8PDw8N7Iyx+Qt7JmUUI7oXh4eHi3eW0Y0fJmpSWPJ6LJwsPDwzvEawPWvJU1C22TuxWBLx4eHt4FXr4cbw4W5K2yTXxclBw8PDy8Na9tO+XFoJ3j9pviTBkeHh7eBd5sQ9zGE8faWnlxwsPDw7vGy9/ik1/bMDcvFXVKjYeHh3eU9yqvGWPW1tofa8DDw8O7wZv1jNrtdTu42RPbcoKHh4e34c3aXadKwqnjAlGMi4eHh3eU1x6oagOFzcTlEcl//goPDw/vA3indu5t1Fu3vvDw8PA+htde7dK/D5fx8PDw3sM7e3Aqv/PsGEFenPDw8PBu8GYv/JsBteXhwOEAPDw8vDO8fxhEK/CBwhIcAAAAAElFTkSuQmCC" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/网络/">网络</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+    
+      <a href="/2020/05/29/Android网络优化-01：网络基础（上）/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Android网络优化-01：网络基础（上）</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: '',
+        app_key: '',
+        path: window.location.pathname,
+        notify: 'false',
+        verify: 'false',
+        avatar: 'monsterid',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
+        }
+    }
+
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
+
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2020
+        <i class="ri-heart-fill heart_icon"></i> Tyler Liu
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Tyler的博客"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Subtitle -->
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+      strings: ['人生是一场难得的修行，不要轻易交白卷', '', ''],
+      startDelay: 0,
+      typeSpeed: 200,
+      loop: true,
+      backSpeed: 100,
+      showCursor: true
+    });
+  } catch (err) {
+    console.log(err)
+  }
+</script>
+
+<!-- Tocbot -->
+
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<script src="/js/clickLove.js"></script>
+
+<!-- ClickBoom -->
+
+<script src="/js/clickBoom.js"></script>
+
+<!-- CodeCopy -->
+
+<link rel="stylesheet" href="/css/clipboard.css">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+    
+  </div>
+</body>
+
+</html>
