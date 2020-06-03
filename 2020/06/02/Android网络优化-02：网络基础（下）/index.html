@@ -70,7 +70,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">2.6k</span>
+            <span class="post-count">3.8k</span>
         </span>
     </span>
 
@@ -79,7 +79,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">10 min</span>
+            <span class="post-count">14 min</span>
         </span>
     </span>
 </div>
@@ -292,7 +292,65 @@
 <p>可以使用一个 /24 作为一个中型网络（在CIDR中被称为超网），旗下有两个 /25 作为一个小型网络（在CIDR中被称为子网）。</p>
 <h2 id="8-3-ARP协议与RARP协议"><a href="#8-3-ARP协议与RARP协议" class="headerlink" title="8.3 ARP协议与RARP协议"></a>8.3 ARP协议与RARP协议</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在IP数据的转发过程中，A将IP数据报交给了数据链路层，并告知其目的MAC地址是E。这里A是如何知道目的MAC地址是E呢？</span><br></pre></td></tr></table></figure>
 
-<h3 id="8-3-1-ARP-Address-Resolution-Protocol-地址解析协议"><a href="#8-3-1-ARP-Address-Resolution-Protocol-地址解析协议" class="headerlink" title="8.3.1 ARP(Address Resolution Protocol)地址解析协议"></a>8.3.1 ARP(Address Resolution Protocol)地址解析协议</h3><p>ARP协议网络层IP</p>
+<h3 id="8-3-1-ARP-Address-Resolution-Protocol-地址解析协议"><a href="#8-3-1-ARP-Address-Resolution-Protocol-地址解析协议" class="headerlink" title="8.3.1 ARP(Address Resolution Protocol)地址解析协议"></a>8.3.1 ARP(Address Resolution Protocol)地址解析协议</h3><p>ARP协议将网络层IP 32位地址转换为数据链路层MAC 48位地址。</p>
+<p><strong>ARP缓存池</strong></p>
+<p>缓存了IP地址到硬件地址之间的映射关系。有缓存时直接从缓存中取出即可，没有缓存时则会和MAC地址表获取地址时使用的广播形式类似，即</p>
+<ul>
+<li>1、E检查MAC地址表，发现没有C的信息。</li>
+<li>2、E将广播A的数据包到除A以外的端口。</li>
+<li>3、E将收到来自B、C的回应，并将地址记录。</li>
+</ul>
+<p>ARP缓存时ARP协议和RARP协议运行的关键。此外，ARP缓存表中的记录并不是永久有效的，有一定的期限。</p>
+<p><strong>查看ARP缓存表</strong></p>
+<p>使用<code>arp -a</code>命令，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\AHXIUWU_RJ_LY&gt;arp -a</span><br><span class="line"></span><br><span class="line">接口: 192.168.137.1 --- 0xa</span><br><span class="line">  Internet 地址         物理地址              类型</span><br><span class="line">  192.168.137.255       ff-ff-ff-ff-ff-ff     静态</span><br><span class="line">  224.0.0.2             01-00-5e-00-00-02     静态</span><br><span class="line">  224.0.0.22            01-00-5e-00-00-16     静态</span><br><span class="line">  224.0.0.251           01-00-5e-00-00-fb     静态</span><br><span class="line">  224.0.0.252           01-00-5e-00-00-fc     静态</span><br><span class="line">  239.11.20.1           01-00-5e-0b-14-01     静态</span><br><span class="line">  239.255.255.250       01-00-5e-7f-ff-fa     静态</span><br><span class="line">  255.255.255.255       ff-ff-ff-ff-ff-ff     静态</span><br><span class="line"></span><br><span class="line">接口: 192.168.1.200 --- 0x12</span><br><span class="line">  Internet 地址         物理地址              类型</span><br><span class="line">  192.168.1.1           30-b4-9e-57-63-45     动态</span><br><span class="line">  192.168.1.202         48-3f-e9-66-03-09     动态</span><br><span class="line">  192.168.1.205         b4-c4-fc-43-b0-4f     动态</span><br><span class="line">  192.168.1.211         7c-67-a2-94-4d-82     动态</span><br><span class="line">  192.168.1.239         7c-67-a2-bd-96-e7     动态</span><br><span class="line">  192.168.1.255         ff-ff-ff-ff-ff-ff     静态</span><br><span class="line">  224.0.0.2             01-00-5e-00-00-02     静态</span><br><span class="line">  224.0.0.22            01-00-5e-00-00-16     静态</span><br><span class="line">  224.0.0.251           01-00-5e-00-00-fb     静态</span><br><span class="line">  224.0.0.252           01-00-5e-00-00-fc     静态</span><br><span class="line">  239.11.20.1           01-00-5e-0b-14-01     静态</span><br><span class="line">  239.255.255.250       01-00-5e-7f-ff-fa     静态</span><br><span class="line">  255.255.255.255       ff-ff-ff-ff-ff-ff     静态</span><br></pre></td></tr></table></figure>
+
+<p><strong>ARP协议</strong></p>
+<p>ARP协议是被直接封装在了数据链路层中的数据帧里面。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">既然ARP协议是直接被封装在数据链路层中的数据帧里面，那么为什么它属于网络层的内容？</span><br></pre></td></tr></table></figure>
+
+<p>主要是因为ARP协议使用到了网络层的IP地址。</p>
+<p><strong>ARP协议内容</strong></p>
+<img src="/2020/06/02/Android网络优化-02：网络基础（下）/171e4fa97c6c5d8a">
+
+<h3 id="8-3-2-RARP-Reverse-Address-Resolution-Protocol-逆地址解析协议"><a href="#8-3-2-RARP-Reverse-Address-Resolution-Protocol-逆地址解析协议" class="headerlink" title="8.3.2 RARP(Reverse Address Resolution Protocol)逆地址解析协议"></a>8.3.2 RARP(Reverse Address Resolution Protocol)逆地址解析协议</h3><ul>
+<li>将数据链路层MAC 48位地址转换为网络层IP 32位地址。</li>
+<li>除了类型8035标识为RARP协议，其他内容与ARP协议类似。</li>
+</ul>
+<h3 id="8-3-3-小结"><a href="#8-3-3-小结" class="headerlink" title="8.3.3 小结"></a>8.3.3 小结</h3><ul>
+<li>RARP协议与ARP协议是TCP/IP协议栈里面的基础协议，它们的操作对程序员是透明的。</li>
+<li>理解它们有助于里面网络分层的细节。</li>
+<li>它们是协调数据链路层和网络层配合工作的重要协议。</li>
+</ul>
+<h2 id="8-4-网络地址转换NAT-Network-Address-Translation-技术"><a href="#8-4-网络地址转换NAT-Network-Address-Translation-技术" class="headerlink" title="8.4 网络地址转换NAT(Network Address Translation)技术"></a>8.4 网络地址转换NAT(Network Address Translation)技术</h2><p><strong>不改变IP地址的网关，称为转发网关；改变IP地址的网关，称为NAT网关</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">为什么要使用NAT？</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>1、IPv4最多只有40+亿个IP地址。</li>
+<li>2、早期IP地址的不合理规划导致IP号浪费。</li>
+</ul>
+<h3 id="8-4-1-内网地址"><a href="#8-4-1-内网地址" class="headerlink" title="8.4.1 内网地址"></a>8.4.1 内网地址</h3><p><strong>特点</strong></p>
+<ul>
+<li>内部机构使用</li>
+<li>避免与外网地址重复</li>
+</ul>
+<p><strong>三类内网地址</strong></p>
+<ul>
+<li>A类：10.0.0.0 ~ 10.255.255.255，支持千万数据量级设备</li>
+<li>B类：172.16.0.0 ~ 172.31.255.255，支持百万数据量级设备</li>
+<li>C类：192.168.0.0 ~ 193.168.255.255，支持万数据量级设备</li>
+</ul>
+<p>对于公司，它可以在外部使用全球唯一的外网IP地址，通常在内部使用一个B类内网地址即可。</p>
+<p>对于家庭，可以在外部使用全球唯一的外网IP地址，在内部使用一个C类内网地址即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">问题：内网的多个设备使用同一外网IP地址请求外网服务，外部是怎么知道时候哪一个内网设备请求的呢？</span><br></pre></td></tr></table></figure>
+
+<p>使用NAT，它用于多个主机通过一个公有IP访问互联网的私有网络，并减缓了IP地址的消耗，但是增加了网络通信的复杂度。</p>
+<h3 id="8-4-2-外网地址"><a href="#8-4-2-外网地址" class="headerlink" title="8.4.2 外网地址"></a>8.4.2 外网地址</h3><ul>
+<li>全球范围使用</li>
+<li>全球公网唯一</li>
+</ul>
+<h3 id="8-4-3-端口映射"><a href="#8-4-3-端口映射" class="headerlink" title="8.4.3 端口映射"></a>8.4.3 端口映射</h3><p>如下两个NAT转换过程：发送数据时，A设备内网地址和端口号 =&gt; 外网地址与端口号：192.168.2.11:6666 =&gt; 173.21.59.10:16666，B设备内网地址和端口号 =&gt; 外网地址和端口号：192.168.2.10:7777 =&gt; 173.21.59.10:17777。</p>
+<p>由于同时转换了Port，即进行了端口映射，NAT也可称为NA(P)T。</p>
 
       
       <!-- reward -->
