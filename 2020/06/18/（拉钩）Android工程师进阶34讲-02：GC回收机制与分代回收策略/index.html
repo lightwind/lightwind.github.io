@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-Hans">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="description" content="人生是一场难得的修行，不要轻易交白卷" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    （拉钩）Android工程师进阶34讲-02：GC回收机制与分代回收策略 |  Tyler的博客
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  <link rel="stylesheet" href="/dist/main.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+  <link rel="stylesheet" href="/css/custom.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+  
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  
+  <canvas width="1777" height="841" style="position: fixed; left: 0px; top: 0px; z-index: 999; pointer-events: none;"></canvas>
+  
+  <div id="app">
+    <main class="content on">
+      <section class="outer">
+  <article id="post-（拉钩）Android工程师进阶34讲-02：GC回收机制与分代回收策略" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  （拉钩）Android工程师进阶34讲-02：GC回收机制与分代回收策略
+</h1>
+ 
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/06/18/（拉钩）Android工程师进阶34讲-02：GC回收机制与分代回收策略/" class="article-date">
+  <time datetime="2020-06-18T00:43:12.000Z" itemprop="datePublished">2020-06-18</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a> / <a class="article-category-link" href="/categories/Android/进阶/">进阶</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">1.8k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">7 min</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+
+      
+      <h1 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h1><p>垃圾回收(Garbage Collection)，简称GC。Java语言比C语言好的地方在于，不需要手动释放对象的内存，JVM中的垃圾回收器(Garbage Collector)会自动回收。但是：一旦这种自动化机制出错，就需要去深入理解GC回收机制，甚至需要对这些“自动化”的技术实施必要的监控和调节。</p>
+<p>上一节介绍了Java内存运行时区域的各个部分，其中程序计数器、虚拟机栈、本地方法栈三个区域随线程而生，随线程而灭；栈中的栈帧随着方法的进入和退出而有条不紊的执行入栈和出栈操作，这几个区域内不需要过多考虑回收问题。</p>
+<p>而堆和方法区则不一样，一个接口中的多个实现类需要的内存可能不一样，一个方法中的多个分支需要的内存也可能不一样，只有在程序处于运行期间时才能知道会创建哪些对象，这部分内存的分配和回收都是动态的，垃圾收集器所关注的就是这部分内存。</p>
+<h1 id="1-什么是垃圾"><a href="#1-什么是垃圾" class="headerlink" title="1. 什么是垃圾"></a>1. 什么是垃圾</h1><p>所谓垃圾就是内存中已经没有用的对象。既然是“垃圾回收”，就必须知道哪些对象是垃圾。Java虚拟机中使用一种叫做 <strong>“可达性分析”</strong> 的算法来决定对象是否可被回收。</p>
+<h1 id="1-1-可达性分析"><a href="#1-1-可达性分析" class="headerlink" title="1.1 可达性分析"></a>1.1 可达性分析</h1><p>可达性分析算法是从离散数学中的图论引入的，JVM把内存中所有的对象之间的引用关系看作一张图，通过一组名为“GC Root”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链，最后通过判断对象的引用链是否可达来决定对象是否可以被回收。如下图：</p>
+<img src="/2020/06/18/（拉钩）Android工程师进阶34讲-02：GC回收机制与分代回收策略/可达性分析.png">
+
+<p>上图，对象A/B/C/D/E与GC Root之间都存在一条直接或间接的引用链，这也代表它们与GC Root之间是可达的，因此它们是不能被GC回收掉的。而对象M和K虽然被对象J引用到，但是并不存在一条引用链连接它们与GC Root，所以当GC进行垃圾回收时，只要遍历到J/K/M这三个对象，就会将它们回收。</p>
+<blockquote>
+<p>注意：上图中圆形图标虽然标记的是对象，但实际上代表的是此对象在内存中的引用。包括GC Root也是一组引用而非对象。</p>
+</blockquote>
+<h2 id="1-2-GC-Root对象"><a href="#1-2-GC-Root对象" class="headerlink" title="1.2 GC Root对象"></a>1.2 GC Root对象</h2><p>在Java中，有以下几种对象可以作为GC Root：</p>
+<ul>
+<li>1、Java虚拟机栈（局部变量表）中的引用的对象。</li>
+<li>2、方法区静态引用指向的对象。</li>
+<li>3、仍处于活跃状态中的线程对象。</li>
+<li>4、Native方法中JVM引用的对象。</li>
+</ul>
+<h1 id="2-什么时候回收"><a href="#2-什么时候回收" class="headerlink" title="2. 什么时候回收"></a>2. 什么时候回收</h1><p>不同的虚拟机实现有着不同的GC实现机制，一般情况下每种GC实现都会在以下两种情况下触发垃圾回收。</p>
+<ul>
+<li>1、Allocation Failure：在堆内存中分配时，如果因为可用剩余空间不足导致对象内存分配失败，这时系统触发一次GC。</li>
+<li>2、System.gc()：在应用层，可以主动调用API来进行一次GC。</li>
+</ul>
+<h1 id="3-代码验证GC-Root的几种情况"><a href="#3-代码验证GC-Root的几种情况" class="headerlink" title="3. 代码验证GC Root的几种情况"></a>3. 代码验证GC Root的几种情况</h1><p>现在了解了Java中的GC Root，以及何时触发GC，下面通过几个案例来验证GC Root的情况。在看具体代码前，先了解一个执行Java命令时的参数。</p>
+<blockquote>
+<p>-Xms 初始分配Java运行时的内存大小，如果不指定，默认为物理内存的 1/64。</p>
+</blockquote>
+<p>比如运行如下命令执行HelloWorld程序，从物理内存中分配出200M空间给JVM内存。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Xms200m HelloWorld</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-1-验证虚拟机栈（栈帧中的局部变量）中引用的对象作为GC-Root"><a href="#3-1-验证虚拟机栈（栈帧中的局部变量）中引用的对象作为GC-Root" class="headerlink" title="3.1 验证虚拟机栈（栈帧中的局部变量）中引用的对象作为GC Root"></a>3.1 验证虚拟机栈（栈帧中的局部变量）中引用的对象作为GC Root</h2><p>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GCRootLocalVariable</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> _10MB = <span class="number">10</span> * <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">byte</span>[] memory = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">8</span> * _10MB];</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"开始时："</span>);</span><br><span class="line">		printMemory();</span><br><span class="line">		method();</span><br><span class="line">		System.gc();</span><br><span class="line">		System.out.println(<span class="string">"第二次GC完成："</span>);</span><br><span class="line">		printMemory();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		GCRootLocalVariable g = <span class="keyword">new</span> GCRootLocalVariable();</span><br><span class="line">		System.gc();</span><br><span class="line">		System.out.println(<span class="string">"第一次GC完成："</span>);</span><br><span class="line">		printMemory();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printMemory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		System.out.print(<span class="string">"free is "</span> + Runtime.getRuntime().freeMemory() / <span class="number">1024</span> / <span class="number">1024</span> + <span class="string">" M, "</span>);</span><br><span class="line">		System.out.println(<span class="string">"total is "</span> + Runtime.getRuntime().totalMemory() / <span class="number">1024</span> / <span class="number">1024</span> + <span class="string">" M."</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打印日志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">开始时：</span><br><span class="line">free is 242 M, total is 243 M.</span><br><span class="line">第一次GC完成：</span><br><span class="line">free is 161 M, total is 243 M.</span><br><span class="line">第二次GC完成：</span><br><span class="line">free is 241 M, total is 243 M.</span><br></pre></td></tr></table></figure>
+
+<p>可以看出：</p>
+<ul>
+<li>当第一次GC时，<code>g</code>作为局部变量，引用了<code>new</code>出的对象（80M），并且它作为了GC Root，在GC后不会被GC回收。</li>
+<li>第二次GC时，<code>method()</code>方法执行完毕后，局部变量<code>g</code>跟随方法消失，不再有引用类型指向该80M对象，所以第二次GC此后80M也会被回收。</li>
+</ul>
+<h2 id="3-2-验证方法区中的静态变量引用的对象作为GC-Root"><a href="#3-2-验证方法区中的静态变量引用的对象作为GC-Root" class="headerlink" title="3.2 验证方法区中的静态变量引用的对象作为GC Root"></a>3.2 验证方法区中的静态变量引用的对象作为GC Root</h2><p>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GCRootStaticVariable</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> _10MB = <span class="number">10</span> * <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">byte</span>[] memory;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> GCRootStaticVariable staticVariable;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">GCRootStaticVariable</span><span class="params">(<span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">		memory = <span class="keyword">new</span> <span class="keyword">byte</span>[size];</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"程序开始："</span>);</span><br><span class="line">		printMemory();</span><br><span class="line">		GCRootStaticVariable g = <span class="keyword">new</span> GCRootStaticVariable(<span class="number">4</span> * _10MB);</span><br><span class="line">		g.staticVariable = <span class="keyword">new</span> GCRootStaticVariable(<span class="number">8</span> * _10MB);</span><br><span class="line">		<span class="comment">// 将g设置为 null，调用GC时可以回收此对象内存</span></span><br><span class="line">		g = <span class="keyword">null</span>;</span><br><span class="line">		System.gc();</span><br><span class="line">		System.out.println(<span class="string">"GC完成："</span>);</span><br><span class="line">		printMemory();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printMemory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		System.out.print(<span class="string">"free is "</span> + Runtime.getRuntime().freeMemory() / <span class="number">1024</span> / <span class="number">1024</span> + <span class="string">" M, "</span>);</span><br><span class="line">		System.out.println(<span class="string">"total is "</span> + Runtime.getRuntime().totalMemory() / <span class="number">1024</span> / <span class="number">1024</span> + <span class="string">" M."</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打印日志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">程序开始：</span><br><span class="line">free is 242 M, total is 243 M.</span><br><span class="line">GC完成：</span><br><span class="line">free is 161 M, total is 243 M.</span><br></pre></td></tr></table></figure>
+
+<p>可以看到：</p>
+<p>程序刚开始运行时，内存为242M，并分别创建了<code>g</code>对象（40M），同时也初始化<code>g</code>对象内部的静态变量<code>staticVariable</code>对象（80M）。当调用GC时，只有<code>g</code>对象的40M被GC回收掉，而静态变量<code>staticVariable</code>作为GC Root，它引用的80M不会被回收。</p>
+<h2 id="3-3-验证活跃线程作为GC-Root"><a href="#3-3-验证活跃线程作为GC-Root" class="headerlink" title="3.3 验证活跃线程作为GC Root"></a>3.3 验证活跃线程作为GC Root</h2><p>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GCRootThread</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> _10MB = <span class="number">10</span> * <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">byte</span>[] memory = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">8</span> * _10MB];</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"开始前内存情况："</span>);</span><br><span class="line">		printMemory();</span><br><span class="line">		AsyncTask at = <span class="keyword">new</span> AsyncTask(<span class="keyword">new</span> GCRootThread());</span><br><span class="line">		Thread thread = <span class="keyword">new</span> Thread(at);</span><br><span class="line">		thread.start();</span><br><span class="line">		System.gc();</span><br><span class="line">		System.out.println(<span class="string">"main方法执行完毕，完成GC："</span>);</span><br><span class="line">		printMemory();</span><br><span class="line"></span><br><span class="line">		thread.join();</span><br><span class="line">		at = <span class="keyword">null</span>;</span><br><span class="line">		System.gc();</span><br><span class="line">		System.out.println(<span class="string">"线程代码执行完毕，完成GC："</span>);</span><br><span class="line">		printMemory();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printMemory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		System.out.print(<span class="string">"free is "</span> + Runtime.getRuntime().freeMemory() / <span class="number">1024</span> / <span class="number">1024</span> + <span class="string">" M, "</span>);</span><br><span class="line">		System.out.println(<span class="string">"total is "</span> + Runtime.getRuntime().totalMemory() / <span class="number">1024</span> / <span class="number">1024</span> + <span class="string">" M."</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">AsyncTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">		<span class="keyword">private</span> GCRootThread gcRootThread;</span><br><span class="line"></span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="title">AsyncTask</span><span class="params">(GCRootThread gcRootThread)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">this</span>.gcRootThread = gcRootThread;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="meta">@Override</span></span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				Thread.sleep(<span class="number">500</span>);</span><br><span class="line">			&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打印日志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">开始前内存情况：</span><br><span class="line">free is 242 M, total is 243 M.</span><br><span class="line">main方法执行完毕，完成GC：</span><br><span class="line">free is 161 M, total is 243 M.</span><br><span class="line">线程代码执行完毕，完成GC：</span><br><span class="line">free is 241 M, total is 243 M.</span><br></pre></td></tr></table></figure>
+
+<p>可以看到：</p>
+<p>程序刚开始是242M内存，当调用第一次GC时线程没有执行结束，并且它作为GC Root，所以它所引用的80M内存不会被GC回收掉。<code>thread.join()</code>保证线程结束再调用后续代码，所以当调用第二次GC时，线程已经执行完毕并被设置为null，此时线程已经被销毁，所以之前它所引用的80M此时会被GC回收掉。</p>
+<h2 id="3-4-测试成员变量是否可作为GC-Root"><a href="#3-4-测试成员变量是否可作为GC-Root" class="headerlink" title="3.4 测试成员变量是否可作为GC Root"></a>3.4 测试成员变量是否可作为GC Root</h2><p>代码如下：</p>
+<pre><code class="java"></code></pre>
+
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD2klEQVR42u3ay1LjQAwF0Pz/TzNVbBnDvVJ3KovjVQoc3DpeCD1er/j6+r7yO39eP//O02+f7n96SvvdAxcOHDhw4BgF8HsY7XGTI27uz6GfYsSBAwcOHGc5koe1cAlNe/T2tHmMOHDgwIHj/Ryzkq8NJv9WnqRx4MCBA8dncuTHaku+lmaWenHgwIEDxzs5ksJsVsi1JVxb5uXjrsO9Uhw4cODAkebKesDz+Z8v7nfgwIEDB46yNEqSVlLCtT+ftf82Fw4cOHDg2HO0C2qzImpWMrWLEadWHHDgwIEDx4Zj1mJLBlG/hz1L5HmTMXkNOHDgwIHjNkcefLtAMPucF4ezjt/wLeHAgQMHjqBuOlt65eVWu3wwS/bti8SBAwcOHGc58qZbW1DN2ot5Om8T/+NTcODAgQPHmqNdEUiSXNvOOxX25ik4cODAgeMUR9J0m93TLky0Kw7J2epn4cCBAweOBcdm3a1dOEgQZ8sK7Z2Pz8WBAwcOHEc5kuSUrxrkafVzuHHgwIEDx55jVgLliPlgadMKnK1N4MCBAweOexxtqO1oKm/5Jcl1NkzKSzscOHDgwHGWY5NQZ0sGecE2G4bl/zrgwIEDB449R51syobg7D3sm4xtaq//BA4cOHDgCDg2TcA2uc5+3gZfF3s4cODAgeMoR9IEzD+3iw5tSzEBqs+GAwcOHDjWHPkQKF9Zmy3e5WOttlycLdjhwIEDB44Nx2wFoW3V7dPncN2tjQIHDhw4cFzjaBca2tw+axS2d+b/TODAgQMHjlMcebrNU13ON1uzS7BmfxMHDhw4cJziyANLirc8Jc9ajWeX/HDgwIEDxw2OttyatfPadJgXabOkW8zfcODAgQNHPLtvv5yvF+QJe7Oy0CZgHDhw4MBxj2NTVuXprV2h2y8r5KUaDhw4cOA4y5GPmtqklX+eLT3sSz4cOHDgwHGDY4bSFmB5udU+PU/AxVIFDhw4cOBYcORhbJbk2vFPu3K3L/Ze7VvFgQMHDhyL5YP8WwlWnghnQX4tLhw4cODAcYpjP/LJUfIxVT7oyluQf6R8HDhw4MCx5kjWFxKgfevwRhuxHZXhwIEDB449R13kxA27/QApX8ubUf4nChw4cODAseZoJzLtAkR+iBnrZqyFAwcOHDjuceyT674gzBPwbGSVnBkHDhw4cJzlyMutJOy2IbhP0jO+x14pDhw4cOB4C8cmmZ1Kt0nhl1euOHDgwIHjEziKcqgMoD1DvpaXnxAHDhw4cJziSJqDyXrBvr14NnG2NDhw4MCBY8+xP1a7lDALcjbuyl8eDhw4cOBYc/wDFXtJS20/PQsAAAAASUVORK5CYII=" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM与DVM必知必会/">JVM与DVM必知必会</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+    
+      <a href="/2020/06/14/大话设计模式-02：商场促销——策略模式/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">大话设计模式-02：商场促销——策略模式</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: '',
+        app_key: '',
+        path: window.location.pathname,
+        notify: 'false',
+        verify: 'false',
+        avatar: 'monsterid',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
+        }
+    }
+
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
+
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2020
+        <i class="ri-heart-fill heart_icon"></i> Tyler Liu
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Tyler的博客"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Subtitle -->
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+      strings: ['人生是一场难得的修行，不要轻易交白卷', '', ''],
+      startDelay: 0,
+      typeSpeed: 200,
+      loop: true,
+      backSpeed: 100,
+      showCursor: true
+    });
+  } catch (err) {
+    console.log(err)
+  }
+</script>
+
+<!-- Tocbot -->
+
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<script src="/js/clickLove.js"></script>
+
+<!-- ClickBoom -->
+
+<script src="/js/clickBoom.js"></script>
+
+<!-- CodeCopy -->
+
+<link rel="stylesheet" href="/css/clipboard.css">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+    
+  </div>
+</body>
+
+</html>
