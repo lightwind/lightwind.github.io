@@ -70,7 +70,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">2.6k</span>
+            <span class="post-count">3.9k</span>
         </span>
     </span>
 
@@ -79,7 +79,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">9 min</span>
+            <span class="post-count">14 min</span>
         </span>
     </span>
 </div>
@@ -146,7 +146,7 @@
 <h2 id="4-2-版本号"><a href="#4-2-版本号" class="headerlink" title="4.2 版本号"></a>4.2 版本号</h2><img src="/2020/06/21/（拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构/实例分析3.png">
 
 <p>紧跟在魔数后面的四个字节代表当前class文件的版本号。前两个字节 <strong>0000</strong> 代表次版本号(minor_version)，后两个字节 <strong>0034</strong> 是主版本号(major_version)，对应的十进制值为52，也就是说当前class文件的主版本号为52，次版本号为0。所以综合版本号为52.0，也就是 <strong>jdk1.8.0</strong>。</p>
-<h1 id="4-3-常量池（重点）"><a href="#4-3-常量池（重点）" class="headerlink" title="4.3 常量池（重点）"></a>4.3 常量池（重点）</h1><p>紧跟在版本号之后的是一个叫做常量池的表(cp_info)。在常量池中保存了类的各种相关信息，比如类的名称、父类的名称、类中的方法名、参数名称、参数类型等，这些信息都是以各种表的形式保存在常量池中。</p>
+<h2 id="4-3-常量池（重点）"><a href="#4-3-常量池（重点）" class="headerlink" title="4.3 常量池（重点）"></a>4.3 常量池（重点）</h2><p>紧跟在版本号之后的是一个叫做常量池的表(cp_info)。在常量池中保存了类的各种相关信息，比如类的名称、父类的名称、类中的方法名、参数名称、参数类型等，这些信息都是以各种表的形式保存在常量池中。</p>
 <p><strong>常量池中的每一项都是一个表，其项目类型共有14种，如下表所示：</strong></p>
 <img src="/2020/06/21/（拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构/常量池1.png">
 
@@ -218,7 +218,81 @@
 <img src="/2020/06/21/（拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构/访问标志2.png">
 
 <p>前面定义的Test.java是一个普通类，不是接口、枚举或者注解。并且被<code>public</code>修饰但是没有被声明为<code>final</code>和<code>abstract</code>，因此它所对应的<code>access_falgs</code>为 <strong>0021</strong> （0X0001 和 0X0020 相结合）。</p>
-<h2 id="4-5-类索引、父类索引和接口索引计数器"><a href="#4-5-类索引、父类索引和接口索引计数器" class="headerlink" title="4.5 类索引、父类索引和接口索引计数器"></a>4.5 类索引、父类索引和接口索引计数器</h2>
+<h2 id="4-5-类索引、父类索引和接口索引计数器"><a href="#4-5-类索引、父类索引和接口索引计数器" class="headerlink" title="4.5 类索引、父类索引和接口索引计数器"></a>4.5 类索引、父类索引和接口索引计数器</h2><p>在访问标志后的2个字节就是<strong>类索引</strong>，类索引后的2个字节就是<strong>父类索引</strong>，父类索引后的2个字节是<strong>接口索引计数器</strong>。如下如：</p>
+<img src="/2020/06/21/（拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构/类索引、父类索引和接口索引计数器.png">
+
+<p>可以看出类索引指向常量池的第5个常量，父类索引指向常量池中的第6个常量，并且实现的接口个数为2个。再回顾一下常量池中的数据：</p>
+<img src="/2020/06/21/（拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构/类索引、父类索引和接口索引计数器2.png">
+
+<p>从图中可以看出，第5个常量和第6个常量均为“CONSTANT_Class_info”表类型，并且代表的类分别是”Test”和”Object”。再看接口计数器，因为接口计数器的值为2，代表这个类实现了2个接口。查看接口索引计数器之后的4个字节分别是：</p>
+<ul>
+<li><strong>0007</strong>：指向常量池的第7个常量，从图中可以看出第7个常量值为”Serializable”。</li>
+<li><strong>0008</strong>：指向常量池的第8个常量，从图中可以看出第8个常量值为”Cloneable”。</li>
+</ul>
+<p>综上所述，可以得出如下结论：<strong>当前类为Test继承自Object类，并实现了<code>Serializable</code>和<code>Cloneable</code>两个接口</strong>。</p>
+<h2 id="4-6-字段表"><a href="#4-6-字段表" class="headerlink" title="4.6 字段表"></a>4.6 字段表</h2><p>紧跟在接口索引集合后面的就是字段表，字段表的主要功能是用来描述类或者接口中声明的变量。这里的字段包含了类级别变量以及实例变量，但是不包括方法内部声明的局部变量。</p>
+<p>同样，一个类中的变量个数是不固定的，因此在字段表集合之前还是使用一个计数器来表示变量的个数，如下入：</p>
+<img src="/2020/06/21/（拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构/字段表1.png">
+
+<ul>
+<li><strong>0002</strong>：表示类中声明了两个变量，字段计数器之后紧跟着2个字段表的数据结构。</li>
+</ul>
+<p>字段表的数据结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CONSTANT_Fieldref_info&#123;</span><br><span class="line">    u2  access_flags     // 字段的访问标志</span><br><span class="line">    u2  name_index       // 字段的名称索引(也就是变量名)</span><br><span class="line">    u2  descriptor_index // 字段的描述索引(也就是变量的类型)</span><br><span class="line">    u2  attributes_count // 属性计数器</span><br><span class="line">    attribute_info</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>继续解析Test.class中的字段表，其结构如下：</p>
+<img src="/2020/06/21/（拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构/字段表2.png">
+
+<h2 id="4-7-字段访问标志"><a href="#4-7-字段访问标志" class="headerlink" title="4.7 字段访问标志"></a>4.7 字段访问标志</h2><p>对于Java类中的变量，也可以使用<code>public</code>、<code>private</code>、<code>final</code>、<code>static</code>等标识符进行标识。因此解析字段时，需要先判断它的访问标志，字段的访问标志如下所示：</p>
+<img src="/2020/06/21/（拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构/字段访问标志1.png">
+
+<p>字段表结构图中的访问标志的值为<strong>0002</strong>，代表它是<code>private</code>类型。变量名索引指向常量池中的第9个常量，变量名类型索引指向常量池中的第10个常量。第9和10个常量分别是<code>num</code>和<code>I</code>，如下所示：</p>
+<img src="/2020/06/21/（拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构/字段访问标志2.png">
+
+<p>因此可以得知类中有一个名为<code>num</code>，类型为<code>int</code>类型的变量。对于第二个变量的解析过程也是一样。</p>
+<p>注意事项 ：</p>
+<ul>
+<li>1、字段表集合中不会列出从父类或者父接口中继承而来的字段。</li>
+<li>2、内部类中为了保持对外部类的访问性，会自动添加指向外部类实例的字段。</li>
+</ul>
+<h2 id="4-8-方法表"><a href="#4-8-方法表" class="headerlink" title="4.8 方法表"></a>4.8 方法表</h2><p>字段表之后紧跟着的就是方法表常量。方法表常量也是以一个计数器开始的，因为一个类中的方法数是不固定的，如图：</p>
+<img src="/2020/06/21/（拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构/方法表1.png">
+
+<p>上图表示Test.class中有了两个方法，但是只在Test.java中声明了一个<code>add()</code>方法，这是为什么呢？这是因为<strong>默认构造器方法</strong>也被包含在方法表常量中。</p>
+<p>方法表的结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CONSTANT_Methodref_info&#123;</span><br><span class="line">    u2  access_flags;         // 方法的访问标志</span><br><span class="line">    u2  name_index;           // 指向方法名的索引</span><br><span class="line">    u2  descriptor_index;     // 指向方法类型的索引</span><br><span class="line">    u2  attributes_count;     // 方法属性计数器</span><br><span class="line">    attribute_info attributes;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>方法也有自己的访问标志，具体如下：</p>
+<img src="/2020/06/21/（拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构/方法表2.png">
+
+<p>主要看<code>add()</code>方法，具体如下：</p>
+<img src="/2020/06/21/（拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构/方法表3.png">
+
+<ul>
+<li>1、<strong>access_flags = 0001</strong>：访问权限为<code>public</code>。</li>
+<li>2、<strong>bame_index = 0011</strong>：指向常量池中的第17个常量，也就是<code>add</code>。</li>
+<li>3、<strong>type_index = 0012</strong>：指向常量池中的第18个常量，也就是<code>(I)</code>。这个方法接收<code>int</code>类型参数，并返回<code>int</code>类型参数。</li>
+</ul>
+<h2 id="4-9-属性表"><a href="#4-9-属性表" class="headerlink" title="4.9 属性表"></a>4.9 属性表</h2><p>在之前解析字段和方法时，在它们的具体结构中可以看到一个叫做<code>attributes_info</code>的表，这就是属性表。</p>
+<p>属性表没有固定的结构，各个不同的属性满足以下结构即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CONSTANT_Attribute_info&#123;</span><br><span class="line">    u2 name_index;</span><br><span class="line">    u2 attribute_length length;</span><br><span class="line">    u1[] info;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>JVM中预定义了很多属性表，这里重点看一下Code属性表。</p>
+<p>接着上面解析方法表，向下分析：</p>
+<img src="/2020/06/21/（拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构/属性表1.png">
+
+<p>可以看到，在方法类型索引之后跟着的就是<code>add</code>方法的属性。</p>
+<ul>
+<li><strong>0001</strong>：是属性计数器，代表只有一个属性。</li>
+<li><strong>000f</strong>：属性表类型索引，通过查看常量池可以看出，它是一个Code属性，如下所示：</li>
+</ul>
+<img src="/2020/06/21/（拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构/属性表2.png">
+
+<p>Code属性表中，最重要的就是一系列的字节码。通过<code>javap -v Test.class</code>之后，可以看到方法的字节码，如下显示了<code>add</code>方法的字节码指令：</p>
+<img src="/2020/06/21/（拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构/属性表3.png">
+
+<p>JVM 执行<code>add</code>方法时，就是通过这一系列的指令来完成相应的操作的。</p>
+
       
       <!-- reward -->
       
