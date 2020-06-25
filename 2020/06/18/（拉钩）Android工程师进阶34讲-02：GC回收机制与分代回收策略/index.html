@@ -70,7 +70,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">1.8k</span>
+            <span class="post-count">5.7k</span>
         </span>
     </span>
 
@@ -79,7 +79,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">7 min</span>
+            <span class="post-count">22 min</span>
         </span>
     </span>
 </div>
@@ -162,7 +162,210 @@
 <p>可以看到：</p>
 <p>程序刚开始是242M内存，当调用第一次GC时线程没有执行结束，并且它作为GC Root，所以它所引用的80M内存不会被GC回收掉。<code>thread.join()</code>保证线程结束再调用后续代码，所以当调用第二次GC时，线程已经执行完毕并被设置为null，此时线程已经被销毁，所以之前它所引用的80M此时会被GC回收掉。</p>
 <h2 id="3-4-测试成员变量是否可作为GC-Root"><a href="#3-4-测试成员变量是否可作为GC-Root" class="headerlink" title="3.4 测试成员变量是否可作为GC Root"></a>3.4 测试成员变量是否可作为GC Root</h2><p>代码如下：</p>
-<pre><code class="java"></code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GCRootClassVariable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> _10MB = <span class="number">10</span> * <span class="number">1024</span> * <span class="number">102</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">byte</span>[] memory;</span><br><span class="line">    <span class="keyword">private</span>  GCRootClassVariable classVariable;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">GCRootClassVariable</span><span class="params">(<span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">        memory = <span class="keyword">new</span> <span class="keyword">byte</span>[size];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"程序开始："</span>);</span><br><span class="line">        printMemory();</span><br><span class="line">        GCRootClassVariable g = <span class="keyword">new</span> GCRootClassVariable(<span class="number">4</span> * _10MB);</span><br><span class="line">        g.classVariable = <span class="keyword">new</span> GCRootClassVariable(<span class="number">8</span> * _10MB);</span><br><span class="line">        g = <span class="keyword">null</span>;</span><br><span class="line">        System.gc();</span><br><span class="line">        System.out.println(<span class="string">"GC完成："</span>);</span><br><span class="line">        printMemory();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printMemory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.print(<span class="string">"free is "</span> + Runtime.getRuntime().freeMemory() / <span class="number">1024</span> / <span class="number">1024</span> + <span class="string">" M,"</span>);</span><br><span class="line">        System.out.println(<span class="string">"total is "</span> + Runtime.getRuntime().totalMemory() / <span class="number">1024</span> / <span class="number">1024</span> + <span class="string">" M."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打印日志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">程序开始：</span><br><span class="line">free is 238 M,total is 243 M.</span><br><span class="line">GC完成：</span><br><span class="line">free is 241 M,total is 243 M.</span><br></pre></td></tr></table></figure>
+
+<p>从日志可以看出，当调用GC时，因为<code>g</code>已经设置为<code>null</code>，因此<code>g</code>中的全局变量<code>classVariable</code>此时也不会被GC Root所引用。所以最后<code>g</code>(40M)和<code>classVariable</code>(80M)都会被回收掉。<strong>这也表明全局变量和静态变量不同，它不会被作为GC Root</strong>。</p>
+<blockquote>
+<p>上面演示的几种情况往往也是内存泄露发生的场景，设想一下将各个Test类换成Android中的Activity的话将导致Activity无法被系统回收，而一个Activity中的数据往往比较大，因此内存泄露导致Activity无法回收还是比较致命的。</p>
+</blockquote>
+<h1 id="4-如何回收垃圾"><a href="#4-如何回收垃圾" class="headerlink" title="4. 如何回收垃圾"></a>4. 如何回收垃圾</h1><p>由于垃圾收集算法的实现涉及大量的程序细节，各家虚拟机厂商对其实现细节也各不相同，因此这里不过多讨论算法的实现，只是介绍几种算法的思想及优缺点。</p>
+<h2 id="4-1-标记清除算法-Mark-and-Sweep-GC"><a href="#4-1-标记清除算法-Mark-and-Sweep-GC" class="headerlink" title="4.1 标记清除算法(Mark and Sweep GC)"></a>4.1 标记清除算法(Mark and Sweep GC)</h2><p>从“GC Root”集合开始，将内存整个遍历一次，保留所有可以被GC Root直接或间接引用到的对象，而剩下的对象都当做垃圾回收，过程分为两步。</p>
+<ul>
+<li>1、<strong>Mark 标记阶段</strong>：找到内存中的所有GC Root对象，只要是和GC Root对象直接或间接相连则标记为灰色（即存活对象），否则标记为黑色（即垃圾对象）。</li>
+<li>2、<strong>Sweep 清除阶段</strong>：当遍历完所有的GC Root之后，则将标记为垃圾的对象直接清除。</li>
+</ul>
+<p>如下图：</p>
+<img src="/2020/06/18/（拉钩）Android工程师进阶34讲-02：GC回收机制与分代回收策略/标记清除算法.png">
+
+<ul>
+<li>优点：实现简单，不需要将对象进行移动。</li>
+<li>缺点：这个算法需要中断进程内其他组件的执行(stop the world)，并且可能产生内存碎片，提高了垃圾回收的频率。</li>
+</ul>
+<h2 id="4-2-复制算法-Copying"><a href="#4-2-复制算法-Copying" class="headerlink" title="4.2 复制算法(Copying)"></a>4.2 复制算法(Copying)</h2><p>将现有的内存空间分为两块，每次只是用其中一块，在垃圾回收时将正在使用的内存中的存活对象复制到未被使用的内存块中。之后，清除正在使用的内存块中所有的对象，交换两个内存的角色，完成垃圾回收。</p>
+<ul>
+<li><p>1、复制算法之前，内存分为A/B两块，并且当前只使用内存A，内存状况如下图：</p>
+  <img src="/2020/06/18/（拉钩）Android工程师进阶34讲-02：GC回收机制与分代回收策略/复制算法——复制之前.png">
+</li>
+<li><p>2、标记完成之后，所有可达对象都被按次序复制到内存B中，并设置B为当前使用中的内存。内存状况如下图：</p>
+  <img src="/2020/06/18/（拉钩）Android工程师进阶34讲-02：GC回收机制与分代回收策略/复制算法——复制之后.png">
+
+</li>
+</ul>
+<h2 id="4-3-标记-压缩算法-Mark-Compact"><a href="#4-3-标记-压缩算法-Mark-Compact" class="headerlink" title="4.3 标记-压缩算法(Mark-Compact)"></a>4.3 标记-压缩算法(Mark-Compact)</h2><p>需要先从根节点开始对所有可达对象做一次标记，之后，它并不是简单的清理未标记的对象，而是将所有的存活对象压缩到内存的一端。最后，清理边界外所有的空间。因此标记-压缩算法也分为两步：</p>
+<ul>
+<li>1、<strong>Mark 标记阶段</strong>：找到内存中的所有GC Root对象，只要是和GC Root对象直接或间接相连则标记为灰色（即存活对象），否则标记为黑色（即垃圾对象）。</li>
+<li>2、<strong>Compact 压缩阶段</strong>：将剩余存活对象按顺序压缩到内存的某一端。</li>
+</ul>
+<img src="/2020/06/18/（拉钩）Android工程师进阶34讲-02：GC回收机制与分代回收策略/标记-压缩算法.png">
+
+<ul>
+<li>优点：这种方法避免了碎片的产生，又不需要两块相同的内存空间，因此，性价比高。</li>
+<li>缺点：所谓压缩操作，仍需要进行局部对象移动，所以一定程度上降低了效率。</li>
+</ul>
+<h1 id="5-JVM分代回收策略"><a href="#5-JVM分代回收策略" class="headerlink" title="5. JVM分代回收策略"></a>5. JVM分代回收策略</h1><p>Java虚拟机根据对象存活的周期不同，把堆内存划分为几块，一般分为<strong>新生代、老年代</strong>，这就是JVM的内存分代策略。</p>
+<blockquote>
+<p>注意，在HotSpot中除了新生代和老年代，还有永久代。</p>
+</blockquote>
+<p>分代回收的中心思想就是：对于新创建的对象会在新生代中分配内存，此区域的对象生命周期一般较短。如果经历几次回收仍然存活下来，则将它们转移到老年代中。</p>
+<h2 id="5-1-新生代-Young-Generation"><a href="#5-1-新生代-Young-Generation" class="headerlink" title="5.1 新生代(Young Generation)"></a>5.1 新生代(Young Generation)</h2><p>新生代的对象存放在新生代中，新生代对象朝生夕死，存活率很低。在新生代中，常规应用进行一次垃圾收集，一般可以回收70%~95%的空间，回收效率很高。</p>
+<p>新生代又可以细分为三个部分：Eden、Survivor0（简称S0）、Survivor1（简称S1）。这三个部分按照8：1：1的比例来划分新生代。这三个区域的分配过程如下：</p>
+<p>绝大多数刚刚被创建的对象会存放在<strong>Eden</strong>区。如图：</p>
+<img src="/2020/06/18/（拉钩）Android工程师进阶34讲-02：GC回收机制与分代回收策略/新生代1.png">
+
+<p>当<strong>Eden</strong>区第一次存满时，会进行垃圾回收。首先将<strong>Eden</strong>区的垃圾对象回收清除，并将存活对象复制到<strong>S0</strong>，此时<strong>S1</strong>是空的。如图：</p>
+<img src="/2020/06/18/（拉钩）Android工程师进阶34讲-02：GC回收机制与分代回收策略/新生代2.png">
+
+<p>下一次<strong>Eden</strong>区满时，在执行一次垃圾回收。此次会将<strong>Eden</strong>和<strong>S0</strong>区所有的垃圾对象清除，并将存活的对象复制到<strong>S1</strong>，此时<strong>S0</strong>变为空。如图：</p>
+<img src="/2020/06/18/（拉钩）Android工程师进阶34讲-02：GC回收机制与分代回收策略/新生代3.png">
+
+<p>如此反复在<strong>S0</strong>和<strong>S1</strong>之间切换几次（默认是15次）之后，如果还有存活对象。说明这些对象的生命周期较长，则将它们转入到老年代。如图：</p>
+<img src="/2020/06/18/（拉钩）Android工程师进阶34讲-02：GC回收机制与分代回收策略/新生代4.png">
+
+<h2 id="5-2-老年代-Old-Generation"><a href="#5-2-老年代-Old-Generation" class="headerlink" title="5.2 老年代(Old Generation)"></a>5.2 老年代(Old Generation)</h2><p>一个对象如果在新生代存活了足够长时间而没有被清理掉，则会被复制到老年代。老年代的内存大小一般比新生代大，能存放更多的对象。如果对象比较大（比如长字符串或大数组），并且新生代的剩余空间不足，则这个大对象会直接被分配到老年代上。</p>
+<p>可以使用<code>-XX:PretenureSizeThreshold</code>来控制直接升入老年代的对象的大小，大小这个值的对象会直接分配在老年代上。老年代因为对象的生命周期较长，不需要过多的复制操作，所以一般采用标记-压缩到的回收算法。</p>
+<blockquote>
+<p>注意：对于老年代可能存在这么一种情况，老年代中的对象有时候会引用到新生代对象。这时如果要执行新生代GC，则可能需要查询整个老年代上可能引用新生代的情况，这显然是低效的。所以，老年代中维护了一个512 byte 的card table，所有老年代对象引用新生代对象的信息都记录在这里。每当新生代发生GC时，只需要检查这个 card table即可，大大提高性能。</p>
+</blockquote>
+<h1 id="6-GC-Log分析"><a href="#6-GC-Log分析" class="headerlink" title="6. GC Log分析"></a>6. GC Log分析</h1><p>为了让上层开发人员更加方便的调试Java程序，JVM提供了相应的GC日志。在GC执行垃圾回收事件过程中，会有各种相应的log被打印出来。其中新生代和老年代所打印的日志是有区别的：</p>
+<ul>
+<li>新生代GC：这一区域的GC叫做Minor GC。因为Java对象大多数都具备朝生夕死的特性，所以Minor GC非常频繁，一般回收速度也比较快。</li>
+<li>老年代GC：这一区域的GC叫做Major GC或Full GC。当出现Major GC，经常会伴随至少一次Minor GC。</li>
+</ul>
+<blockquote>
+<p>注意，在有些虚拟机实现中，Major GC和Full GC还有一些区别。Major GC只是代表回收老年代中的内存，而Full GC则代表回收整个堆中的内存，也就是新生代 + 老年代。</p>
+</blockquote>
+<p>接下来通过几个案例分析如何查看GC Log，分析这些GC Log的过程加深对JVM分代策略的理解。</p>
+<p>Java命令参数：</p>
+<table>
+<thead>
+<tr>
+<th align="center">命令参数</th>
+<th align="center">功能描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">-verbose:gc</td>
+<td align="center">显示GC的操作内容</td>
+</tr>
+<tr>
+<td align="center">-Xms20M</td>
+<td align="center">初始化堆大小为20M</td>
+</tr>
+<tr>
+<td align="center">-Xmx20M</td>
+<td align="center">设置堆最大分配内存为20M</td>
+</tr>
+<tr>
+<td align="center">-Xmn10M</td>
+<td align="center">设置新生代的内存大小为10M</td>
+</tr>
+<tr>
+<td align="center">-XX:+printGCDetails</td>
+<td align="center">打印GC的详细log日志</td>
+</tr>
+<tr>
+<td align="center">-XX:SurvivorRatio=8</td>
+<td align="center">新生代中Eden区域与Survivor区域的大小比值为8:1:1</td>
+</tr>
+</tbody></table>
+<p>使用如下代码，在内存中创建4个byte类型数组来演示内存分配和GC的详细过程。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * VM agrs: -Xms20M -Xmx20M -Xmn10M -XX:+PrintGCDetails</span></span><br><span class="line"><span class="comment"> * -XX:SurvivorRatio=8</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MinorGCTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> _1MB = <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testAllocation</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">byte</span>[] a1, a2, a3, z4;</span><br><span class="line">        a1 = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2</span> * _1MB];</span><br><span class="line">        a2 = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2</span> * _1MB];</span><br><span class="line">        a3 = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2</span> * _1MB];</span><br><span class="line">        a4 = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1</span> * _1MB];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] agrs)</span> </span>&#123;</span><br><span class="line">        testAllocation();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过上面的参数，可以看出堆内存总大小为20M，其中新生代占10M，剩下的10M会自动分配给老年代。执行上述代码日志如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Heap</span><br><span class="line">PSYoungGen      total 9216K, used 8003K [0x00000007bf600000, 0x00000007c0000000, 0x00000007c0000000)</span><br><span class="line">  eden space 8192K, 97% used [0x00000007bf600000,0x00000007bfdd0ed8,0x00000007bfe00000)</span><br><span class="line">  from space 1024K, 0% used [0x00000007bff00000,0x00000007bff00000,0x00000007c0000000)</span><br><span class="line">  to   space 1024K, 0% used [0x00000007bfe00000,0x00000007bfe00000,0x00000007bff00000)</span><br><span class="line">ParOldGen       total 10240K, used 0K [0x00000007bec00000, 0x00000007bf600000, 0x00000007bf600000)</span><br><span class="line">  object space 10240K, 0% used [0x00000007bec00000,0x00000007bec00000,0x00000007bf600000)</span><br><span class="line">Metaspace       used 2631K, capacity 4486K, committed 4864K, reserved 1056768K</span><br><span class="line">  class space    used 286K, capacity 386K, committed 512K, reserved 1048576K</span><br></pre></td></tr></table></figure>
+
+<p>日志中的各字段代表意义如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">字段</th>
+<th align="center">代表含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">PSYoungGen</td>
+<td align="center">新生代</td>
+</tr>
+<tr>
+<td align="center">eden</td>
+<td align="center">新生代中的Eden1区</td>
+</tr>
+<tr>
+<td align="center">from</td>
+<td align="center">新生代中的S0区</td>
+</tr>
+<tr>
+<td align="center">to</td>
+<td align="center">新生代中的S1区</td>
+</tr>
+<tr>
+<td align="center">ParOldGen</td>
+<td align="center">老年代</td>
+</tr>
+</tbody></table>
+<p>从日志可以看出：程序执行完之后，<code>a1</code>、<code>a2</code>、<code>a3</code>、<code>a4</code>四个对象都被分配在新生代的Eden区。</p>
+<p>如果将测试代码中的<code>a4</code>初始化改为<code>a4 = new byte[2 * _1MB];</code>，则打印日志如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[GC (Allocation Failure) [PSYoungGen: 6815K-&gt;480K(9216K)] 6815K-&gt;6632K(19456K), 0.0067344 secs] [Times: user=0.04 sys=0.00, real=0.01 secs]</span><br><span class="line">Heap</span><br><span class="line">PSYoungGen      total 9216K, used 2130K [0x00000007bf600000, 0x00000007c0000000, 0x00000007c0000000)</span><br><span class="line">  eden space 8192K, 26% used [0x00000007bf600000,0x00000007bf814930,0x00000007bfe00000)</span><br><span class="line">  from space 1024K, 0% used [0x00000007bfe00000,0x00000007bfe00000,0x00000007bff00000)</span><br><span class="line">  to   space 1024K, 0% used [0x00000007bff00000,0x00000007bff00000,0x00000007c0000000)</span><br><span class="line">ParOldGen       total 10240K, used 6420K [0x00000007bec00000, 0x00000007bf600000, 0x00000007bf600000)</span><br><span class="line">  object space 10240K, 62% used [0x00000007bec00000,0x00000007bf2450d0,0x00000007bf600000)</span><br><span class="line">Metaspace       used 2632K, capacity 4486K, committed 4864K, reserved 1056768K</span><br><span class="line">  class space    used 286K, capacity 386K, committed 512K, reserved 1048576K</span><br></pre></td></tr></table></figure>
+
+<p>这时因为在给<code>a4</code>分配内存之前，Eden区已经被占用了6M，已经无法再分配出2M来存储<code>a4</code>对象。因此会执行一次Minor GC。并尝试将存活的<code>a1</code>、<code>a2</code>、<code>a3</code>复制到S1区。但是S1区只有1M空间，所以无法存储<code>a1</code>、<code>a2</code>、<code>a3</code>中的任意一个对象。这时，<code>a1</code>、<code>a2</code>、<code>a3</code>就会被转移到老年代，最后将<code>a4</code>保存在Eden区。<strong>所以最终结果是：Eden区占用2M(<code>a4</code>)，老年代占用6M(<code>a1</code>、<code>a2</code>、<code>a3</code>)</strong>。</p>
+<blockquote>
+<p>通过这个测试案例，也间接验证了JVM的内存分配和分代回收策略。</p>
+</blockquote>
+<h2 id="6-1-再谈引用"><a href="#6-1-再谈引用" class="headerlink" title="6.1 再谈引用"></a>6.1 再谈引用</h2><p>上文介绍了，判断对象是否存活是用过GC Root的引用可达性来判断的。但是JVM中的引用关系不止一种。根据引用强度可分为：<strong>强引用(Strong Reference)、软引用(Soft Reference)、弱引用(Weak Reference)、虚引用(Phantom Reference)</strong>。</p>
+<table>
+<thead>
+<tr>
+<th align="center">引用</th>
+<th align="center">GC回收时机</th>
+<th align="center">使用示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">强引用</td>
+<td align="center">如果一个对象具有强引用，那垃圾回收器绝对不会回收</td>
+<td align="center"><code>Object obj = new Object();</code></td>
+</tr>
+<tr>
+<td align="center">软引用</td>
+<td align="center">在内存实在不足时，会对软引用进行回收</td>
+<td align="center"><code>SoftReference&lt;Object&gt; softObj = new SoftReference();</code></td>
+</tr>
+<tr>
+<td align="center">弱引用</td>
+<td align="center">第一次GC回收时，如果垃圾回收器遍历到了此弱引用，就将其回收</td>
+<td align="center"><code>WeakReference&lt;Object&gt; weakObj = new WeakReference();</code></td>
+</tr>
+<tr>
+<td align="center">虚引用</td>
+<td align="center">一个对象是否有虚引用的存在，完全不会对其生存时间构成影响，也无法通过虚引用来获取一个对象的实例</td>
+<td align="center">不会使用</td>
+</tr>
+</tbody></table>
+<p>平时项目中，特别是Android项目，因为有大量的图像(<code>Bitmap</code>)对象，使用软引用的场景比较多。所以重点看一下软引用的使用，不当的使用软引用会导致系统异常。</p>
+<h2 id="6-2-软引用常规使用"><a href="#6-2-软引用常规使用" class="headerlink" title="6.2 软引用常规使用"></a>6.2 软引用常规使用</h2><p>常规使用代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SoftReferenceNormal</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SoftObject</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 120M</span></span><br><span class="line">        <span class="keyword">byte</span>[] data = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">120</span> * <span class="number">1024</span> * <span class="number">1024</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 将缓存数据用软引用持有</span></span><br><span class="line">        SoftReference&lt;SoftObject&gt; cacheRef = <span class="keyword">new</span> SoftReference&lt;&gt;(<span class="keyword">new</span> SoftObject());</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"第一次GC前 软引用："</span> + cacheRef.get());</span><br><span class="line">        <span class="comment">// 进行一次GC回收后，查看对象的回收情况</span></span><br><span class="line">        System.out.println(<span class="string">"第一次GC后 软引用："</span> + cacheRef.get());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 再分配一个120M的对象，看看缓存对象的回收情况</span></span><br><span class="line">        SoftObject newSo = <span class="keyword">new</span> SoftObject();</span><br><span class="line">        System.out.println(<span class="string">"再次分配120M强引用对象之后 软引用："</span> + cacheRef.get());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行上述代码，打印日志如下：</p>
+<img src="/2020/06/18/（拉钩）Android工程师进阶34讲-02：GC回收机制与分代回收策略/软引用常规使用.png">
+
+<p>首先通过<code>-Xmx200M</code>将堆最大内存设置为200M。从日志可以看出，当第一次GC时，内存中还有剩余可用内存，所以软引用不会被GC回收。但是再次创建一个120M的强引用时，JVM可用内存已经不够，所以会尝试将软引用回收。</p>
+<h2 id="6-3-软引用隐藏问题"><a href="#6-3-软引用隐藏问题" class="headerlink" title="6.3 软引用隐藏问题"></a>6.3 软引用隐藏问题</h2><p>需要注意，被软引用对象关联的对象会自动被垃圾回收器回收，但是软引用对象本身也是一个对象，这些创建的软引用并不会自动被垃圾回收器回收掉。如下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SoftReferenceTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SoftObject</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 1KB</span></span><br><span class="line">        <span class="keyword">byte</span>[] data = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 100M</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> CACHE_INITIAL_CAPACITY = <span class="number">100</span> * <span class="number">1024</span>;</span><br><span class="line">        <span class="comment">// 静态集合保存软引用，会导致这些软引用对象本身无法被垃圾回收器回收</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> Set&lt;SoftReference&lt;SoftObject&gt;&gt; cache = <span class="keyword">new</span> HashSet&lt;&gt;(CACHE_INITIAL_CAPACITY);</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> ReferenceQueue&lt;SoftObject&gt; referenceQueue = <span class="keyword">new</span> ReferenceQueue&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; CACHE_INITIAL_CAPACITY; i++) &#123;</span><br><span class="line">                SoftObject obj = <span class="keyword">new</span> SoftObject();</span><br><span class="line">                cache.add(<span class="keyword">new</span> SoftReference&lt;&gt;(obj, referenceQueue));</span><br><span class="line">                <span class="keyword">if</span> (i % <span class="number">10000</span> == <span class="number">0</span>) &#123;</span><br><span class="line">                    System.out.println(<span class="string">"size of cache:"</span> + cache.size());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(<span class="string">"End!"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码，虽然每个<code>SoftObject</code>都被一个软引用所引用，在内存紧张时，GC会将<code>SoftObject</code>所占用的1KB回收。但是每个<code>SoftReference</code>又被<code>Set</code>所引用（强引用）。执行上述代码结果如下：</p>
+<img src="/2020/06/18/（拉钩）Android工程师进阶34讲-02：GC回收机制与分代回收策略/软引用隐藏问题2.png">
+
+<p>限制堆内存大小为4M，最终程序崩溃，但是异常的原因并不是普通的堆内存溢出，而是“GC overhead”。之所以抛出这个错误，是由于虚拟机一会不断回收软引用，回收进行的速度过快，占用的CPU    过大（超过98%），并且每次回收掉的内存过小（小于2%），导致最终抛出这个错误。</p>
+<p>这里需要做优化，合理的处理方式是注册一个引用队列，每次循环之后将引用队列中出现的软引用对象从<code>cache</code>中移除。如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SoftReferenceTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SoftObject</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 1KB</span></span><br><span class="line">        <span class="keyword">byte</span>[] data = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> removeSoftRefs = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 100M</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> CACHE_INITIAL_CAPACITY = <span class="number">100</span> * <span class="number">1024</span>;</span><br><span class="line">    <span class="comment">// 静态集合保存软引用，会导致这些软引用对象本身无法被垃圾回收器回收</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Set&lt;SoftReference&lt;SoftObject&gt;&gt; cache = <span class="keyword">new</span> HashSet&lt;&gt;(CACHE_INITIAL_CAPACITY);</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> ReferenceQueue&lt;SoftObject&gt; referenceQueue = <span class="keyword">new</span> ReferenceQueue&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; CACHE_INITIAL_CAPACITY; i++) &#123;</span><br><span class="line">            SoftObject obj = <span class="keyword">new</span> SoftObject();</span><br><span class="line">            cache.add(<span class="keyword">new</span> SoftReference&lt;&gt;(obj, referenceQueue));</span><br><span class="line">            clearUselessReference();</span><br><span class="line">            <span class="keyword">if</span> (i % <span class="number">10000</span> == <span class="number">0</span>) &#123;</span><br><span class="line">                System.out.println(<span class="string">"size of cache:"</span> + cache.size());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"End, removed soft reference = "</span> + removeSoftRefs);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">clearUselessReference</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Reference&lt;? extends SoftObject&gt; ref = referenceQueue.poll();</span><br><span class="line">        <span class="keyword">while</span> (ref != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (cache.remove(ref)) &#123;</span><br><span class="line">                removeSoftRefs++;</span><br><span class="line">            &#125;</span><br><span class="line">            ref = referenceQueue.poll();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再次运行，结果如下：</p>
+<img src="/2020/06/18/（拉钩）Android工程师进阶34讲-02：GC回收机制与分代回收策略/软引用隐藏问题1.png">
+
+<p>可以看出优化后，程序可以正常执行完。并且在执行过程中会动态的将集合中的软引用删除。</p>
 
       
       <!-- reward -->
@@ -234,6 +437,15 @@
   
   
   <nav class="article-nav">
+    
+      <a href="/2020/06/21/（拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            （拉钩）Android工程师进阶34讲-03：字节码层面分析class类文件结构
+          
+        </div>
+      </a>
     
     
       <a href="/2020/06/14/大话设计模式-02：商场促销——策略模式/" class="article-nav-link">
