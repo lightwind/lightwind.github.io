@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-Hans">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="description" content="人生是一场难得的修行，不要轻易交白卷" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    （拉钩）Android工程师进阶34讲-05：深入理解ClassLoader的加载机制 |  Tyler的博客
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  <link rel="stylesheet" href="/dist/main.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+  <link rel="stylesheet" href="/css/custom.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+  
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  
+  <canvas width="1777" height="841" style="position: fixed; left: 0px; top: 0px; z-index: 999; pointer-events: none;"></canvas>
+  
+  <div id="app">
+    <main class="content on">
+      <section class="outer">
+  <article id="post-（拉钩）Android工程师进阶34讲-05：深入理解ClassLoader的加载机制" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  （拉钩）Android工程师进阶34讲-05：深入理解ClassLoader的加载机制
+</h1>
+ 
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/06/30/（拉钩）Android工程师进阶34讲-05：深入理解ClassLoader的加载机制/" class="article-date">
+  <time datetime="2020-06-30T02:20:12.000Z" itemprop="datePublished">2020-06-30</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a> / <a class="article-category-link" href="/categories/Android/进阶/">进阶</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">3.5k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">16 min</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+
+      
+      <h1 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h1><p>第3节介绍了Java字节码文件(.class)的格式。一个完整的Java程序是由多个.class文件组成的，在程序运行过程中，需要将这些.class文件加载到JVM中才可以使用。而负责加载这些.class文件的就是类加载器(ClassLoader)。</p>
+<h1 id="1-Java中的类何时被加载器加载"><a href="#1-Java中的类何时被加载器加载" class="headerlink" title="1. Java中的类何时被加载器加载"></a>1. Java中的类何时被加载器加载</h1><p>在Java程序启动的时候，并不会一次性加载程序中的所有.class文件，而是在程序的运行过程中，动态地加载相应的类到内存中。</p>
+<p>通常情况下，Java程序中的.class文件会在以下2种情况下被ClassLoader主动加载到内存中：</p>
+<ul>
+<li>1、调用类构造器</li>
+<li>2、调用类中的静态(static)变量或静态方法</li>
+</ul>
+<h1 id="2-Java中的ClassLoader"><a href="#2-Java中的ClassLoader" class="headerlink" title="2. Java中的ClassLoader"></a>2. Java中的ClassLoader</h1><p>JVM中自带3个类加载器：</p>
+<ul>
+<li>1、启动类加载器<code>BootstrapClassLoader</code></li>
+<li>2、扩展类加载器<code>ExtClassLoader</code>（JDK 1.9之后，改名为<code>PlatformClassLoader</code>）</li>
+<li>3、系统加载器<code>AppClassLoader</code></li>
+</ul>
+<p>以上三者在JVM中各有分工，但是又相互依赖。</p>
+<h2 id="2-1-AppClassLoader系统类加载器"><a href="#2-1-AppClassLoader系统类加载器" class="headerlink" title="2.1 AppClassLoader系统类加载器"></a>2.1 AppClassLoader系统类加载器</h2><p>部分源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">AppClassLoader</span> <span class="keyword">extends</span> <span class="title">URLClassLoader</span> </span>&#123;</span><br><span class="line">	<span class="keyword">final</span> URLClassPath ucp = SharedSecrets.getJavaNetAccess().getURLClassPath(<span class="keyword">this</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ClassLoader <span class="title">getAppClassLoader</span><span class="params">(<span class="keyword">final</span> ClassLoader var0)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    	<span class="keyword">final</span> String var1 = System.getProperty(<span class="string">"java.class.path"</span>);</span><br><span class="line">    	<span class="keyword">final</span> File[] var2 = var1 == <span class="keyword">null</span> ? <span class="keyword">new</span> File[<span class="number">0</span>] : Launcher.getClassPath(var1);</span><br><span class="line">    	<span class="keyword">return</span> (ClassLoader)AccessController.doPrivileged(<span class="keyword">new</span> PrivilegedAction&lt;Launcher.AppClassLoader&gt;() &#123;</span><br><span class="line">    	    <span class="keyword">public</span> Launcher.<span class="function">AppClassLoader <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    	        URL[] var1x = var1 == <span class="keyword">null</span> ? <span class="keyword">new</span> URL[<span class="number">0</span>] : Launcher.pathToURLs(var2);</span><br><span class="line">    	        <span class="keyword">return</span> <span class="keyword">new</span> Launcher.AppClassLoader(var1x, var0);</span><br><span class="line">    	    &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    ......</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，<code>AppClassLoader</code>主要加载系统属性<code>&quot;java.class.path&quot;</code>配置下的文件，也就是环境变量CLASS_PATH配置的路径。因此<code>AppClassLoader</code>是面向用户的类加载器，编写的代码以及使用的第三方jar包通常都是由它来加载的。</p>
+<h2 id="2-2-ExtClassLoader扩展类加载器"><a href="#2-2-ExtClassLoader扩展类加载器" class="headerlink" title="2.2 ExtClassLoader扩展类加载器"></a>2.2 ExtClassLoader扩展类加载器</h2><p>部分源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ExtClassLoader</span> <span class="keyword">extends</span> <span class="title">URLClassLoader</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> Launcher.ExtClassLoader instance;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Launcher.<span class="function">ExtClassLoader <span class="title">getExtClassLoader</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">            Class var0 = Launcher.ExtClassLoader.class;</span><br><span class="line">            <span class="keyword">synchronized</span>(Launcher.ExtClassLoader.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    instance = createExtClassLoader();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ......</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ExtClassLoader</span><span class="params">(File[] var1)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(getExtURLs(var1), (ClassLoader)<span class="keyword">null</span>, Launcher.factory);</span><br><span class="line">        SharedSecrets.getJavaNetAccess().getURLClassPath(<span class="keyword">this</span>).initLookupCache(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> File[] getExtDirs() &#123;</span><br><span class="line">        String var0 = System.getProperty(<span class="string">"java.ext.dirs"</span>);</span><br><span class="line">        File[] var1;</span><br><span class="line">        <span class="keyword">if</span> (var0 != <span class="keyword">null</span>) &#123;</span><br><span class="line">            StringTokenizer var2 = <span class="keyword">new</span> StringTokenizer(var0, File.pathSeparator);</span><br><span class="line">            <span class="keyword">int</span> var3 = var2.countTokens();</span><br><span class="line">            var1 = <span class="keyword">new</span> File[var3];</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> var4 = <span class="number">0</span>; var4 &lt; var3; ++var4) &#123;</span><br><span class="line">                var1[var4] = <span class="keyword">new</span> File(var2.nextToken());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            var1 = <span class="keyword">new</span> File[<span class="number">0</span>];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> var1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ......</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ExtClassLoader</code>加载系统属性<code>&quot;java.ext.dirs&quot;</code>配置下类文件，可以打印出这个属性查看具体有哪些文件：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(System.getPreperty(<span class="string">"java/ext.dirs"</span>));</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/Library/Java/JavaVirtualMachines/jdk1.8.0_1051.jdk/Contents/Home/jre/lib/ext</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-3-BootstrapClassLoader启动类加载器"><a href="#2-3-BootstrapClassLoader启动类加载器" class="headerlink" title="2.3 BootstrapClassLoader启动类加载器"></a>2.3 BootstrapClassLoader启动类加载器</h2><p><code>BootstrapClassLoader</code>和上面两种ClassLoader不一样。</p>
+<p>首先，它并不是使用Java实现的， 而是由C/C++编写的，它本身属于虚拟机的一部分。因此无法在Java代码中直接获取它的引用。如果在Java层获取<code>BootstrapClassLoader</code>的引用，系统会返回<code>null</code>。</p>
+<p><code>BootstrapClassLoader</code>加载系统属性<code>&quot;sun.boot.class.path&quot;</code>配置下的类文件，可以打印出这个属性来查看具体有哪些文件：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(System.getPreperty(<span class="string">"sun.boot.class.path"</span>));</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<img src="/2020/06/30/（拉钩）Android工程师进阶34讲-05：深入理解ClassLoader的加载机制/BootstrapClassLoader启动类加载器.png">
+
+<p>可以看到，这些全是JRE目录下的jar包或.class文件。</p>
+<h1 id="3-双亲委派模式-Parents-Delegation-Model"><a href="#3-双亲委派模式-Parents-Delegation-Model" class="headerlink" title="3. 双亲委派模式(Parents Delegation Model)"></a>3. 双亲委派模式(Parents Delegation Model)</h1><p>JVM中已经有了三种ClassLoader，那么JVM又是如何知道该使用哪一种类加载器去加载相应的类呢？是<strong>双亲委派模式</strong>。</p>
+<h2 id="3-1-双亲委派模式"><a href="#3-1-双亲委派模式" class="headerlink" title="3.1 双亲委派模式"></a>3.1 双亲委派模式</h2><p>双亲委派模式就是当类加载器接收加载类或资源的请求时，通常都是先委托给父加载器加载，只有当父加载器找不到指定类或资源时，自身才会执行实际的类加载过程。</p>
+<p>其具体实现代码就是在<code>ClassLoader.java</code>中的<code>loadClass()</code>方法中，如下：java/lang/ClassLoader.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String name, <span class="keyword">boolean</span> resolve) <span class="keyword">throws</span> ClassNotFoundException&#123;</span><br><span class="line">        <span class="comment">// First, check if the class has already been loaded</span></span><br><span class="line">        Class&lt;?&gt; c = findLoadedClass(name); <span class="comment">// 1</span></span><br><span class="line">        <span class="keyword">if</span> (c == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (parent != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    c = parent.loadClass(name, <span class="keyword">false</span>); <span class="comment">// 2</span></span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    c = findBootstrapClassOrNull(name); <span class="comment">// 3</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                <span class="comment">// ClassNotFoundException thrown if class not found</span></span><br><span class="line">                <span class="comment">// from the non-null parent class loader</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (c == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// If still not found, then invoke findClass in order</span></span><br><span class="line">                <span class="comment">// to find the class.</span></span><br><span class="line">                c = findClass(name); <span class="comment">// 4</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>说明：</p>
+<ul>
+<li>1、判断该<code>Class</code>是否已加载，如果已经加载，则直接将该<code>Class</code>返回。</li>
+<li>2、如果该<code>Class</code>没有被加载过，则判断<code>parent</code>是否为空，如果不为空，则将加载任务委托给<code>parent</code>。</li>
+<li>3、如果<code>parent = null</code>，则直接调用<code>BootstrapClassLoader</code>加载该类。</li>
+<li>4、如果<code>parent</code>和<code>BootstrapClassLoader</code>都没有加载成功，则调用当前<code>ClassLoader</code>的<code>findClass()</code>方法继续尝试加载。</li>
+</ul>
+<p>这个<code>parent</code>是什么呢？可以看<code>ClassLoader</code>的构造器：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">ClassLoader</span><span class="params">(ClassLoader parent)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(checkCreateClassLoader(), parent);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，在每一个<code>ClassLoader</code>中都有一个<code>ClassLoader</code>类型的<code>parent</code>引用，并且在构造器中传入值。如果继续看源码，可以看到<code>AppClassLoader</code>传入的<code>parent</code>就是<code>ExtClassLoader</code>，而<code>ExtClassLoader</code>并没有传入任何<code>parent</code>，也就是<code>null</code>。</p>
+<h2 id="3-2-举例"><a href="#3-2-举例" class="headerlink" title="3.2 举例"></a>3.2 举例</h2><p>比如执行下面代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Test test = <span class="keyword">new</span> Test();</span><br></pre></td></tr></table></figure>
+
+<p>默认情况下，JVM首先使用<code>AppClassLoader</code>去加载<code>Test</code>类。</p>
+<ul>
+<li>1、<code>AppClassLoader</code>将加载的任务委派给它的父类加载器——<code>ExtClassLoader</code>。</li>
+<li>2、<code>ExtClassLoader</code>的<code>parent</code>为<code>null</code>，所以直接将加载任务委派给<code>BootstrapClassLoader</code>。</li>
+<li>3、<code>BootstrapClassLoader</code>在jdk/lib目录下无法找到<code>Test</code>类，因此返回的<code>Class</code>为<code>null</code>。</li>
+<li>4、因为<code>parent</code>和<code>BootstrapClassLoader</code>都没有成功加载<code>Test</code>类，所以<code>AppClassLoader</code>会调用<code>findClass()</code>来加载<code>Test</code>。</li>
+</ul>
+<p>最终<code>Test</code>就是被<code>AppClassLoader</code>加载到内存中，可以通过如下代码验证此结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ClassLoader cl = Test.class.getClassLoader();</span><br><span class="line">        System.out.println(<span class="string">"cl is "</span> + cl);</span><br><span class="line"></span><br><span class="line">        ClassLoader parent = cl.getParent();</span><br><span class="line">        System.out.println(<span class="string">"parent is "</span> + parent);</span><br><span class="line"></span><br><span class="line">        ClassLoader boot_strap = parent.getParent();</span><br><span class="line">        System.out.println(<span class="string">"boot_strap is "</span> + boot_strap);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打印结果为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cl is sun.misc.Launcher$AppClassLoader@18b4aac2</span><br><span class="line">parent is sun.misc.Launcher$ExtClassLoader@1b6d3586</span><br><span class="line">boot_strap is null</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：“双亲委派模式”只是Java推荐的模式，并不是强制的。我们可以继承<code>ClassLoader</code>，实现自己的类加载器。如果想保持双亲委派模式，应该重写<code>findClass(name)</code>方法；如果想破坏双亲委派模式，可以重写<code>loadClass(name)</code>方法。</p>
+</blockquote>
+<h1 id="4-自定义ClassLoader"><a href="#4-自定义ClassLoader" class="headerlink" title="4. 自定义ClassLoader"></a>4. 自定义ClassLoader</h1><p>JVM中预置了三种<code>ClassLoader</code>，只能加载特定目录下的.class文件，如果想加载其他特殊位置下的jar包或类时（比如，要加载网络或磁盘上的一个.class文件），默认的<code>ClassLoader</code>就不能满足需求，所以需要自定义<code>ClassLoader</code>来加载特定目录下的.class文件。</p>
+<h2 id="4-1-自定义ClassLoader步骤"><a href="#4-1-自定义ClassLoader步骤" class="headerlink" title="4.1 自定义ClassLoader步骤"></a>4.1 自定义ClassLoader步骤</h2><ul>
+<li>1、自定义一个类继承抽象类<code>ClassLoader</code>。</li>
+<li>2、重写<code>findClass()</code>方法。</li>
+<li>3、在<code>findClass()</code>中，调用<code>defineClass()</code>方法将字节码转换成<code>Class</code>对象，并返回。</li>
+</ul>
+<p>伪代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> 自定义<span class="title">ClassLoader</span> <span class="keyword">extends</span> <span class="title">ClassLoader</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> Class&lt;?&gt; findClass(String name) <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">        <span class="comment">// 寻找字节码</span></span><br><span class="line">        <span class="keyword">byte</span>[] code = findCodeFromSomeWhere(name);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.defineClass(name, code);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-2-自定义ClassLoader示例"><a href="#4-2-自定义ClassLoader示例" class="headerlink" title="4.2 自定义ClassLoader示例"></a>4.2 自定义ClassLoader示例</h2><p>首先创建测试类<code>Secret.java</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Secret</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printSecret</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"打印了 printSecret"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试类所在的磁盘路径如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/Project/MyStudyDemo/LGDemo/src/Secret.java</span><br></pre></td></tr></table></figure>
+
+<p>下面创建<code>DiskClassLoader</code>继承<code>ClassLoader</code>，重写<code>findClass()</code>方法，并在其中调用<code>defineClass()</code>创建<code>Class</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DiskClassLoader</span> <span class="keyword">extends</span> <span class="title">ClassLoader</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String filePath;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DiskClassLoader</span><span class="params">(String path)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.filePath = path;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 重写findClass</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> Class&lt;?&gt; findClass(String name) <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">        String newPath = filePath + name + <span class="string">".class"</span>;</span><br><span class="line">        <span class="keyword">byte</span>[] classBytes = <span class="keyword">null</span>;</span><br><span class="line">        Path path = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            path = Paths.get(<span class="keyword">new</span> URI(newPath));</span><br><span class="line">            classBytes = Files.readAllBytes(path);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (URISyntaxException | IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 调用defineClass，创建Class并返回</span></span><br><span class="line">        <span class="keyword">return</span> defineClass(name, classBytes, <span class="number">0</span>, classBytes.length);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后，写一个测试自定义<code>DiskClassLoader</code>的测试类，验证自定义的<code>DiskClassLoader</code>是否正常工作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DiskClassLoaderTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        testClassLoader();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testClassLoader</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 创建自定义ClassLoader对象</span></span><br><span class="line">        DiskClassLoader diskClassLoader = <span class="keyword">new</span> DiskClassLoader(<span class="string">"file:///Project/MyStudyDemo/LGDemo/src/"</span>); <span class="comment">// 1</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Class c = diskClassLoader.loadClass(<span class="string">"Secret"</span>); <span class="comment">// 2</span></span><br><span class="line">            <span class="keyword">if</span> (c != <span class="keyword">null</span>) &#123;</span><br><span class="line">                Object obj = c.newInstance();</span><br><span class="line">                <span class="comment">// 通过反射调用Secret的printSecret方法</span></span><br><span class="line">                Method method = c.getDeclaredMethod(<span class="string">"printSecret"</span>, <span class="keyword">null</span>); <span class="comment">// 3</span></span><br><span class="line">                method.invoke(obj, <span class="keyword">null</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>说明：</p>
+<ul>
+<li>1、代表需要动态加载的class路径。</li>
+<li>2、代表需要动态加载的类名。</li>
+<li>3、代表需要动态调用的方法名称。</li>
+</ul>
+<p>最后执行，并打印如下结果，表示自定义的<code>ClassLoader</code>可以正常工作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">D:\Java\jdk1.8.0_212\bin\java.exe &quot;-javaagent:D:\Program Files\JetBrains\IntelliJ IDEA 2020.1.2\lib\idea_rt.jar=55145:D:\Program Files\JetBrains\IntelliJ IDEA 2020.1.2\bin&quot; -Dfile.encoding=UTF-8 -classpath D:\Java\jdk1.8.0_212\jre\lib\charsets.jar;D:\Java\jdk1.8.0_212\jre\lib\deploy.jar;D:\Java\jdk1.8.0_212\jre\lib\ext\access-bridge-64.jar;D:\Java\jdk1.8.0_212\jre\lib\ext\cldrdata.jar;D:\Java\jdk1.8.0_212\jre\lib\ext\dnsns.jar;D:\Java\jdk1.8.0_212\jre\lib\ext\jaccess.jar;D:\Java\jdk1.8.0_212\jre\lib\ext\jfxrt.jar;D:\Java\jdk1.8.0_212\jre\lib\ext\localedata.jar;D:\Java\jdk1.8.0_212\jre\lib\ext\nashorn.jar;D:\Java\jdk1.8.0_212\jre\lib\ext\sunec.jar;D:\Java\jdk1.8.0_212\jre\lib\ext\sunjce_provider.jar;D:\Java\jdk1.8.0_212\jre\lib\ext\sunmscapi.jar;D:\Java\jdk1.8.0_212\jre\lib\ext\sunpkcs11.jar;D:\Java\jdk1.8.0_212\jre\lib\ext\zipfs.jar;D:\Java\jdk1.8.0_212\jre\lib\javaws.jar;D:\Java\jdk1.8.0_212\jre\lib\jce.jar;D:\Java\jdk1.8.0_212\jre\lib\jfr.jar;D:\Java\jdk1.8.0_212\jre\lib\jfxswt.jar;D:\Java\jdk1.8.0_212\jre\lib\jsse.jar;D:\Java\jdk1.8.0_212\jre\lib\management-agent.jar;D:\Java\jdk1.8.0_212\jre\lib\plugin.jar;D:\Java\jdk1.8.0_212\jre\lib\resources.jar;D:\Java\jdk1.8.0_212\jre\lib\rt.jar;E:\Project\MyStudyDemo\LGDemo\out\production\LGDemo DiskClassLoaderTest</span><br><span class="line">打印了 printSecret</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：上述动态加载.class文件的思路，经常被用作热修复和插件化开发的框架中，包括QQ空间热修复方案、微信Tink等原理都是由此而来。客户端只要从服务端下载一个加密的.class文件，然后在本地通过事先定义好的加密方式进行解密，最后再使用自定义<code>ClassLoader</code>动态加载解密后的.class文件，并动态调用相应的方法。</p>
+</blockquote>
+<h1 id="5-Android中的ClassLoader"><a href="#5-Android中的ClassLoader" class="headerlink" title="5. Android中的ClassLoader"></a>5. Android中的ClassLoader</h1><p>本质上，Andorid系统和JVM是一样的，也需要通过<code>ClassLoader</code>将目标类加载到内存，类加载器之间也符合双亲委派模式。但是在Android中，<code>ClassLoader</code>的加载细节有略微的差别。</p>
+<p>在Android虚拟机中是无法直接运行.class文件的，Android会将所有的.class文件转换成一个.dex文件，并且Android将加载.dex文件的实现封装在<code>BaseDexClassLoader</code>中，一般只是用它的两个子类：<code>PathClassLoader</code>和<code>DexClassLoader</code>。</p>
+<h2 id="5-1-PathClassLoader"><a href="#5-1-PathClassLoader" class="headerlink" title="5.1 PathClassLoader"></a>5.1 PathClassLoader</h2><p><code>PathClassLoader</code>用来加载系统apk和被安装到手机中的apk内的dex文件。它的2个构造函数如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PathClassLoader</span> <span class="keyword">extends</span> <span class="title">BaseDexClassLoader</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PathClassLoader</span><span class="params">(String dexPath, ClassLoader parent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>((String)<span class="keyword">null</span>, (File)<span class="keyword">null</span>, (String)<span class="keyword">null</span>, (ClassLoader)<span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Stub!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PathClassLoader</span><span class="params">(String dexPath, String librarySearchPath, ClassLoader parent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>((String)<span class="keyword">null</span>, (File)<span class="keyword">null</span>, (String)<span class="keyword">null</span>, (ClassLoader)<span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Stub!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<ul>
+<li><code>dexPath</code>：dex文件路径，或者包含dex文件的jar包路径；</li>
+<li><code>librarySearchPath</code>：C/C++ native库的路径。</li>
+</ul>
+<p><code>PathClassLoader</code>里面除了这2个构造方法以外就没有其他方法了，具体的实现都是在<code>BaseDexClassLoader</code>里面，其<code>dexPath</code>比较受限制，一般是已经安装应用的apk文件路径。</p>
+<p>当一个App被安装手机后，apk里面的class.dex中的class均通过<code>PathClassLoader</code>来加载的，可以通过如下代码验证：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        ClassLoader loader = MainActivity.class.getClassLoader();</span><br><span class="line">        Log.i(<span class="string">"TAG"</span>, loader.toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打印如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">System.out: dalvik.system.PathClassLoader</span><br><span class="line">[DexPathList[[zip file &quot;/data/app/com.ly.lgdemoandroid-1/base.apk&quot;],nativeLibraryDirectories=[/data/app/com.ly.lgdemoandroid-1/lib/x86, /system/lib, /vendor/lib]]]</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-2-DexClassLoader"><a href="#5-2-DexClassLoader" class="headerlink" title="5.2 DexClassLoader"></a>5.2 DexClassLoader</h2><p>官方描述：</p>
+<blockquote>
+<p>A class loader that loads classes from .jar and .apk filescontaining a classes.dex entry. </p>
+<p>This can be used to execute code notinstalled as part of an application.</p>
+</blockquote>
+<p>对比<code>PathClassLoader</code>只能加载已经安装应用的dex或apk文件，<code>DexClassLoader</code>则没有此限制，可以从SD卡上加载包含class.dex的.jar和.apk文件，这也是插件化和热修复的基础，在不需要安装应用的情况下，完成需要使用的dex的加载。</p>
+<p><code>DexClassLoader</code>的源码只有一个构造方法，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DexClassLoader</span> <span class="keyword">extends</span> <span class="title">BaseDexClassLoader</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DexClassLoader</span><span class="params">(String dexPath, String optimizedDirectory, String librarySearchPath, ClassLoader parent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>((String)<span class="keyword">null</span>, (File)<span class="keyword">null</span>, (String)<span class="keyword">null</span>, (ClassLoader)<span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Stub!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<ul>
+<li><strong><code>dexPath</code></strong>：包含class.dex的apk、jar文件路径，多个路径用文件分隔符（默认是“:”）分隔。</li>
+<li><strong><code>optimizedDirectory</code></strong>：用来缓存优化的dex文件的路径，即从apk或jar文件中提取出来的dex文件。该路径不可为空，且应该是应用私有的，有读写权限的路径。</li>
+</ul>
+<h3 id="5-2-1-使用DexClassLoader实现热修复"><a href="#5-2-1-使用DexClassLoader实现热修复" class="headerlink" title="5.2.1 使用DexClassLoader实现热修复"></a>5.2.1 使用DexClassLoader实现热修复</h3><h4 id="创建Android项目DexClassLoaderHotFix"><a href="#创建Android项目DexClassLoaderHotFix" class="headerlink" title="创建Android项目DexClassLoaderHotFix"></a>创建Android项目DexClassLoaderHotFix</h4><p>项目结构：</p>
+<img src="/2020/06/30/（拉钩）Android工程师进阶34讲-05：深入理解ClassLoader的加载机制/DexClassLoader热修复示例1.png">
+
+<p><code>ISay</code>是一个接口，内部定义了一个方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ISay</span> </span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">saySomething</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>SayException</code>实现了<code>ISay</code>接口，但是在<code>saySomething()</code>方法中，打印<code>&quot;something wrong here&quot;</code>来模拟线上的bug。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SayException</span> <span class="keyword">implements</span> <span class="title">ISay</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">saySomething</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"something wrong here"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后在<code>MainActivity</code>中，当点击按钮时，将<code>saySomething</code>返回的内容通过<code>Toast</code>显示出来。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ISay say;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        say = <span class="keyword">new</span> SayException();</span><br><span class="line">        Button btnSay = findViewById(R.id.btn_say);</span><br><span class="line">        btnSay.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">                Log.e(<span class="string">"TAG"</span>, <span class="string">"say_hotfix.jar not exists"</span>);</span><br><span class="line">                Toast.makeText(MainActivity.<span class="keyword">this</span>, say.saySomething(), Toast.LENGTH_SHORT).show();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>点击按钮：</p>
+<img src="/2020/06/30/（拉钩）Android工程师进阶34讲-05：深入理解ClassLoader的加载机制/DexClassLoader热修复示例2.png">
+
+<h4 id="创建HotFix-patch包"><a href="#创建HotFix-patch包" class="headerlink" title="创建HotFix patch包"></a>创建HotFix patch包</h4><p>新建Java项目，并分别创建两个文件<code>ISay.java</code>和<code>SayHotFix.java</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ly.dexclassloaderhotfix;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ISay</span> </span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">saySomething</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ly.dexclassloaderhotfix;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SayHotFix</span> <span class="keyword">implements</span> <span class="title">ISay</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">saySomething</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Everything is right!"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ISay</code>接口的包名和类名必须和Android项目中的一样。<code>SayHotFix</code>实现<code>ISay</code>接口，并在<code>saySomething()</code>中返回新的结果，用来模拟修复bug。</p>
+<p>将<code>ISay</code>和<code>SayHotFix</code>打包成<strong>say_something.jar</strong>，然后通过dx工具将生成的<strong>say_something.jar</strong>包中的class文件优化为dex文件。</p>
+<blockquote>
+<p>dx –dex –output=say_something_hotfix.jar say_something.jar</p>
+</blockquote>
+<p>上述<strong>say_something.jar</strong>就是最终需要用作hotfix的jar包。</p>
+<p><strong>将HotFix patch 包拷贝到SD卡主目录中，并使用<code>DexClassLoader</code>加载SD卡中的<code>ISay</code>接口</strong>。</p>
+<p>首先将HotFix patch保存到本地目录下。一般在真实项目中，可以通过向后端发送请求的方式，将最新的HoFix patch下载到本地中。这里为了演示，直接使用adb命令将<strong>say_something.jar</strong>包push到SD卡目录下：</p>
+<blockquote>
+<p>adb push say_something_hotfix.jar /storage/self/primary/ </p>
+</blockquote>
+<p>下面，修改<code>MainActivity</code>中的逻辑，使用<code>DexClassLoader</code>加载HotFix patch中的<code>SayHotFix</code>类，如下：</p>
+<img src="/2020/06/30/（拉钩）Android工程师进阶34讲-05：深入理解ClassLoader的加载机制/DexClassLoader热修复示例3.png">
+
+<h1 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h1><ul>
+<li><code>ClassLoader</code>就是用来加载class文件的，不管是jar中还是dex中的class。</li>
+<li>Java中的<code>ClassLoader</code>通过双亲委托模式来加载各自指定路径下的class文件。</li>
+<li>可以自定义<code>ClassLoader</code>，一般覆盖<code>findClass()</code>方法，不建议重写<code>loadClass()</code>方法。</li>
+<li>Andorid中常用的两种<code>ClassLoader</code>分别为：<code>PathClassLoader</code>和<code>DexClassLoader</code>。</li>
+</ul>
+
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAAAAABd2qZ5AAAD3ElEQVR42u3aSXLjQAwEQP3/0/YDJkhWAU3bE5E8KSQu3ckDhOXziY+v4Li/9upz+02ynn+fdfjAgQMHDhyLrd6fk2/76j7JOclzc9aHF4kDBw4cOA5xzALkZtH3r+SNgH1/Txw4cODA8Vscp86cbTW/Mw4cOHDg+L848hJhXka8vzYP2zhw4MCB4y9w5C2c5Nc20cqX3h4v1kpx4MCBA8ck0tUtpb/5+ZX5Dhw4cODAsQ5dSRmuHWLIv0+SydXucODAgQPHmiMPSG37J9nGLN61L6BeLQ4cOHDgOMqRl+o2rZ22kHcqoEavBwcOHDhwLDhmbZh2ifl4xKzAl4fYh6fgwIEDB46jHKcW2o4jtCE/H7lo14MDBw4cON7jaBtLm20/LHG0hqT1dVkWxIEDBw4cC448oLYFvpapvTYvOw7rfjhw4MCBY8SxaTLNGj85brLhdljhQHEQBw4cOHAEHHlTZ5aAtU2pU2MQw4EGHDhw4MCx4GgLgrOmTntmHlBPtb4eKqY4cODAgaPkaDe8ScxmYwqzFtSp9hUOHDhw4Jhx3Iec5Nbtr22LKxl6aJPGOpHDgQMHDhwlR/s5+bUtAs5SvvY1fPKaKA4cOHDgiDk2isOmzuL+sxBbnIMDBw4cONYcpzbclv/yYLzf9p4PBw4cOHDMOPLS3qbJ1N4/Lwu2639ICHHgwIEDx4gjKfa17ahNeN4HzlmgxYEDBw4c73G0qV0OdLZEuGG6vAoHDhw4cKw52sGCU1tNxhHaBKxlKkblcODAgQNHzLEv/+XhMA/SeaA9WyLEgQMHDhx7jrZslwfIGeWMvg3n0cvDgQMHDhwjjs0QQ/5NEmiTb/LEMgmlD/87cODAgQPHUY7kmIXkBKgNkLMyYjEtiAMHDhw4Fmlbi5UHwhZl3+iqXxIOHDhw4FhzzG76Xvhsn7vBHY5l4MCBAweOW46kxHY2cO75Nq2sh5eBAwcOHDiOcuSPTAYXWtB9KtiO6EW1Uhw4cODAMeLIWzj7lk8edPMVti/gEgUHDhw4cBziaNs2dWo0CuGz8N82yYoUDgcOHDhwxF2ePBmbjR3sS35JArahLPpgOHDgwIHjluOrPPbTE/fp2ax0mATR6J44cODAgWPNkR95spS3tXKCWdjeFy5x4MCBA8eMY9NSyuHawNymZMcCLQ4cOHDgOMSxCW95wGvX0yaWB/464MCBAweOX+JIAmQ+UtAmirMhv+gl4cCBAweOH+dor9rUKWcDcLNBDRw4cODAcZZjM8SwT+3ylKx9SlsGxYEDBw4ce45Nwa59zIa7HYZ4AxQHDhw4cNxyfAMlRs2AQqMj/wAAAABJRU5ErkJggg==" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM与DVM必知必会/">JVM与DVM必知必会</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+    
+      <a href="/2020/06/25/（拉钩）Android工程师进阶34讲-04：编译插桩操纵字节码，实现不可能完成的任务/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">（拉钩）Android工程师进阶34讲-04：编译插桩操纵字节码，实现不可能完成的任务</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: '',
+        app_key: '',
+        path: window.location.pathname,
+        notify: 'false',
+        verify: 'false',
+        avatar: 'monsterid',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
+        }
+    }
+
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
+
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2020
+        <i class="ri-heart-fill heart_icon"></i> Tyler Liu
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Tyler的博客"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Subtitle -->
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+      strings: ['人生是一场难得的修行，不要轻易交白卷', '', ''],
+      startDelay: 0,
+      typeSpeed: 200,
+      loop: true,
+      backSpeed: 100,
+      showCursor: true
+    });
+  } catch (err) {
+    console.log(err)
+  }
+</script>
+
+<!-- Tocbot -->
+
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<script src="/js/clickLove.js"></script>
+
+<!-- ClickBoom -->
+
+<script src="/js/clickBoom.js"></script>
+
+<!-- CodeCopy -->
+
+<link rel="stylesheet" href="/css/clipboard.css">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+    
+  </div>
+</body>
+
+</html>
