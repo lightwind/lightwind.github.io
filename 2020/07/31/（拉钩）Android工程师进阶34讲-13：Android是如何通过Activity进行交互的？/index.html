@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-Hans">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="description" content="人生是一场难得的修行，不要轻易交白卷" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    （拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？ |  Tyler的博客
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  <link rel="stylesheet" href="/dist/main.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+  <link rel="stylesheet" href="/css/custom.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+  
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  
+  <canvas width="1777" height="841" style="position: fixed; left: 0px; top: 0px; z-index: 999; pointer-events: none;"></canvas>
+  
+  <div id="app">
+    <main class="content on">
+      <section class="outer">
+  <article id="post-（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  （拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？
+</h1>
+ 
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/" class="article-date">
+  <time datetime="2020-07-31T01:30:30.000Z" itemprop="datePublished">2020-07-31</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Android/">Android</a> / <a class="article-category-link" href="/categories/Android/进阶/">进阶</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">6 min</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+
+      
+      <h1 id="1-taskAffinity"><a href="#1-taskAffinity" class="headerlink" title="1. taskAffinity"></a>1. taskAffinity</h1><p>Actiivty的启动模式。通过配置不同的启动模式可以实现调配不同的<code>Task</code>。但是<code>taskAffinity</code>在一定程度上也会影响任务栈的调配流程。</p>
+<p>每一个Activity都有一个<code>Affinity</code>属性，如果不在清单文件中指定，默认为当前应用的包名。<code>taskAffinity</code>主要有以下几点需要注意：</p>
+<h2 id="1-1-taskAffinity会默认使Activity在新的栈中分配吗？"><a href="#1-1-taskAffinity会默认使Activity在新的栈中分配吗？" class="headerlink" title="1.1 taskAffinity会默认使Activity在新的栈中分配吗？"></a>1.1 taskAffinity会默认使Activity在新的栈中分配吗？</h2><p>可以通过一个例子验证一下，在一个Android项目<code>LagouTaskAffinity</code>中，创建两个Activity：<code>First</code>和<code>Second</code>，它们的具体配置如下：</p>
+<img src="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/LagouTaskAffinity1.png">
+
+<p>除了Activity类名之外，其他都是默认配置。这种情况下，点击<code>First</code>中的<code>Button</code>，从<code>First</code>跳转到<code>Second</code>。</p>
+<p>然后再执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell dumpsys activity activities</span><br></pre></td></tr></table></figure>
+
+<p>上述命令会将系统中所有存活中的Activity信息打印到控制台，具体结果如下：</p>
+<img src="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/LagouTaskAffinity2.png">
+
+<p>上图中的<code>TaskRecord</code>代表一个任务栈，在这个栈中存在两个<code>Activity</code>实例：<code>First</code>和<code>Second</code>，并且<code>Second</code>处于栈顶。</p>
+<p>接下来将<code>Second</code>的<code>taskAffinity</code>修改如下：</p>
+<img src="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/LagouTaskAffinity3.png">
+
+<p>将<code>Second</code>的<code>taskAffinity</code>修改成<code>lagou.affinity</code>，使它和<code>First</code>的<code>taskAffinity</code>不同。重新运行代码，并再次查看任务栈中的情况，如下：</p>
+<img src="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/LagouTaskAffinity4.png">
+
+<p>可以看到，虽然<code>First</code>和<code>Second</code>的<code>taskAffinity</code>不同，但是它们都被创建在一个任务栈中。</p>
+<p>但如果再将<code>Second</code>的<code>launchMode</code>改为<code>singleTask</code>，再次重新运行，则会发现两个Activity会被分配到不同的任务栈中，如下图：</p>
+<img src="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/LagouTaskAffinity5.png">
+
+<p>结论：单独使用<code>taskAffinity</code>不能导致Activity被创建在新的任务栈中，需要配合<code>singleTask</code>或者<code>singleInstance</code>。</p>
+<h2 id="1-2-taskAffinity-allowTaskReparenting"><a href="#1-2-taskAffinity-allowTaskReparenting" class="headerlink" title="1.2 taskAffinity + allowTaskReparenting"></a>1.2 taskAffinity + allowTaskReparenting</h2><p><code>allowTaskReparenting</code>赋予Activity在各个<code>task</code>中间转移的特性。一个后台任务栈中的Activity A，当有其他任务进入前台，并且<code>taskAffinity</code>和A相同，则会自动将A添加到当前启动的任务栈中。举例：</p>
+<ul>
+<li>1、在某外卖app中下好订单后，跳转到支付平台支付。当在支付平台支付成功之后，页面停留在支付平台支付成功页面。</li>
+<li>2、按Home键，在主页面重新打开支付平台App，页面上显示的并不是支付平台主页面，而是之前支付成功页面。</li>
+<li>3、再次进入外卖App，发现支付平台支付成功页面已经消失。</li>
+</ul>
+<p>造成上述现象的原因就是<code>allowTaskReparenting</code>属性，代码演示。</p>
+<p>分别创建两个Android工程：<code>First</code>和<code>TaskAffinityReparent</code>：</p>
+<ul>
+<li>在<code>First</code>中有三个Activity：<code>FirstA</code>、<code>FirstB</code>、<code>FirstC</code>。打开顺序依次是<code>FirstA</code> -&gt; <code>FirstB</code> -&gt; ``FirstC<code>。其中</code>FirstC<code>的</code>taskAffinity<code>为</code>“lagou.affinity”<code>，且</code>allowTaskReparenting<code>属性设置为</code>true<code>。</code>FirstA<code>和</code>FirstB`为默认值；</li>
+<li><code>TaskAffinityReparent</code>中只有一个Activity——<code>ReparentActivity</code>，并且其<code>TaskAffinity</code>也等于<code>&quot;lagou.affinity&quot;</code>。</li>
+</ul>
+<p>将这个两个项目分别安装到手机上后，打开First App，并从<code>FirstA</code>开始跳转到<code>FirstB</code>，再进入<code>FirstC</code>页面。然后按Home键，使其进入后天任务。此时系统中的Activity信息如下：</p>
+<img src="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/LagouTaskAffinity6.png">
+
+<p>接下来，打开TaskAffinityReparent项目，屏幕上本应显示显示<code>ReoarentActivity</code>的页面内容，但是实际上显示的却是<code>FirstC</code>中的页面内容，并且系统中Activity信息如下：</p>
+<img src="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/LagouTaskAffinity7.png">
+
+<p>可以看出，<code>FirstC</code>被移动到与<code>ReparentActivity</code>处在一个任务栈中。此时<code>FIrstC</code>位于栈顶位置，再次点击返回键，才会显示<code>ReparentActivity页面</code>。</p>
+<h1 id="2-通过Binder传递数据的限制"><a href="#2-通过Binder传递数据的限制" class="headerlink" title="2. 通过Binder传递数据的限制"></a>2. 通过Binder传递数据的限制</h1><h2 id="2-1-Binder传递数据限制"><a href="#2-1-Binder传递数据限制" class="headerlink" title="2.1 Binder传递数据限制"></a>2.1 Binder传递数据限制</h2><p>Activity界面跳转时，使用<code>Intent</code>传递数据是最常用的操作。但是<code>Intent</code>传值偶尔也会导致程序崩溃，如下代码：</p>
+<img src="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/Binder传值限制1.png">
+
+<p>在<code>startFirstB()</code>方法中，跳转<code>FirstB</code>页面，并通过<code>Itent</code>传递Bean类中的数据。但是执行上述代码会报如下错误：</p>
+<img src="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/Binder传值限制2.png">
+
+<p>上面log日志的意思是<code>Intent</code>传递数据过大，最终原因是Andorid系统对使用<code>Binder</code>传数据进行了限制。通常情况为1M，但是根据不同版本、不同厂商，这个值会有区别。</p>
+<h2 id="2-2-解决办法"><a href="#2-2-解决办法" class="headerlink" title="2.2 解决办法"></a>2.2 解决办法</h2><ul>
+<li>1、减少通过<code>Binder</code>传递数据，将非必须字段使用<code>transient</code>关键字修饰。</li>
+</ul>
+<p>比如上述Bean类中，假如<code>byte[] data</code>并非必须使用的数据，则需要避免将其序列化，如下所示：</p>
+<img src="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/Binder传值限制3.png">
+
+<p>添加<code>transient</code>修饰之后，再次运行代码，就不会报错。</p>
+<ul>
+<li>2、将对象转化为JSON字符串，减少数据体积。</li>
+</ul>
+<p>因为JVM加载类通常会伴随额外空间来保存类相关信息，将类中数据转化为JSON字符串可以减少数据大小。</p>
+<blockquote>
+<p>有时将类转化为JSON字符串，还是会超出<code>Binder</code>的限制，说明实际需要传递的数据很大。这时，需要考虑使用本地持久化来实现数据共享，或者使用<code>EventBus</code>来实现数据传递。</p>
+</blockquote>
+<p>关于<code>Binder</code>机制的原理分析。可以参考以下文章：</p>
+<ul>
+<li><a href="https://blog.csdn.net/luoshengyang/article/details/6629298" target="_blank" rel="noopener">Android系统进程间通信（IPC）机制Binder中的Server启动过程源代码分析</a></li>
+<li><a href="https://www.jianshu.com/p/adaa1a39a274" target="_blank" rel="noopener">听说你 Binder 机制学的不错，来面试下这几个问题</a></li>
+</ul>
+<h2 id="2-3-process造成多个Application"><a href="#2-3-process造成多个Application" class="headerlink" title="2.3 process造成多个Application"></a>2.3 process造成多个Application</h2><p>一直以来，都会在<code>Application</code>中做一些初始化操作。比如App分包、推送初始化、图片加载库的全局配置等，如下图：</p>
+<img src="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/process造成多个Application1.png">
+
+<p>但实际上，Activity可以在不同的进程中启动，而每一个不同的进程都会创建出一个Application，因此可能造成Application的<code>onCreate</code>方法被执行多次。比如以下代码：</p>
+<img src="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/process造成多个Application2.png">
+
+<p><code>RemoteActivity</code>的<code>process</code>为<code>&quot;lagou.process&quot;</code>，这将导致它会在新的进程中创建。当在<code>MainActivity</code>中跳转到<code>RemoteActivity</code>时，LagouApplication会被再次创建，代码如下：</p>
+<img src="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/process造成多个Application3.png">
+
+<p>最终打印日志如下：</p>
+<img src="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/process造成多个Application4.png">
+
+<p>可以看出LagouApplication的<code>onCreate</code>方法被创建了2次，因此各种初始化的操作也会被执行2遍。</p>
+<p>针对这个问题，目前有两种比较好的处理方式：</p>
+<ul>
+<li><code>onCreate</code>方法中判断进程名称，只有在符合要求的进程里，才执行初始化操作；</li>
+<li>抽象出一个与Application生命周期同步的类，并根据不同的进程创建相应的Application实例。</li>
+</ul>
+<p>可以参考：<a href="http://conorlee.top/2017/02/21/Multi-Process-Dispatch/" target="_blank" rel="noopener">解决Android多进程导致Application重复创建问题</a></p>
+<h1 id="3-后台启动Activity失效"><a href="#3-后台启动Activity失效" class="headerlink" title="3. 后台启动Activity失效"></a>3. 后台启动Activity失效</h1><p>正在打开某个App，此时手机后台正在下载另一个App。当App下载完成后，突然弹出安装界面，中断了前一个App的界面交互，这种情况会影响用户体验，而最终用户会抱怨Android手机或者Android系统本身。</p>
+<p>为了避免这种情况的发生，从Android 10（API 29）开始，Android系统对后台进程启动Activity做了一定的限制，官网介绍如下：</p>
+<img src="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/Android系统对后台启动Activity的限制1.png">
+
+<p>主要目的就是为了避免当前前台用户的交互被打断，保证当前屏幕上显示的内容不受影响。</p>
+<blockquote>
+<p>但是这也造成了很多实际问题，在项目中有Force Update功能，当用户选择升级之后后台进行新的安装包下载任务。正常情况下，下载成功需要弹出apk安装界面，但是在某一版升级时，突然有很多用户反馈无法弹出下载界面。经过查看抓取的Log信息，最终发现有个特点就是发生在Andorid 10 版本，因此怀疑是版本兼容性问题，最终也确定是此问题。</p>
+</blockquote>
+<p>解决办法：</p>
+<p>Android官方建议使用通知来替代直接启动Activity操作：</p>
+<img src="/2020/07/31/（拉钩）Android工程师进阶34讲-13：Android是如何通过Activity进行交互的？/Android系统对后台启动Activity的限制2.png">
+
+<p>也就是当后台任务执行完毕之后，并不会直接调用<code>startActivity</code>来启动新的界面，而是通过<code>NotificationManager</code>来发送<code>Notification</code>到状态栏。这样既不会影响的当前使用的交互操作，用户也能及时获取后台任务的进展情况，后续的操作由用户自己决定。</p>
+<h1 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h1><p>使用<code>startActivity()</code>时可能遇到的问题：</p>
+<ul>
+<li><code>taskAffinity</code>实现任务栈的调配；</li>
+<li>通过<code>Binder</code>传递数据的限制；</li>
+<li>多进程可能造成的问题；</li>
+<li>后台启动Activity的限制。</li>
+</ul>
+
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASYAAAEmCAAAAADqr2IGAAAEk0lEQVR42u3b227jOBAFwPn/n86+7mJi7zndDCA6pSfDsSSyOAD7wvnzJ76+/nW137+/2rv+/v3fn1897dUvj12YMGHChOmRTMmw3g/3/ZPbkcwI8rG9n9fL52DChAkTpsuZ8kG/DwXevz6599Vvkncli5o/ExMmTJgw/U6mPEHNk8+WOxnP+5FjwoQJEyZM+4AgIW4rq0kQ0IYmmDBhwoTpNzC12+osDW5bj3ljtS3m/mAtHBMmTJgwPYzpVKPxxs8/cr4JEyZMmDA9humrvGZl2TaV3RSX85EX92LChAkTpmuZ8g3ybEtytjHP+PbFZUyYMGHC9BlMbQH0PdOmbDoLC041YledVUyYMGHC9DCm2dDbZmR74GaWVCezy4/pfFMhwIQJEyZMFzLlw8q321lAkPDlk29DiihQwIQJEyZMFzLlZdBkkmcDizapnrUtIwdMmDBhwnQ506km5SwIaIODdklmbdH//BUTJkyYMF3O1B7NaTfaZJKn/tq+KyoxY8KECROmj2CaHdbZVJfzRcrpT4Uv/9PIxIQJEyZMlzDlLcB8knlw0E47T33bBL4IQTBhwoQJ01VM+Vbabvybz7MS8CygiX6PCRMmTJiuZdo3Gn/iQGpOmSfSeUiBCRMmTJg+iSlPI/O0M3/abALt4Zt9sxYTJkyYMN3LNNsm8wBittkngUK7tC0KJkyYMGH6JKbZCw68LCDeFHZn0NFiYMKECROmC5naB+2x9u9qW6T7FB0TJkyYMN3LlKedm1JpnojOkthNKl6HBZgwYcKE6RKmzaGZduh5Ov0T7cw2aHhZC8eECRMmTJcwndo43195Q3SWVLdF27bNiQkTJkyYPoOpLYm2W/KpIuws6lk1TTFhwoQJ07VM+W158TdpW+6P2mwKwXkQU3c+MWHChAnTg5ny6eVPSCa2uTef3mwZXjY1MWHChAnTVUynWo9t+3OzMG3Zd3Z4CBMmTJgwfQbTrLQ6LImWG/ymlDwLI2alZ0yYMGHC9EymdsufJb2z0u0mNNk3X785uIMJEyZMmK5laoebD6tNbvNQoy315s/85htMmDBhwnQt06mi56wQnCfJs4Bgc/QHEyZMmDB9BtN+255NZvZNGxDsv8GECRMmTJ/ElJRBZ4daNu3PGVbe2qxPNmHChAkTpquYZtPIj9fsm53tgZv9cZ9jq40JEyZMmB7AlA8ubxC2uPmUcr5T/4Ki1BcTJkyYMD2eKS/UtoNrJ5w3RGfpdxuUYMKECROmT2LKj8u0fKeKxbOwY7YwLwMCTJgwYcJ0FdMGKE+G8/ZkspEnSWz7ljqMwIQJEyZMlzB9lVcyuNkQ983I5HBP+64678eECRMmTA9j2ieceZuwLQrvA4Xk+XmzFhMmTJgw3cs0a0/uG5Ntyr3hywOCYfSECRMmTJgez5SXTU8FBPuadI57oGmKCRMmTJh+DVNeZm03+CQcmRWLZ3CYMGHChAlTvlXPyDaTny3tMCrBhAkTJkyPZ8r/K0ULcTYgyIvRsxLwy+dgwoQJE6Zrmdoya94gbCeftyHbEu3+MC4mTJgwYbqQ6R9fcIFy4c/pnwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心技术/">Android核心技术</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+    
+      <a href="/2020/07/30/（拉钩）Android工程师进阶34讲-12：DVM以及ART是如何对JVM进行优化的？/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">（拉钩）Android工程师进阶34讲-12：DVM以及ART是如何对JVM进行优化的？</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: '',
+        app_key: '',
+        path: window.location.pathname,
+        notify: 'false',
+        verify: 'false',
+        avatar: 'monsterid',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
+        }
+    }
+
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
+
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2020
+        <i class="ri-heart-fill heart_icon"></i> Tyler Liu
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Tyler的博客"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Subtitle -->
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+      strings: ['人生是一场难得的修行，不要轻易交白卷', '', ''],
+      startDelay: 0,
+      typeSpeed: 200,
+      loop: true,
+      backSpeed: 100,
+      showCursor: true
+    });
+  } catch (err) {
+    console.log(err)
+  }
+</script>
+
+<!-- Tocbot -->
+
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<script src="/js/clickLove.js"></script>
+
+<!-- ClickBoom -->
+
+<script src="/js/clickBoom.js"></script>
+
+<!-- CodeCopy -->
+
+<link rel="stylesheet" href="/css/clipboard.css">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+    
+  </div>
+</body>
+
+</html>
